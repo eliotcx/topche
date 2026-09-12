@@ -144,7 +144,7 @@
       {id:'checker-pro',name:'Checker Pro',cost:470,unlockLevel:15,color:'#f0f5f7',accent:'#142331',detail:'#ffca45',design:'checker'}
     ],
     tape:[
-      {id:'white-tape',name:'Traditional Full Sock',cost:0,color:'#f5f7f7',accent:'#bac8cc',design:'full'},
+      {id:'white-tape',name:'Traditional Full Wrap',cost:0,color:'#f5f7f7',accent:'#bac8cc',design:'full'},
       {id:'black-tape',name:'Toe-Only Black',cost:35,color:'#111418',accent:'#596168',design:'toe'},
       {id:'red-tape',name:'Candy Cane Wrap',cost:45,color:'#d91f35',accent:'#ffffff',design:'candy'},
       {id:'blue-tape',name:'Blue Half Sock',cost:45,color:'#1e69c8',accent:'#a8d1ff',design:'half'},
@@ -156,12 +156,24 @@
     ],
     shaft:[
       {id:'midnight',name:'Carbon Weave',cost:0,color:'#111820',accent:'#d3a62c',detail:'#2e3942',design:'carbon'},
-      {id:'red-speed',name:'Lightning Fade',cost:100,color:'#d31f36',accent:'#ffffff',detail:'#50101b',design:'lightning'},
+      {id:'red-speed',name:'Lightning Fade',cost:100,color:'#f12d48',accent:'#ffffff',detail:'#ff8a39',design:'lightning'},
       {id:'woodland',name:'Woodgrain Classic',cost:115,color:'#a46a2d',accent:'#e8c794',detail:'#573414',design:'woodgrain'},
-      {id:'ice-blue',name:'Frost Fracture',cost:130,color:'#1a8fd0',accent:'#dff8ff',detail:'#0e476d',design:'frost'},
-      {id:'digital-grid',name:'Digital Grid',cost:240,unlockLevel:5,color:'#101820',accent:'#68f5d2',detail:'#214c59',design:'matrix'},
+      {id:'ice-blue',name:'Frost Fracture',cost:130,color:'#24b8ee',accent:'#ffffff',detail:'#75e8ff',design:'frost'},
+      {id:'digital-grid',name:'Digital Grid',cost:240,unlockLevel:5,color:'#15567d',accent:'#9dffdc',detail:'#2b98bb',design:'matrix'},
       {id:'sunset-burst',name:'Sunset Burst',cost:370,unlockLevel:12,color:'#ef4e29',accent:'#ffd84b',detail:'#64196f',design:'sunset'},
-      {id:'power-circuit',name:'Power Circuit',cost:560,unlockLevel:19,color:'#15182b',accent:'#68dfff',detail:'#a43df0',design:'circuit'}
+      {id:'power-circuit',name:'Power Circuit',cost:560,unlockLevel:19,color:'#3154c8',accent:'#8df4ff',detail:'#c14dff',design:'circuit'}
+    ],
+    socks:[
+      {id:'home-ice',name:'Home Ice Bands',cost:0,color:'#1769ff',accent:'#ffffff',detail:'#071b2b',design:'classic'},
+      {id:'maple-pulse',name:'Maple Pulse',cost:70,color:'#d81f35',accent:'#ffffff',detail:'#9b1222',design:'pulse'},
+      {id:'nordic-crown',name:'Nordic Crown',cost:90,color:'#1f63b7',accent:'#ffda45',detail:'#ffffff',design:'chevron'},
+      {id:'candy-clash',name:'Candy Cane Clash',cost:105,color:'#e1273e',accent:'#ffffff',detail:'#17498f',design:'barber'},
+      {id:'coastal-current',name:'Coastal Current',cost:125,color:'#0098a6',accent:'#eefcff',detail:'#062f3a',design:'wave'},
+      {id:'neon-static',name:'Neon Static',cost:195,unlockLevel:4,color:'#9cff38',accent:'#ff4fa3',detail:'#332080',design:'static'},
+      {id:'solar-flame',name:'Solar Flame',cost:275,unlockLevel:7,color:'#ef6d1f',accent:'#ffe26b',detail:'#a61e31',design:'flame'},
+      {id:'gold-checker',name:'Gold Checker',cost:365,unlockLevel:11,color:'#e7b52c',accent:'#16191e',detail:'#ffffff',design:'checker'},
+      {id:'cosmic-orbit',name:'Cosmic Orbit',cost:475,unlockLevel:16,color:'#592f99',accent:'#5ce6ef',detail:'#ffcf54',design:'orbit'},
+      {id:'arctic-shatter',name:'Arctic Shatter',cost:590,unlockLevel:20,color:'#eefcff',accent:'#55d9ff',detail:'#17498f',design:'shatter'}
     ],
     gloves:[
       {id:'navy-gloves',name:'Navy Gloves',cost:0,color:'#071b2b',accent:'#2d6590'},
@@ -189,17 +201,18 @@
       {id:'21',name:'Number 21',symbol:'21',cost:430,unlockLevel:15,color:'#12344a',accent:'#ffffff'}
     ]
   };
-  const gearLabels={jersey:'Jerseys',logo:'Logos',helmet:'Helmets',tape:'Tape',shaft:'Sticks',gloves:'Gloves',skates:'Skates',number:'Numbers'};
-  const gearSingular={jersey:'Jersey',logo:'Logo',helmet:'Helmet',tape:'Tape',shaft:'Stick',gloves:'Gloves',skates:'Skates',number:'Number'};
-  const defaultLoadout={jersey:'home-navy',logo:'cheese',helmet:'classic-navy',tape:'white-tape',shaft:'midnight',gloves:'navy-gloves',skates:'classic-black',number:'10'};
+  const gearLabels={jersey:'Jerseys',logo:'Logos',helmet:'Helmets',tape:'Tape',shaft:'Sticks',socks:'Socks',gloves:'Gloves',skates:'Skates',number:'Numbers'};
+  const gearSingular={jersey:'Jersey',logo:'Logo',helmet:'Helmet',tape:'Tape',shaft:'Stick',socks:'Sock design',gloves:'Gloves',skates:'Skates',number:'Number'};
+  const defaultLoadout={jersey:'home-navy',logo:'cheese',helmet:'classic-navy',tape:'white-tape',shaft:'midnight',socks:'home-ice',gloves:'navy-gloves',skates:'classic-black',number:'10'};
   let lockerCategory='jersey';
+  let lockerPreviewFrame=0;
   let cheesePoints=Number(localStorage.getItem('superHockeyCheesePoints')||0);
   let ownedGear=safeStoredObject('superHockeyOwned',{});
   let loadout={...defaultLoadout,...safeStoredObject('superHockeyLoadout',{})};
   const hockeySprites = new Image();
   let spritesReady = false;
   let customPlayerSprite=null,customPlayerKey='',customFallenSprite=null,customFallenKey='';
-  hockeySprites.onload = () => { spritesReady = true;refreshCustomPlayer();if(ui.lockerDialog?.open){renderGearPreviews();if(!ui.playerShowcase.hidden)renderPlayerShowcase();} };
+  hockeySprites.onload = () => { spritesReady = true;refreshCustomPlayer();if(ui.lockerDialog?.open){if(ui.playerShowcase.hidden)scheduleGearPreviews();else renderPlayerShowcase();} };
   hockeySprites.src = 'assets/hockey-sprites.png';
   const cheeseLogo = new Image();
   cheeseLogo.onload = () => { if(ui.playerShowcase&&!ui.playerShowcase.hidden)renderPlayerShowcase(); };
@@ -231,7 +244,7 @@
       return `<button class="gear-card ${equipped?'equipped ':''}${owned?'':'locked'}" data-gear-id="${item.id}" data-category="${lockerCategory}"><canvas class="gear-preview" width="240" height="116" aria-hidden="true"></canvas><strong>${item.name}</strong><small>${status}</small></button>`;
     }).join('');
     ui.lockerItems.querySelectorAll('[data-gear-id]').forEach(button=>button.addEventListener('click',()=>selectGear(lockerCategory,button.dataset.gearId)));
-    renderGearPreviews();
+    scheduleGearPreviews();
     updateCheeseUI();
   }
   function selectGear(category,id) {
@@ -246,8 +259,9 @@
   function openLocker(){
     if(ui.lockerDialog.open)return;
     if(state.active&&!state.paused){state.paused=true;state.pausedAt=performance.now();stopArenaMusic();}
-    ui.lockerStatus.textContent='';showLockerCatalog();renderLocker();
+    ui.lockerStatus.textContent='';showLockerCatalog();
     try{ui.lockerDialog.showModal();}catch{ui.lockerDialog.setAttribute('open','');}
+    requestAnimationFrame(()=>{if(ui.lockerDialog.open)renderLocker();});
   }
 
   function resumeAfterLocker(){
@@ -359,6 +373,20 @@
     return item.color;
   }
 
+  function sockPatternColor(item,x,y){
+    if(item.design==='classic'){const band=Math.floor((y+8)/15)%6;return band===1?item.accent:band===2?item.detail:item.color;}
+    if(item.design==='pulse'){const pulse=Math.abs(Math.sin(y*.18+x*.035));return pulse>.82?item.accent:pulse>.62?item.detail:item.color;}
+    if(item.design==='chevron'){const zig=Math.floor((y+Math.abs((x%48)-24)*.7)/14)%5;return zig===0?item.accent:zig===1?item.detail:item.color;}
+    if(item.design==='barber')return Math.floor((x+y*1.3)/17)%3===0?item.detail:Math.floor((x+y*1.3)/17)%2?item.accent:item.color;
+    if(item.design==='wave'){const wave=Math.sin(y*.16+x*.09);return wave>.56?item.accent:wave<-.62?item.detail:item.color;}
+    if(item.design==='static'){const cell=(Math.floor(x/8)*7+Math.floor(y/7)*11)%13;return cell<3?item.accent:cell<5?item.detail:item.color;}
+    if(item.design==='flame'){const flame=Math.sin(x*.19+y*.045)*13+(y%52);return flame<19?item.accent:flame<30?item.detail:item.color;}
+    if(item.design==='checker')return (Math.floor(x/16)+Math.floor(y/16))%2?item.color:item.accent;
+    if(item.design==='orbit'){const ring=Math.floor(Math.hypot((x%68)-34,(y%78)-39)/8)%4;return ring===0?item.accent:ring===1?item.detail:item.color;}
+    if(item.design==='shatter'){const crack=Math.abs(Math.sin(x*.21)+Math.cos(y*.17));return crack<.22?item.detail:crack>.95?item.accent:item.color;}
+    return item.color;
+  }
+
   function drawHelmetGraphics(target,item,sx,sy){
     target.save();target.globalCompositeOperation='source-atop';target.beginPath();target.ellipse(384*sx,248*sy,48*sx,59*sy,0,0,Math.PI*2);target.clip();target.lineCap='round';target.lineJoin='round';
     if(item.design==='ice'){
@@ -406,7 +434,7 @@
     const surface=document.createElement('canvas');surface.width=cellW;surface.height=cellH;
     const target=surface.getContext('2d',{willReadFrequently:true});target.drawImage(hockeySprites,0,0,hockeySprites.width/2,hockeySprites.height/2,0,0,cellW,cellH);
     const image=target.getImageData(0,0,cellW,cellH),data=image.data;
-    const jersey=gearItem('jersey',options.jersey),helmet=gearItem('helmet',options.helmet),tape=gearItem('tape',options.tape),shaft=gearItem('shaft',options.shaft),gloves=gearItem('gloves',options.gloves),skates=gearItem('skates',options.skates);
+    const jersey=gearItem('jersey',options.jersey),helmet=gearItem('helmet',options.helmet),tape=gearItem('tape',options.tape),shaft=gearItem('shaft',options.shaft),socks=gearItem('socks',options.socks),gloves=gearItem('gloves',options.gloves),skates=gearItem('skates',options.skates);
     for(let y=0;y<cellH;y++)for(let x=0;x<cellW;x++){
       const i=(y*cellW+x)*4;if(data[i+3]<24)continue;
       const xr=x/sx,yr=y/sy,r=data[i],g=data[i+1],b=data[i+2],brightness=Math.max(r,g,b)/255;
@@ -414,6 +442,7 @@
       const helmetMask=insideEllipse(xr,yr,384,248,51,62)&&!skin;
       const leftGlove=insideEllipse(xr,yr,335,158,34,43),rightGlove=insideEllipse(xr,yr,450,247,38,46),gloveMask=(leftGlove||rightGlove)&&!skin;
       const skateMask=insideEllipse(xr,yr,353,472,33,57)||insideEllipse(xr,yr,411,534,37,65);
+      const sockMask=(insideEllipse(xr,yr,350,420,30,58)||insideEllipse(xr,yr,408,486,31,62))&&!skin&&brightness>.16;
       const tapeMask=xr>180&&xr<288&&yr>23&&yr<76;
       const shaftMask=segmentDistance(xr,yr,245,53,352,181)<12;
       const bluePixel=b>55&&b>r*1.28&&b>g*1.02;
@@ -423,6 +452,7 @@
       else if(helmetMask)tintPixel(data,i,helmet.color,brightness);
       else if(gloveMask)tintPixel(data,i,brightness>.54?gloves.accent:gloves.color,brightness);
       else if(skateMask)tintPixel(data,i,brightness>.58?skates.accent:skates.color,brightness);
+      else if(sockMask)tintPixel(data,i,sockPatternColor(socks,xr,yr),brightness);
       else if(shaftMask)tintPixel(data,i,shaftPatternColor(shaft,xr,yr),brightness);
       else if(stripeMask)tintPixel(data,i,yr>394?(jersey.detail||jersey.accent):jersey.accent,brightness);
       else if(jerseyMask)tintPixel(data,i,jersey.color,brightness);
@@ -471,18 +501,20 @@
     const surface=document.createElement('canvas');surface.width=fallenPlayerSprite.naturalWidth||512;surface.height=fallenPlayerSprite.naturalHeight||512;
     const target=surface.getContext('2d',{willReadFrequently:true});target.drawImage(fallenPlayerSprite,0,0,surface.width,surface.height);
     const image=target.getImageData(0,0,surface.width,surface.height),data=image.data;
-    const jersey=gearItem('jersey',loadout.jersey),helmet=gearItem('helmet',loadout.helmet),gloves=gearItem('gloves',loadout.gloves),skates=gearItem('skates',loadout.skates);
+    const jersey=gearItem('jersey',loadout.jersey),helmet=gearItem('helmet',loadout.helmet),socks=gearItem('socks',loadout.socks),gloves=gearItem('gloves',loadout.gloves),skates=gearItem('skates',loadout.skates);
     for(let y=0;y<surface.height;y++)for(let x=0;x<surface.width;x++){
       const i=(y*surface.width+x)*4;if(data[i+3]<24)continue;
       const r=data[i],g=data[i+1],b=data[i+2],brightness=Math.max(r,g,b)/255,skin=r>75&&r>g*1.08&&g>b*1.08;
       const helmetMask=insideEllipse(x,y,256,106,39,45)&&!skin;
       const gloveMask=(insideEllipse(x,y,51,66,39,38)||insideEllipse(x,y,461,66,39,38))&&!skin;
       const skateMask=insideEllipse(x,y,63,438,48,43)||insideEllipse(x,y,449,438,48,43);
+      const sockMask=y>331&&y<436&&(x<207||x>305)&&brightness>.14&&!skin;
       const bluePixel=b>55&&b>r*1.28&&b>g*1.02;
-      const uniformStripe=brightness>.5&&!skin&&((x>175&&x<337&&y>220&&y<270)||(y>330&&y<433&&(x<190||x>322)));
+      const uniformStripe=brightness>.5&&!skin&&x>175&&x<337&&y>220&&y<270;
       if(helmetMask)tintPixel(data,i,helmet.color,brightness);
       else if(gloveMask)tintPixel(data,i,brightness>.54?gloves.accent:gloves.color,brightness);
       else if(skateMask)tintPixel(data,i,brightness>.58?skates.accent:skates.color,brightness);
+      else if(sockMask)tintPixel(data,i,sockPatternColor(socks,x,y),brightness);
       else if(uniformStripe)tintPixel(data,i,y%28>14?(jersey.detail||jersey.accent):jersey.accent,brightness);
       else if(bluePixel)tintPixel(data,i,jersey.color,brightness);
     }
@@ -497,9 +529,10 @@
 
   function renderGearPreviews() {
     if(!spritesReady)return;
-    const crops={jersey:[225,150,315,300],logo:[255,225,260,225],number:[270,250,235,205],helmet:[307,174,155,153],gloves:[288,105,215,210],skates:[305,410,155,190],shaft:[220,34,165,160],tape:[174,15,132,95]};
-    ui.lockerItems.querySelectorAll('.gear-card').forEach(card=>{
+    const crops={jersey:[225,150,315,300],logo:[255,225,260,225],number:[270,250,235,205],helmet:[307,174,155,153],gloves:[288,105,215,210],socks:[304,362,166,205],skates:[305,410,155,190],shaft:[220,34,165,160],tape:[174,15,132,95]};
+    ui.lockerItems.querySelectorAll('.gear-card[data-gear-id]').forEach(card=>{
       const item=gearItem(lockerCategory,card.dataset.gearId),preview=card.querySelector('.gear-preview');
+      if(!preview)return;
       const rect=preview.getBoundingClientRect(),displayW=Math.max(180,Math.round(rect.width||240)),displayH=Math.max(96,Math.round(rect.height||96)),dpr=Math.min(window.devicePixelRatio||1,3);
       preview.width=Math.round(displayW*dpr);preview.height=Math.round(displayH*dpr);
       const previewCtx=preview.getContext('2d');previewCtx.setTransform(dpr,0,0,dpr,0,0);previewCtx.imageSmoothingEnabled=true;previewCtx.imageSmoothingQuality='high';
@@ -508,6 +541,11 @@
       const scale=Math.min(displayW/crop[2],displayH/crop[3])*.93,dw=crop[2]*scale,dh=crop[3]*scale;
       previewCtx.drawImage(sprite,crop[0]*sprite.width/648,crop[1]*sprite.height/608,crop[2]*sprite.width/648,crop[3]*sprite.height/608,(displayW-dw)/2,(displayH-dh)/2,dw,dh);
     });
+  }
+
+  function scheduleGearPreviews(){
+    cancelAnimationFrame(lockerPreviewFrame);
+    lockerPreviewFrame=requestAnimationFrame(()=>{if(ui.lockerDialog.open&&!ui.lockerCatalogView.hidden)renderGearPreviews();});
   }
 
   function equippedItems(){
@@ -546,8 +584,9 @@
     target.fillStyle='#ffffff';target.font='950 82px system-ui, sans-serif';target.fillText(`#${loadout.number}`,58,1180);
     target.font='850 32px system-ui, sans-serif';target.fillText(jersey.name,224,1140);target.fillStyle='#a9c3cd';target.font='650 24px system-ui, sans-serif';target.fillText(`${logo.name} · ${gearItem('helmet',loadout.helmet).name}`,224,1180);
     target.fillText(`${gearItem('shaft',loadout.shaft).name} · ${gearItem('tape',loadout.tape).name}`,224,1218);
-    target.fillText(`${gearItem('gloves',loadout.gloves).name} · ${gearItem('skates',loadout.skates).name}`,224,1256);
-    target.fillStyle='#ffcf54';target.font='800 20px system-ui, sans-serif';target.fillText('BUILD YOUR LOOK. MAKE THE SMART PLAY.',58,1312);
+    target.fillText(`${gearItem('socks',loadout.socks).name} · ${gearItem('skates',loadout.skates).name}`,224,1256);
+    target.fillText(gearItem('gloves',loadout.gloves).name,224,1294);
+    target.fillStyle='#ffcf54';target.font='800 18px system-ui, sans-serif';target.fillText('BUILD YOUR LOOK. MAKE THE SMART PLAY.',58,1330);
     ui.equippedSummary.innerHTML=equippedItems().map(({label,item})=>`<span><strong>${label}:</strong> ${item.name}</span>`).join('');
   }
 
@@ -1245,8 +1284,8 @@
   ui.howButton.addEventListener('click',()=>ui.howDialog.showModal());ui.closeHow.addEventListener('click',()=>ui.howDialog.close());
   ui.howDialog.addEventListener('click',e=>{if(e.target===ui.howDialog)ui.howDialog.close();});
   ui.lockerButton.addEventListener('click',openLocker);ui.closeLocker.addEventListener('click',closeLocker);
-  ui.viewPlayerButton.addEventListener('click',showPlayerShowcase);ui.backToLockerButton.addEventListener('click',()=>{showLockerCatalog();renderGearPreviews();ui.viewPlayerButton.focus();});
+  ui.viewPlayerButton.addEventListener('click',showPlayerShowcase);ui.backToLockerButton.addEventListener('click',()=>{showLockerCatalog();scheduleGearPreviews();ui.viewPlayerButton.focus();});
   ui.sharePlayerButton.addEventListener('click',sharePlayerImage);ui.downloadPlayerButton.addEventListener('click',downloadPlayerImage);
   ui.lockerDialog.addEventListener('click',e=>{if(e.target===ui.lockerDialog)closeLocker();});ui.lockerDialog.addEventListener('close',resumeAfterLocker);
-  window.addEventListener('resize',()=>{resizeCanvas();if(ui.lockerDialog?.open)renderGearPreviews();});resizeCanvas();showLevelSelect();cancelAnimationFrame(raf);raf=requestAnimationFrame(drawGame);requestAnimationFrame(tick);
+  window.addEventListener('resize',()=>{resizeCanvas();if(ui.lockerDialog?.open)scheduleGearPreviews();});resizeCanvas();showLevelSelect();cancelAnimationFrame(raf);raf=requestAnimationFrame(drawGame);requestAnimationFrame(tick);
 })();
