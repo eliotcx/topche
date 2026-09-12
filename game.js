@@ -17,7 +17,12 @@
     lockerButton: document.getElementById('lockerButton'), lockerDialog: document.getElementById('lockerDialog'),
     closeLocker: document.getElementById('closeLocker'), cheesePoints: document.getElementById('cheesePoints'),
     lockerPoints: document.getElementById('lockerPoints'), lockerTabs: document.getElementById('lockerTabs'),
-    lockerItems: document.getElementById('lockerItems'), lockerStatus: document.getElementById('lockerStatus')
+    lockerItems: document.getElementById('lockerItems'), lockerStatus: document.getElementById('lockerStatus'),
+    lockerCatalogView: document.getElementById('lockerCatalogView'), viewPlayerButton: document.getElementById('viewPlayerButton'),
+    playerShowcase: document.getElementById('playerShowcase'), backToLockerButton: document.getElementById('backToLockerButton'),
+    playerRender: document.getElementById('playerRender'), equippedSummary: document.getElementById('equippedSummary'),
+    sharePlayerButton: document.getElementById('sharePlayerButton'), downloadPlayerButton: document.getElementById('downloadPlayerButton'),
+    shareStatus: document.getElementById('shareStatus')
   };
   const choiceButtons = [...document.querySelectorAll('[data-choice]')];
 
@@ -37,7 +42,7 @@
     { situation:'2-on-1 · Pass', answer:'left', carrier:[.63,.72], goalie:0, shot:true, rush:null, teammates:[[.2,.34],[.78,.44]], defenders:[[.58,.45],[.68,.56]], cue:'The defender has taken away the puck carrier. Slide the puck to the isolated teammate.' },
     { situation:'2-on-1 · Shoot', answer:'shoot', carrier:[.36,.7], goalie:1, shot:false, rush:null, teammates:[[.2,.43],[.78,.4]], showRight:true, defenders:[[.76,.39]], cue:'The defender committed to the teammate and the goalie is stuck at the right post. Shoot far side.' },
     { situation:'Backdoor opening', answer:'right', carrier:[.24,.67], goalie:0, shot:true, rush:null, teammates:[[.18,.42],[.82,.29]], defenders:[[.36,.46],[.49,.55],[.27,.37]], cue:'The shot is blocked, but the backdoor teammate is alone at the far post.' },
-    { situation:'Loose rebound', answer:'shoot', carrier:[.52,.5], goalie:-1, shot:false, rush:null, defenders:[], cue:'The rebound is loose in the slot and the goalie is stranded at the left post. Finish it.' },
+    { situation:'Solo lane left', answer:'rush', carrier:[.52,.68], goalie:0, shot:false, rush:'left', solo:true, showLeft:false, showRight:false, defenders:[], cue:'You have no support, the goalie is square, and the entire left lane is open. Rush the puck wide and cut to the net.' },
     { situation:'Defender pinches', answer:'rush', carrier:[.54,.75], goalie:0, shot:true, rush:'left', teammates:[[.7,.5],[.83,.37]], defenders:[[.67,.48],[.8,.35]], cue:'The defender pinched toward the boards. Explode through the empty left-side lane.' },
     { situation:'Neutral-zone trap', answer:'regroup', carrier:[.5,.73], goalie:0, shot:true, rush:null, teammates:[[.2,.43],[.8,.43]], defenders:[[.2,.4],[.35,.52],[.5,.39],[.65,.52],[.8,.4]], cue:'The trap has sealed every forward route. Curl back and rebuild with possession.' },
     { situation:'Power-play seam', answer:'left', carrier:[.66,.71], goalie:0, shot:true, rush:null, teammates:[[.17,.3],[.82,.43]], defenders:[[.5,.42],[.64,.52],[.78,.38]], cue:'The penalty killers collapsed toward the puck. Fire the seam pass to the open left side.' },
@@ -45,7 +50,7 @@
     { situation:'Low-cycle option', answer:'right', carrier:[.2,.59], goalie:0, shot:true, rush:null, teammates:[[.16,.4],[.82,.28]], defenders:[[.33,.45],[.48,.54],[.24,.35]], cue:'Pressure has closed around the puck. Hit the uncovered teammate across the low slot.' },
     { situation:'Blue-line gap', answer:'rush', carrier:[.42,.76], goalie:0, shot:true, rush:'right', teammates:[[.17,.38],[.3,.51]], defenders:[[.2,.36],[.33,.49]], cue:'Both passing options are covered on the left. Accelerate through the empty right-side gap.' },
     { situation:'Broken play', answer:'regroup', carrier:[.7,.72], goalie:0, shot:true, rush:null, teammates:[[.23,.4],[.78,.38]], defenders:[[.2,.37],[.38,.5],[.53,.36],[.67,.5],[.8,.35]], cue:'The formation has broken down and every direct option is covered. Regroup and reorganize.' },
-    { situation:'Screen clears', answer:'shoot', carrier:[.47,.61], goalie:1, shot:false, rush:null, defenders:[], cue:'The screen has moved aside, the lane is clean, and the goalie is trapped at the right post.' },
+    { situation:'Solo lane right', answer:'rush', carrier:[.47,.69], goalie:0, shot:false, rush:'right', solo:true, showLeft:false, showRight:false, defenders:[], cue:'There is no teammate to pass to, the goalie is set, and the right-side lane is completely open. Rush and attack the net.' },
     { situation:'Weak-side saucer', answer:'left', carrier:[.7,.7], goalie:0, shot:true, rush:null, showLeft:true, showRight:true, teammates:[[.15,.31],[.79,.42]], defenders:[[.5,.39],[.68,.49],[.78,.39]], cue:'The right side is crowded. The weak-side teammate has slipped alone behind the box.' },
     { situation:'Slot seam', answer:'right', carrier:[.29,.68], goalie:0, shot:true, rush:null, showLeft:true, showRight:true, teammates:[[.2,.41],[.84,.3]], defenders:[[.24,.39],[.43,.48],[.51,.35]], cue:'Pressure has collapsed left. The far-post teammate is uncovered on the right.' },
     { situation:'Goalie over-slide', answer:'shoot', carrier:[.61,.61], goalie:-1, shot:false, rush:null, showLeft:true, showRight:true, teammates:[[.18,.4],[.81,.4]], defenders:[[.2,.38],[.79,.38]], cue:'Both passing options are covered and the goalie has over-slid to the left post.' },
@@ -57,7 +62,7 @@
     { situation:'Cross-ice rotation', answer:'left', carrier:[.67,.66], goalie:0, shot:true, rush:null, showLeft:true, showRight:true, teammates:[[.14,.35],[.8,.38]], defenders:[[.49,.42],[.64,.49],[.78,.36]], cue:'The formation rotated toward the puck. The left point is the only clean outlet.' },
     { situation:'Give-and-go return', answer:'right', carrier:[.27,.63], goalie:0, shot:true, rush:null, showLeft:true, showRight:true, teammates:[[.17,.4],[.82,.32]], defenders:[[.22,.38],[.43,.47],[.52,.34]], cue:'The near option is smothered. Complete the give-and-go through the far side.' },
     { situation:'High-slot window', answer:'shoot', carrier:[.49,.57], goalie:1, shot:false, rush:null, showLeft:true, showRight:true, teammates:[[.18,.4],[.82,.4]], defenders:[[.2,.38],[.8,.38]], cue:'The defenders chased both flanks and the goalie is stuck on the right post.' },
-    { situation:'Scramble finish', answer:'shoot', carrier:[.43,.49], goalie:-1, shot:false, rush:null, defenders:[], cue:'The puck popped free, the lane is clean, and the goalie is down at the left post.' },
+    { situation:'Solo middle lane', answer:'rush', carrier:[.43,.68], goalie:0, shot:false, rush:'centre', solo:true, showLeft:false, showRight:false, defenders:[], cue:'Only the goalie is ahead and the middle lane is wide open. Rush straight in and deke.' },
     { situation:'Penalty-kill split', answer:'rush', carrier:[.51,.73], goalie:0, shot:true, rush:'centre', showLeft:true, showRight:true, teammates:[[.18,.38],[.82,.38]], defenders:[[.19,.36],[.81,.36]], cue:'The penalty killers stretched wide. Split the empty middle before they recover.' },
     { situation:'Counterattack left', answer:'rush', carrier:[.59,.76], goalie:0, shot:true, rush:'left', showLeft:true, showRight:true, teammates:[[.68,.44],[.81,.34]], defenders:[[.66,.42],[.8,.32]], cue:'The turnover caught every defender on the right. Accelerate into the vacant left lane.' },
     { situation:'Counterattack right', answer:'rush', carrier:[.41,.76], goalie:0, shot:true, rush:'right', showLeft:true, showRight:true, teammates:[[.19,.34],[.32,.44]], defenders:[[.2,.32],[.34,.42]], cue:'The turnover caught every defender on the left. Attack the empty right lane.' },
@@ -65,7 +70,7 @@
     { situation:'3-on-2 switch right', answer:'right', carrier:[.42,.69], goalie:0, shot:true, rush:null, showLeft:true, showRight:true, teammates:[[.18,.39],[.86,.31]], defenders:[[.2,.37],[.31,.47],[.5,.4]], cue:'The defenders crossed assignments. The right attacker has slipped behind coverage.' },
     { situation:'Line-change possession', answer:'regroup', carrier:[.52,.75], goalie:0, shot:true, rush:null, showLeft:true, showRight:true, teammates:[[.19,.41],[.81,.41]], defenders:[[.19,.39],[.35,.5],[.5,.35],[.65,.5],[.81,.39]], cue:'Your support is changing and every lane is contested. Regroup until help arrives.' },
     { situation:'Overtime patience', answer:'regroup', carrier:[.47,.7], goalie:0, shot:true, rush:null, showLeft:true, showRight:true, teammates:[[.18,.37],[.82,.37]], defenders:[[.18,.35],[.34,.46],[.49,.32],[.66,.46],[.82,.35]], cue:'A forced play risks an overtime breakaway. Curl back and keep the puck.' },
-    { situation:'Goalie scramble right', answer:'shoot', carrier:[.54,.53], goalie:1, shot:false, rush:null, defenders:[], cue:'The defenders have cleared out and the goalie is stranded against the right post.' },
+    { situation:'Solo attack left', answer:'rush', carrier:[.54,.7], goalie:0, shot:false, rush:'left', solo:true, showLeft:false, showRight:false, defenders:[], cue:'With no passing support and a square goalie, the clear left-side route is the best play. Rush and cut inside.' },
     { situation:'Delayed release', answer:'shoot', carrier:[.45,.6], goalie:-1, shot:false, rush:null, showLeft:true, showRight:true, teammates:[[.18,.4],[.82,.4]], defenders:[[.2,.38],[.8,.38]], cue:'Both defenders committed outside. The goalie is pinned left and the slot has opened.' },
     { situation:'Disguised backdoor left', answer:'left', carrier:[.73,.64], goalie:0, shot:true, rush:null, showLeft:true, showRight:true, teammates:[[.15,.27],[.82,.4]], defenders:[[.51,.39],[.69,.47],[.8,.38]], cue:'Look through the traffic: the left backdoor player is completely unattended.' },
     { situation:'Disguised backdoor right', answer:'right', carrier:[.27,.64], goalie:0, shot:true, rush:null, showLeft:true, showRight:true, teammates:[[.18,.4],[.85,.27]], defenders:[[.2,.38],[.31,.47],[.49,.39]], cue:'Look through the traffic: the right backdoor player is completely unattended.' },
@@ -98,7 +103,7 @@
   let state = {
     active:false, locked:true, round:0, total:6, levelIndex:0, score:0, streak:0, correct:0,
     elapsedTotal:0, duration:3.4, timeLeft:3.4, scenario:null, startedAt:0, sound:true,
-    animStart:performance.now(), reveal:null, action:null, deck:[]
+    animStart:performance.now(), reveal:null, action:null, deck:[], paused:false, pausedAt:0
   };
   let raf;
   let audioCtx;
@@ -112,7 +117,10 @@
       {id:'alpine-red',name:'Alpine Red',cost:120,color:'#c72536',accent:'#ffffff',detail:'#111c2a'},
       {id:'coastal-teal',name:'Coastal Teal',cost:140,color:'#0098a6',accent:'#eefcff',detail:'#062f3a'},
       {id:'metro-blue-red',name:'Metro Blue & Red',cost:160,color:'#17498f',accent:'#e73a42',detail:'#ffffff'},
-      {id:'gold-black',name:'Gold & Black',cost:180,color:'#e7b52c',accent:'#16191e',detail:'#ffffff'}
+      {id:'gold-black',name:'Gold & Black',cost:180,color:'#e7b52c',accent:'#16191e',detail:'#ffffff'},
+      {id:'aurora-green',name:'Aurora Green',cost:220,unlockLevel:3,color:'#087f66',accent:'#8ef5d0',detail:'#052f32'},
+      {id:'solar-orange',name:'Solar Orange',cost:340,unlockLevel:9,color:'#ef6d1f',accent:'#ffe26b',detail:'#681f18'},
+      {id:'cosmic-violet',name:'Cosmic Violet',cost:520,unlockLevel:16,color:'#592f99',accent:'#5ce6ef',detail:'#1a123d'}
     ],
     logo:[
       {id:'cheese',name:'Cheese Wedge',cost:0,symbol:'🧀',color:'#132b3e',accent:'#ffcf54'},
@@ -120,14 +128,20 @@
       {id:'north-leaf',name:'North Leaf',cost:100,symbol:'✦',color:'#a91d2f',accent:'#ffffff'},
       {id:'bolt',name:'Lightning',cost:120,symbol:'ϟ',color:'#165591',accent:'#ffdb48'},
       {id:'crown',name:'Ice Crown',cost:145,symbol:'♛',color:'#35216b',accent:'#ffd84e'},
-      {id:'star',name:'Rink Star',cost:160,symbol:'★',color:'#123150',accent:'#ffffff'}
+      {id:'star',name:'Rink Star',cost:160,symbol:'★',color:'#123150',accent:'#ffffff'},
+      {id:'comet',name:'Ice Comet',cost:210,unlockLevel:4,symbol:'☄',color:'#123150',accent:'#8deeff'},
+      {id:'mountain',name:'North Peak',cost:350,unlockLevel:11,symbol:'▲',color:'#173c55',accent:'#f4fbff'},
+      {id:'diamond',name:'Championship Diamond',cost:540,unlockLevel:18,symbol:'◆',color:'#25205c',accent:'#ffd85d'}
     ],
     helmet:[
       {id:'classic-navy',name:'Classic Pro',cost:0,color:'#071b2b',accent:'#2b6384',detail:'#b8d1dc',design:'classic'},
       {id:'polar-white',name:'Ice Storm',cost:65,color:'#e7f7fb',accent:'#38a7df',detail:'#ffffff',design:'ice'},
       {id:'captain-red',name:'Flame Runner',cost:85,color:'#a91424',accent:'#ffcf45',detail:'#f06422',design:'flame'},
       {id:'royal-blue',name:'Pirate Skull',cost:95,color:'#12171c',accent:'#f3f0df',detail:'#8b1d2c',design:'pirate'},
-      {id:'gold-stripe',name:'Forest Camo',cost:125,color:'#284f35',accent:'#8aa35a',detail:'#14291e',design:'forest'}
+      {id:'gold-stripe',name:'Forest Camo',cost:125,color:'#284f35',accent:'#8aa35a',detail:'#14291e',design:'forest'},
+      {id:'galaxy-dome',name:'Galaxy Dome',cost:190,unlockLevel:2,color:'#21154f',accent:'#81e8ff',detail:'#ffdc6b',design:'galaxy'},
+      {id:'shark-attack',name:'Shark Attack',cost:315,unlockLevel:8,color:'#166b8a',accent:'#dff9ff',detail:'#082d45',design:'shark'},
+      {id:'checker-pro',name:'Checker Pro',cost:470,unlockLevel:15,color:'#f0f5f7',accent:'#142331',detail:'#ffca45',design:'checker'}
     ],
     tape:[
       {id:'white-tape',name:'Traditional Full Sock',cost:0,color:'#f5f7f7',accent:'#bac8cc',design:'full'},
@@ -135,30 +149,48 @@
       {id:'red-tape',name:'Candy Cane Wrap',cost:45,color:'#d91f35',accent:'#ffffff',design:'candy'},
       {id:'blue-tape',name:'Blue Half Sock',cost:45,color:'#1e69c8',accent:'#a8d1ff',design:'half'},
       {id:'neon-tape',name:'Three-Strip Neon',cost:60,color:'#82ec3e',accent:'#d8ffa9',design:'three'},
-      {id:'pink-tape',name:'Split Pink & White',cost:60,color:'#ff4f9b',accent:'#ffffff',design:'split'}
+      {id:'pink-tape',name:'Split Pink & White',cost:60,color:'#ff4f9b',accent:'#ffffff',design:'split'},
+      {id:'zebra-wrap',name:'Zebra Wave',cost:120,unlockLevel:3,color:'#f7f7f2',accent:'#111418',design:'zebra'},
+      {id:'heel-lock',name:'Heel Lock',cost:225,unlockLevel:10,color:'#ffcc3d',accent:'#131820',design:'heel'},
+      {id:'target-rings',name:'Target Rings',cost:390,unlockLevel:17,color:'#ea324d',accent:'#ffffff',design:'rings'}
     ],
     shaft:[
       {id:'midnight',name:'Carbon Weave',cost:0,color:'#111820',accent:'#d3a62c',detail:'#2e3942',design:'carbon'},
       {id:'red-speed',name:'Lightning Fade',cost:100,color:'#d31f36',accent:'#ffffff',detail:'#50101b',design:'lightning'},
       {id:'woodland',name:'Woodgrain Classic',cost:115,color:'#a46a2d',accent:'#e8c794',detail:'#573414',design:'woodgrain'},
-      {id:'ice-blue',name:'Frost Fracture',cost:130,color:'#1a8fd0',accent:'#dff8ff',detail:'#0e476d',design:'frost'}
+      {id:'ice-blue',name:'Frost Fracture',cost:130,color:'#1a8fd0',accent:'#dff8ff',detail:'#0e476d',design:'frost'},
+      {id:'digital-grid',name:'Digital Grid',cost:240,unlockLevel:5,color:'#101820',accent:'#68f5d2',detail:'#214c59',design:'matrix'},
+      {id:'sunset-burst',name:'Sunset Burst',cost:370,unlockLevel:12,color:'#ef4e29',accent:'#ffd84b',detail:'#64196f',design:'sunset'},
+      {id:'power-circuit',name:'Power Circuit',cost:560,unlockLevel:19,color:'#15182b',accent:'#68dfff',detail:'#a43df0',design:'circuit'}
     ],
     gloves:[
       {id:'navy-gloves',name:'Navy Gloves',cost:0,color:'#071b2b',accent:'#2d6590'},
       {id:'red-white',name:'Red & White',cost:85,color:'#c82032',accent:'#ffffff'},
       {id:'blue-gold',name:'Blue & Gold',cost:100,color:'#154b9b',accent:'#e9bd39'},
       {id:'black-gold',name:'Black & Gold',cost:115,color:'#15191e',accent:'#d7ad36'},
-      {id:'teal-white',name:'Teal & White',cost:120,color:'#078995',accent:'#ffffff'}
+      {id:'teal-white',name:'Teal & White',cost:120,color:'#078995',accent:'#ffffff'},
+      {id:'arctic-gloves',name:'Arctic Flash',cost:205,unlockLevel:4,color:'#eaf8fb',accent:'#209bd1'},
+      {id:'voltage-gloves',name:'Voltage',cost:320,unlockLevel:9,color:'#20242b',accent:'#b8f241'},
+      {id:'royal-gloves',name:'Royal Elite',cost:455,unlockLevel:14,color:'#4b237d',accent:'#f0c95c'}
     ],
     skates:[
       {id:'classic-black',name:'Classic Black',cost:0,color:'#111419',accent:'#d9e4e8'},
       {id:'copper-edge',name:'Copper Edge',cost:105,color:'#12161c',accent:'#d2854e'},
       {id:'red-runner',name:'Red Runner',cost:115,color:'#15191e',accent:'#dc3442'},
-      {id:'blue-runner',name:'Blue Runner',cost:125,color:'#111821',accent:'#2499db'}
+      {id:'blue-runner',name:'Blue Runner',cost:125,color:'#111821',accent:'#2499db'},
+      {id:'frost-blade',name:'Frost Blade',cost:250,unlockLevel:6,color:'#e5f8ff',accent:'#36b8e8'},
+      {id:'gold-pulse',name:'Gold Pulse',cost:390,unlockLevel:13,color:'#15191e',accent:'#f0bd35'},
+      {id:'whiteout-skates',name:'Whiteout Pro',cost:590,unlockLevel:20,color:'#eef5f7',accent:'#333d48'}
     ],
-    number:[10,8,9,19,29,71,87,97,99].map((number,index)=>({id:String(number),name:`Number ${number}`,symbol:String(number),cost:index?45+index*10:0,color:'#12344a',accent:'#ffffff'}))
+    number:[
+      ...[10,8,9,19,29,71,87,97,99].map((number,index)=>({id:String(number),name:`Number ${number}`,symbol:String(number),cost:index?45+index*10:0,color:'#12344a',accent:'#ffffff'})),
+      {id:'11',name:'Number 11',symbol:'11',cost:140,unlockLevel:2,color:'#12344a',accent:'#ffffff'},
+      {id:'16',name:'Number 16',symbol:'16',cost:245,unlockLevel:7,color:'#12344a',accent:'#ffffff'},
+      {id:'21',name:'Number 21',symbol:'21',cost:430,unlockLevel:15,color:'#12344a',accent:'#ffffff'}
+    ]
   };
   const gearLabels={jersey:'Jerseys',logo:'Logos',helmet:'Helmets',tape:'Tape',shaft:'Sticks',gloves:'Gloves',skates:'Skates',number:'Numbers'};
+  const gearSingular={jersey:'Jersey',logo:'Logo',helmet:'Helmet',tape:'Tape',shaft:'Stick',gloves:'Gloves',skates:'Skates',number:'Number'};
   const defaultLoadout={jersey:'home-navy',logo:'cheese',helmet:'classic-navy',tape:'white-tape',shaft:'midnight',gloves:'navy-gloves',skates:'classic-black',number:'10'};
   let lockerCategory='jersey';
   let cheesePoints=Number(localStorage.getItem('superHockeyCheesePoints')||0);
@@ -167,8 +199,11 @@
   const hockeySprites = new Image();
   let spritesReady = false;
   let customPlayerSprite=null,customPlayerKey='',customFallenSprite=null,customFallenKey='';
-  hockeySprites.onload = () => { spritesReady = true;refreshCustomPlayer();if(ui.lockerDialog?.open)renderGearPreviews(); };
+  hockeySprites.onload = () => { spritesReady = true;refreshCustomPlayer();if(ui.lockerDialog?.open){renderGearPreviews();if(!ui.playerShowcase.hidden)renderPlayerShowcase();} };
   hockeySprites.src = 'assets/hockey-sprites.png';
+  const cheeseLogo = new Image();
+  cheeseLogo.onload = () => { if(ui.playerShowcase&&!ui.playerShowcase.hidden)renderPlayerShowcase(); };
+  cheeseLogo.src = 'assets/cheese-logo.png';
   const fallenPlayerSprite = new Image();
   let fallenPlayerReady = false;
   fallenPlayerSprite.onload = () => { fallenPlayerReady = true;refreshCustomPlayer(); };
@@ -179,6 +214,7 @@
 
   function bestScore() { return Number(localStorage.getItem('superHockeyBest') || 0); }
   function unlockedCount() { return Math.max(1,Math.min(levels.length,Number(localStorage.getItem('superHockeyUnlocked')||1))); }
+  function completedLevelCount(){return Math.max(0,Math.min(levels.length,Math.max(Number(localStorage.getItem('superHockeyCompletedThrough')||0),unlockedCount()-1)));}
   function safeStoredObject(key,fallback){try{return JSON.parse(localStorage.getItem(key)||'null')||fallback;}catch{return fallback;}}
   function gearItem(category,id){return gearCatalog[category].find(item=>item.id===id)||gearCatalog[category][0];}
   function saveLocker(){localStorage.setItem('superHockeyCheesePoints',String(cheesePoints));localStorage.setItem('superHockeyOwned',JSON.stringify(ownedGear));localStorage.setItem('superHockeyLoadout',JSON.stringify(loadout));updateCheeseUI();}
@@ -188,6 +224,8 @@
     ui.lockerTabs.innerHTML=Object.keys(gearCatalog).map(category=>`<button class="locker-tab ${category===lockerCategory?'active':''}" role="tab" aria-selected="${category===lockerCategory}" data-locker-category="${category}">${gearLabels[category]}</button>`).join('');
     ui.lockerTabs.querySelectorAll('[data-locker-category]').forEach(button=>button.addEventListener('click',()=>{lockerCategory=button.dataset.lockerCategory;ui.lockerStatus.textContent='';renderLocker();}));
     ui.lockerItems.innerHTML=gearCatalog[lockerCategory].map(item=>{
+      const levelLocked=Boolean(item.unlockLevel&&completedLevelCount()<item.unlockLevel);
+      if(levelLocked)return `<button class="gear-card level-locked" disabled aria-label="${gearSingular[lockerCategory]} customization locked until Level ${item.unlockLevel} is completed"><div class="gear-lock-preview" aria-hidden="true"><span>🔒</span></div><strong>Mystery ${gearSingular[lockerCategory]}</strong><small>Complete Level ${item.unlockLevel}</small></button>`;
       const owned=Boolean(ownedGear[`${lockerCategory}:${item.id}`]),equipped=loadout[lockerCategory]===item.id;
       const status=equipped?'Equipped':owned?'Owned — tap to equip':`🧀 ${item.cost}`;
       return `<button class="gear-card ${equipped?'equipped ':''}${owned?'':'locked'}" data-gear-id="${item.id}" data-category="${lockerCategory}"><canvas class="gear-preview" width="240" height="116" aria-hidden="true"></canvas><strong>${item.name}</strong><small>${status}</small></button>`;
@@ -198,13 +236,34 @@
   }
   function selectGear(category,id) {
     const item=gearItem(category,id),key=`${category}:${id}`;
+    if(item.unlockLevel&&completedLevelCount()<item.unlockLevel){ui.lockerStatus.textContent=`Complete Level ${item.unlockLevel} to reveal this ${gearSingular[category].toLowerCase()} customization.`;return;}
     if(!ownedGear[key]){
       if(cheesePoints<item.cost){ui.lockerStatus.textContent=`You need ${item.cost-cheesePoints} more Cheese Points for ${item.name}.`;return;}
       cheesePoints-=item.cost;ownedGear[key]=true;ui.lockerStatus.textContent=`${item.name} unlocked and equipped!`;
     } else ui.lockerStatus.textContent=`${item.name} equipped.`;
     loadout[category]=id;saveLocker();refreshCustomPlayer();renderLocker();
   }
-  function openLocker(){ui.lockerStatus.textContent='';renderLocker();ui.lockerDialog.showModal();}
+  function openLocker(){
+    if(ui.lockerDialog.open)return;
+    if(state.active&&!state.paused){state.paused=true;state.pausedAt=performance.now();stopArenaMusic();}
+    ui.lockerStatus.textContent='';showLockerCatalog();renderLocker();
+    try{ui.lockerDialog.showModal();}catch{ui.lockerDialog.setAttribute('open','');}
+  }
+
+  function resumeAfterLocker(){
+    if(!state.paused)return;
+    const pausedFor=Math.max(0,performance.now()-state.pausedAt);
+    if(state.action)state.action.start+=pausedFor;
+    else if(state.active&&!state.locked)state.startedAt+=pausedFor;
+    state.animStart+=pausedFor;state.paused=false;state.pausedAt=0;
+    if(state.active)startArenaMusic();
+  }
+
+  function closeLocker(){
+    if(ui.lockerDialog.open){if(typeof ui.lockerDialog.close==='function')ui.lockerDialog.close();else ui.lockerDialog.removeAttribute('open');}
+    showLockerCatalog();
+    resumeAfterLocker();
+  }
   ui.bestScore.textContent = bestScore();
 
   function resizeCanvas() {
@@ -282,6 +341,9 @@
     if(item.design==='half')return x<247?(wrap%4===0?item.accent:item.color):exposed;
     if(item.design==='three'){const taped=[[194,207],[222,235],[250,263]].some(([a,b])=>x>=a&&x<=b);return taped?(wrap%3===0?item.accent:item.color):exposed;}
     if(item.design==='split')return x<236?item.color:item.accent;
+    if(item.design==='zebra')return Math.sin(x*.31+y*.18)>0?item.color:item.accent;
+    if(item.design==='heel')return x>235?(wrap%3===0?item.accent:item.color):exposed;
+    if(item.design==='rings')return Math.floor(Math.hypot(x-236,(y-49)*1.45)/7)%2?item.color:item.accent;
     return wrap%5===0?item.accent:item.color;
   }
 
@@ -291,6 +353,9 @@
     if(item.design==='lightning'){const flash=Math.sin(t*31+x*.08-y*.11)>.72;return flash?item.accent:(t>.48?item.color:item.detail);}
     if(item.design==='woodgrain')return Math.sin(x*.16+y*.09+Math.sin(y*.17)*1.8)>.42?item.accent:(Math.sin(x*.08+y*.14)<-.35?item.detail:item.color);
     if(item.design==='frost')return Math.sin(t*27+x*.13)+Math.cos(y*.19)>.9?item.accent:(t>.58?item.color:item.detail);
+    if(item.design==='matrix')return (Math.floor(x/7)+Math.floor(y/9))%5===0?item.accent:((Math.floor(x/4)+Math.floor(y/4))%2?item.color:item.detail);
+    if(item.design==='sunset')return t>.68?item.detail:t>.35?item.color:item.accent;
+    if(item.design==='circuit'){const trace=Math.abs(Math.sin(x*.21)+Math.cos(y*.17))<.22;return trace?item.accent:(t>.5?item.detail:item.color);}
     return item.color;
   }
 
@@ -306,6 +371,14 @@
       target.fillStyle=item.detail;target.fillRect(337*sx,266*sy,96*sx,17*sy);target.fillStyle=item.accent;target.font=`900 ${45*sy}px system-ui`;target.textAlign='center';target.textBaseline='middle';target.fillText('☠',384*sx,244*sy);
     } else if(item.design==='forest'){
       [[354,217,29,16,-.3,item.accent],[405,213,31,18,.2,item.detail],[370,252,36,19,.1,item.detail],[414,266,28,17,-.2,item.accent],[350,283,30,18,.25,item.detail]].forEach(([x,y,rx,ry,rot,color])=>{target.fillStyle=color;target.beginPath();target.ellipse(x*sx,y*sy,rx*sx,ry*sy,rot,0,Math.PI*2);target.fill();});
+    } else if(item.design==='galaxy'){
+      target.fillStyle=item.detail;[[352,218,3],[375,204,2],[405,220,3],[365,250,2],[416,261,2],[387,278,3]].forEach(([x,y,r])=>{target.beginPath();target.arc(x*sx,y*sy,r*sx,0,Math.PI*2);target.fill();});
+      target.strokeStyle=item.accent;target.lineWidth=3*sx;target.beginPath();target.arc(383*sx,242*sy,31*sx,-.5,2.4);target.stroke();
+    } else if(item.design==='shark'){
+      target.fillStyle=item.detail;target.beginPath();target.moveTo(337*sx,259*sy);target.quadraticCurveTo(384*sx,222*sy,432*sx,259*sy);target.lineTo(432*sx,285*sy);target.lineTo(337*sx,285*sy);target.closePath();target.fill();
+      target.fillStyle=item.accent;for(let x=346;x<426;x+=14){target.beginPath();target.moveTo(x*sx,260*sy);target.lineTo((x+7)*sx,276*sy);target.lineTo((x+14)*sx,260*sy);target.closePath();target.fill();}
+    } else if(item.design==='checker'){
+      const size=18;for(let y=198;y<292;y+=size)for(let x=336;x<435;x+=size){target.fillStyle=((x+y)/size)%2<1?item.accent:item.detail;target.fillRect(x*sx,y*sy,size*sx,size*sy);}
     } else {
       target.strokeStyle=item.accent;target.lineWidth=5*sx;target.beginPath();target.moveTo(376*sx,190*sy);target.lineTo(376*sx,275*sy);target.moveTo(392*sx,190*sy);target.lineTo(392*sx,275*sy);target.stroke();
     }
@@ -368,6 +441,12 @@
       target.fillStyle=item.detail;target.fillRect(220,121,72,12);target.fillStyle=item.accent;target.font='900 34px system-ui';target.textAlign='center';target.textBaseline='middle';target.fillText('☠',256,103);
     } else if(item.design==='forest'){
       [[235,84,22,12,-.2,item.accent],[272,83,24,13,.2,item.detail],[247,108,28,14,.1,item.detail],[277,122,20,12,-.2,item.accent],[233,128,20,12,.2,item.detail]].forEach(([x,y,rx,ry,rot,color])=>{target.fillStyle=color;target.beginPath();target.ellipse(x,y,rx,ry,rot,0,Math.PI*2);target.fill();});
+    } else if(item.design==='galaxy'){
+      target.fillStyle=item.detail;[[232,88,3],[249,75,2],[275,90,3],[241,110,2],[281,119,2],[258,131,3]].forEach(([x,y,r])=>{target.beginPath();target.arc(x,y,r,0,Math.PI*2);target.fill();});target.strokeStyle=item.accent;target.lineWidth=3;target.beginPath();target.arc(256,105,25,-.5,2.4);target.stroke();
+    } else if(item.design==='shark'){
+      target.fillStyle=item.detail;target.beginPath();target.moveTo(220,112);target.quadraticCurveTo(256,83,292,112);target.lineTo(292,136);target.lineTo(220,136);target.closePath();target.fill();target.fillStyle=item.accent;for(let x=226;x<288;x+=12){target.beginPath();target.moveTo(x,113);target.lineTo(x+6,128);target.lineTo(x+12,113);target.closePath();target.fill();}
+    } else if(item.design==='checker'){
+      const size=14;for(let y=72;y<140;y+=size)for(let x=220;x<294;x+=size){target.fillStyle=((x+y)/size)%2<1?item.accent:item.detail;target.fillRect(x,y,size,size);}
     } else {
       target.strokeStyle=item.accent;target.lineWidth=4;target.beginPath();target.moveTo(250,66);target.lineTo(250,137);target.moveTo(262,66);target.lineTo(262,137);target.stroke();
     }
@@ -420,12 +499,86 @@
     if(!spritesReady)return;
     const crops={jersey:[225,150,315,300],logo:[255,225,260,225],number:[270,250,235,205],helmet:[307,174,155,153],gloves:[288,105,215,210],skates:[305,410,155,190],shaft:[220,34,165,160],tape:[174,15,132,95]};
     ui.lockerItems.querySelectorAll('.gear-card').forEach(card=>{
-      const item=gearItem(lockerCategory,card.dataset.gearId),preview=card.querySelector('.gear-preview'),previewCtx=preview.getContext('2d');
+      const item=gearItem(lockerCategory,card.dataset.gearId),preview=card.querySelector('.gear-preview');
+      const rect=preview.getBoundingClientRect(),displayW=Math.max(180,Math.round(rect.width||240)),displayH=Math.max(96,Math.round(rect.height||96)),dpr=Math.min(window.devicePixelRatio||1,3);
+      preview.width=Math.round(displayW*dpr);preview.height=Math.round(displayH*dpr);
+      const previewCtx=preview.getContext('2d');previewCtx.setTransform(dpr,0,0,dpr,0,0);previewCtx.imageSmoothingEnabled=true;previewCtx.imageSmoothingQuality='high';
       const sprite=createCustomizedPlayer({[lockerCategory]:item.id}),crop=crops[lockerCategory];
-      const gradient=previewCtx.createRadialGradient(120,56,8,120,58,135);gradient.addColorStop(0,'#dff3f6');gradient.addColorStop(1,'#8db9c4');previewCtx.fillStyle=gradient;previewCtx.fillRect(0,0,preview.width,preview.height);
-      const scale=Math.min(preview.width/crop[2],preview.height/crop[3])*.93,dw=crop[2]*scale,dh=crop[3]*scale;
-      previewCtx.drawImage(sprite,crop[0]*sprite.width/648,crop[1]*sprite.height/608,crop[2]*sprite.width/648,crop[3]*sprite.height/608,(preview.width-dw)/2,(preview.height-dh)/2,dw,dh);
+      const gradient=previewCtx.createRadialGradient(displayW/2,displayH*.48,8,displayW/2,displayH/2,Math.max(displayW,displayH)*.58);gradient.addColorStop(0,'#dff3f6');gradient.addColorStop(1,'#8db9c4');previewCtx.fillStyle=gradient;previewCtx.fillRect(0,0,displayW,displayH);
+      const scale=Math.min(displayW/crop[2],displayH/crop[3])*.93,dw=crop[2]*scale,dh=crop[3]*scale;
+      previewCtx.drawImage(sprite,crop[0]*sprite.width/648,crop[1]*sprite.height/608,crop[2]*sprite.width/648,crop[3]*sprite.height/608,(displayW-dw)/2,(displayH-dh)/2,dw,dh);
     });
+  }
+
+  function equippedItems(){
+    return Object.keys(gearCatalog).map(category=>({category,label:gearSingular[category],item:gearItem(category,loadout[category])}));
+  }
+
+  function showLockerCatalog(){
+    if(!ui.lockerCatalogView||!ui.playerShowcase)return;
+    ui.lockerCatalogView.hidden=false;ui.playerShowcase.hidden=true;ui.lockerDialog.scrollTop=0;
+  }
+
+  function showPlayerShowcase(){
+    ui.lockerCatalogView.hidden=true;ui.playerShowcase.hidden=false;ui.lockerDialog.scrollTop=0;
+    ui.shareStatus.textContent='On iPhone, choose Instagram or another app from the share sheet.';
+    renderPlayerShowcase();ui.backToLockerButton.focus();
+  }
+
+  function renderPlayerShowcase(){
+    const canvas=ui.playerRender,target=canvas.getContext('2d');refreshCustomPlayer();
+    const playerReady=Boolean(customPlayerSprite);ui.sharePlayerButton.disabled=!playerReady;ui.downloadPlayerButton.disabled=!playerReady;
+    canvas.width=1080;canvas.height=1350;target.imageSmoothingEnabled=true;target.imageSmoothingQuality='high';
+    const ice=target.createLinearGradient(0,0,1080,1350);ice.addColorStop(0,'#effbfc');ice.addColorStop(.58,'#c9e7ec');ice.addColorStop(1,'#9fcbd4');target.fillStyle=ice;target.fillRect(0,0,1080,1350);
+    target.save();target.globalAlpha=.22;target.strokeStyle='#4891a4';target.lineWidth=7;target.strokeRect(42,42,996,1266);
+    target.beginPath();target.arc(540,610,205,0,Math.PI*2);target.stroke();target.strokeStyle='#1769ff';target.lineWidth=15;target.beginPath();target.moveTo(55,325);target.lineTo(1025,325);target.stroke();target.strokeStyle='#c9343c';target.beginPath();target.moveTo(55,895);target.lineTo(1025,895);target.stroke();target.restore();
+    target.fillStyle='#071b2b';target.font='900 40px system-ui, sans-serif';target.textAlign='left';target.fillText("TOP CHE’S",128,104);target.fillStyle='#176170';target.font='800 22px system-ui, sans-serif';target.fillText('HOCKEY LAB · MY PLAYER',128,136);
+    if(cheeseLogo.complete&&cheeseLogo.naturalWidth)target.drawImage(cheeseLogo,48,53,66,68);
+    if(playerReady){
+      target.save();target.shadowColor='rgba(3,17,28,.38)';target.shadowBlur=38;target.shadowOffsetY=22;
+      target.drawImage(customPlayerSprite,145,0,445,608,220,155,640,875);target.restore();
+    } else {
+      target.fillStyle='#5c8791';target.font='800 30px system-ui, sans-serif';target.textAlign='center';target.fillText('Lacing up your player…',540,610);
+    }
+    const jersey=gearItem('jersey',loadout.jersey),logo=gearItem('logo',loadout.logo);
+    const panel=target.createLinearGradient(0,1040,0,1350);panel.addColorStop(0,'rgba(7,27,43,.94)');panel.addColorStop(1,'#06131f');target.fillStyle=panel;target.fillRect(0,1030,1080,320);
+    target.textAlign='left';target.fillStyle='#63e6ed';target.font='850 25px system-ui, sans-serif';target.fillText('EQUIPPED LOOK',58,1090);
+    target.fillStyle='#ffffff';target.font='950 82px system-ui, sans-serif';target.fillText(`#${loadout.number}`,58,1180);
+    target.font='850 32px system-ui, sans-serif';target.fillText(jersey.name,224,1140);target.fillStyle='#a9c3cd';target.font='650 24px system-ui, sans-serif';target.fillText(`${logo.name} · ${gearItem('helmet',loadout.helmet).name}`,224,1180);
+    target.fillText(`${gearItem('shaft',loadout.shaft).name} · ${gearItem('tape',loadout.tape).name}`,224,1218);
+    target.fillText(`${gearItem('gloves',loadout.gloves).name} · ${gearItem('skates',loadout.skates).name}`,224,1256);
+    target.fillStyle='#ffcf54';target.font='800 20px system-ui, sans-serif';target.fillText('BUILD YOUR LOOK. MAKE THE SMART PLAY.',58,1312);
+    ui.equippedSummary.innerHTML=equippedItems().map(({label,item})=>`<span><strong>${label}:</strong> ${item.name}</span>`).join('');
+  }
+
+  function playerImageBlob(){
+    renderPlayerShowcase();
+    const dataUrl=ui.playerRender.toDataURL('image/png'),encoded=dataUrl.split(',')[1];
+    if(!encoded)throw new Error('Could not create image.');
+    const binary=atob(encoded),bytes=new Uint8Array(binary.length);for(let i=0;i<binary.length;i++)bytes[i]=binary.charCodeAt(i);
+    return new Blob([bytes],{type:'image/png'});
+  }
+
+  function savePlayerBlob(blob){
+    const url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;link.download=`top-ches-player-${loadout.number}.png`;document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1500);
+  }
+
+  async function downloadPlayerImage(){
+    ui.downloadPlayerButton.disabled=true;
+    try{const blob=playerImageBlob();savePlayerBlob(blob);ui.shareStatus.textContent='Player image saved. It is ready to post.';}
+    catch{ui.shareStatus.textContent='The image could not be saved. Please try again.';}
+    finally{ui.downloadPlayerButton.disabled=false;}
+  }
+
+  async function sharePlayerImage(){
+    ui.sharePlayerButton.disabled=true;
+    try{
+      const blob=playerImageBlob(),file=new File([blob],`top-ches-player-${loadout.number}.png`,{type:'image/png'});
+      const shareData={title:"My Top Che’s Hockey Lab Player",text:"Check out my customized player from Top Che’s Hockey Lab!",files:[file]};
+      if(navigator.share&&(!navigator.canShare||navigator.canShare(shareData))){await navigator.share(shareData);ui.shareStatus.textContent='Player shared!';}
+      else{savePlayerBlob(blob);ui.shareStatus.textContent='Your browser saved the image. Open Instagram or another app and choose it from your photos or downloads.';}
+    } catch(error){if(error?.name!=='AbortError')ui.shareStatus.textContent='Sharing was not available. Try Save Image instead.';}
+    finally{ui.sharePlayerButton.disabled=false;}
   }
 
   function player(x,y,team,label,angle=0,scale=1,opacity=1) {
@@ -597,17 +750,29 @@
     ctx.fillStyle='#10181c';ctx.beginPath();ctx.ellipse(position.x,position.y,7,3,0,0,Math.PI*2);ctx.fill();ctx.restore();
   }
 
+  function teammateVisible(s,side){
+    const passPlay=s.answer==='left'||s.answer==='right';
+    return side==='left'?(s.showLeft??(s.answer==='shoot'?false:passPlay?s.answer==='left':true)):(s.showRight??(s.answer==='shoot'?false:passPlay?s.answer==='right':true));
+  }
+
+  function scenarioHasDefenders(s){
+    if(Array.isArray(s.defenders))return s.defenders.length>0;
+    return s.cover==='left'||s.cover==='right'||s.cover==='both'||Boolean(s.shot);
+  }
+
+  function soloScenario(s){return !teammateVisible(s,'left')&&!teammateVisible(s,'right')&&!scenarioHasDefenders(s);}
+
   function drawGame(t) {
     resizeCanvas();
     const m=rinkMetrics(); drawRink(m); drawNet(m);
-    const phase=((t-state.animStart)%2200)/2200;
+    const gameTime=state.paused&&state.pausedAt?state.pausedAt:t;
+    const phase=((gameTime-state.animStart)%2200)/2200;
     const sway=Math.sin(phase*Math.PI*2);
     const s=state.scenario || scenarios[0];
     const carrierSpot=s.carrier||[.5,.76];
     const puck={x:m.w*carrierSpot[0],y:m.h*carrierSpot[1]};
-    const passPlay=s.answer==='left'||s.answer==='right';
-    const leftVisible=s.showLeft??(s.answer==='shoot'?false:passPlay?s.answer==='left':true);
-    const rightVisible=s.showRight??(s.answer==='shoot'?false:passPlay?s.answer==='right':true);
+    const leftVisible=teammateVisible(s,'left');
+    const rightVisible=teammateVisible(s,'right');
     const leftSpot=s.teammates?.[0]||[s.answer==='left'?.17:.22,.45];
     const rightSpot=s.teammates?.[1]||[s.answer==='right'?.83:.78,.45];
     const left={x:m.w*leftSpot[0]+sway*4,y:m.h*leftSpot[1]};
@@ -622,7 +787,7 @@
     let goalieOffset=s.goalie*m.w*.09,goalieAngle=0,goalieScale=1,leftAngle=-.08,rightAngle=.08;
     let movingOpponent=null,movingOpponentIndex=-1,impact=null,impactProgress=0,looseStick=null,saveFlash=null,saveProgress=0,goalFlash=null,goalProgress=0,celebrationProgress=0;
     if(state.action){
-      const raw=Math.min(1,(t-state.action.start)/state.action.duration),progress=easeInOut(raw);
+      const raw=Math.min(1,(gameTime-state.action.start)/state.action.duration),progress=easeInOut(raw);
       const {choice,outcome,good}=state.action;
       if(good&&choice!=='regroup'){
         const celebrationStart=choice==='shoot'?.54:choice==='left'||choice==='right'?.84:.9;
@@ -734,11 +899,16 @@
         const p=segment(raw,0,.62);movingPuck=pointLerp(start,save,p);
         previousPuck=pointLerp(start,save,Math.max(0,p-.1));
         if(raw>.58){movingPuck=save;saveFlash=save;saveProgress=segment(raw,.58,1);}
-      } else if(outcome==='empty-pass'||outcome==='pass-intercepted') {
+      } else if(outcome==='empty-pass') {
+        const start=playerPuckPosition(puck,0),side=choice==='left'?-1:1;
+        const corner={x:side<0?m.pad+m.w*.035:m.w-m.pad-m.w*.035,y:m.h*.12};
+        const control={x:m.cx+side*m.w*.3,y:m.h*.43},p=segment(raw,0,.88);
+        movingPuck=quadraticPoint(start,control,corner,p);previousPuck=quadraticPoint(start,control,corner,Math.max(0,p-.08));
+        if(raw>.88)puckOpacity=1-segment(raw,.88,1)*.35;
+      } else if(outcome==='pass-intercepted') {
         const start=playerPuckPosition(puck,0),target=choice==='left'?left:right;
-        const defenderTarget=outcome==='pass-intercepted'?puck:target;
-        const index=closestDefender(defenders,defenderTarget),base=index>=0?defenders[index]:{x:m.cx,y:m.h*.37};
-        const meeting=outcome==='empty-pass'?target:pointLerp(puck,target,.62);
+        const index=closestDefender(defenders,puck),base=index>=0?defenders[index]:{x:m.cx,y:m.h*.37};
+        const meeting=pointLerp(puck,target,.62);
         movingOpponentIndex=index;
         if(raw<.4){
           const puckProgress=segment(raw,0,.4),skateProgress=segment(raw,0,.38);
@@ -929,7 +1099,7 @@
     if(choice==='left'||choice==='right'||choice==='shoot')playPuckKnock();
     if(good&&(choice==='left'||choice==='right'))setTimeout(playPuckKnock,Math.round(actionDuration*.54));
     if(good&&choice==='rush')setTimeout(playPuckKnock,Math.round(actionDuration*(scenario.rush==='centre'?.82:.79)));
-    const skatingOutcome=['shot-blocked','goalie-easy-save','empty-pass','pass-intercepted','rush-bodycheck','rush-goalie-recovery'].includes(outcome);
+    const skatingOutcome=['shot-blocked','goalie-easy-save','pass-intercepted','rush-bodycheck','rush-goalie-recovery'].includes(outcome);
     if(choice==='rush'||choice==='regroup'||skatingOutcome){
       const skateDuration=outcome==='rush-bodycheck'?actionDuration*.48:outcome==='goalie-easy-save'?actionDuration*.58:actionDuration*.88;
       playSkating(skateDuration);
@@ -978,8 +1148,8 @@
 
   function startGame(levelIndex=0) {
     const level=levels[levelIndex];setLevelPanel(levelIndex);
-    state={...state,active:true,locked:false,round:0,total:level.rounds,levelIndex,score:0,streak:0,correct:0,elapsedTotal:0,reveal:null,action:null,deck:shuffledScenarios(level)};
-    ui.startOverlay.classList.add('hidden');ui.feedback.className='feedback';ui.lockerButton.disabled=true;
+    state={...state,active:true,locked:false,round:0,total:level.rounds,levelIndex,score:0,streak:0,correct:0,elapsedTotal:0,reveal:null,action:null,deck:shuffledScenarios(level),paused:false,pausedAt:0};
+    ui.startOverlay.classList.add('hidden');ui.feedback.className='feedback';ui.lockerButton.disabled=false;
     updateUI();beginRound();startArenaMusic();
   }
 
@@ -993,7 +1163,7 @@
     else state.streak=0;
     let outcome='success';
     if(!good&&choice==='shoot')outcome=state.scenario.shot===false?'goalie-easy-save':'shot-blocked';
-    else if(!good&&(choice==='left'||choice==='right'))outcome=state.scenario.rush===choice?'empty-pass':'pass-intercepted';
+    else if(!good&&(choice==='left'||choice==='right'))outcome=soloScenario(state.scenario)||state.scenario.rush===choice?'empty-pass':'pass-intercepted';
     else if(!good&&choice==='rush')outcome=state.scenario.answer==='shoot'?'rush-goalie-recovery':'rush-bodycheck';
     const outcomeDurations={
       'shot-blocked':2100,'goalie-easy-save':1550,'empty-pass':2200,'pass-intercepted':2200,
@@ -1016,7 +1186,14 @@
     ui.feedback.textContent=good?`${streakCallout} · +${cheeseEarned} Cheese Points`:choice==='timeout'?'Time — lane closed':`${resultText} · Better option: ${label(state.scenario.answer)}`;
     ui.feedback.className=`feedback show ${good?'good':'bad'}`;
     ui.coachText.textContent=state.scenario.cue;updateUI();
-    setTimeout(()=>{ui.feedback.className='feedback';beginRound();},actionDuration+180);
+    const completedAction=state.action;
+    const advanceWhenReady=()=>{
+      if(state.action!==completedAction)return;
+      const remaining=completedAction?completedAction.start+completedAction.duration+180-performance.now():0;
+      if(state.paused||remaining>20){setTimeout(advanceWhenReady,state.paused?120:Math.min(250,Math.max(30,remaining)));return;}
+      ui.feedback.className='feedback';beginRound();
+    };
+    setTimeout(advanceWhenReady,actionDuration+180);
   }
 
   function label(choice){return choice==='left'?'pass left':choice==='right'?'pass right':choice==='rush'?'rush':choice==='regroup'?'regroup':'shoot';}
@@ -1028,18 +1205,21 @@
   }
 
   function finish(){
-    state.active=false;state.locked=true;state.action=null;stopArenaMusic();choiceButtons.forEach(b=>b.disabled=true);
+    state.active=false;state.locked=true;state.action=null;state.paused=false;state.pausedAt=0;stopArenaMusic();choiceButtons.forEach(b=>b.disabled=true);
     ui.lockerButton.disabled=false;
     const level=levels[state.levelIndex],oldBest=bestScore();if(state.score>oldBest)localStorage.setItem('superHockeyBest',state.score);
     const previouslyUnlocked=unlockedCount(),passed=state.correct>=level.unlock,nextLevel=levels[state.levelIndex+1];
     const unlockedNew=passed&&nextLevel&&previouslyUnlocked<state.levelIndex+2;
     if(unlockedNew)localStorage.setItem('superHockeyUnlocked',String(state.levelIndex+2));
+    if(passed)localStorage.setItem('superHockeyCompletedThrough',String(Math.max(completedLevelCount(),state.levelIndex+1)));
     const cheeseBonus=passed?awardCheese(25+(unlockedNew?75:0)):0;
     const nowUnlocked=unlockedCount();
     ui.bestScore.textContent=Math.max(oldBest,state.score);
     ui.levelStatus.textContent=`${nowUnlocked} of ${levels.length} levels unlocked`;
     const headline=unlockedNew?`${nextLevel.title} unlocked!`:passed&&state.levelIndex===levels.length-1?'Gauntlet conquered!':passed?'Level complete!':'So close!';
-    const message=passed?`You made ${state.correct} of ${state.total} best-play decisions, scored <strong>${state.score}</strong>, and earned a <strong>🧀 ${cheeseBonus}</strong> level bonus.`:`Get ${level.unlock} correct to advance. You made ${state.correct} this time.`;
+    const revealedGear=passed?Object.values(gearCatalog).flat().filter(item=>item.unlockLevel===state.levelIndex+1).length:0;
+    const revealMessage=revealedGear?` <strong>${revealedGear} new mystery ${revealedGear===1?'customization has':'customizations have'} been revealed in the Locker!</strong>`:'';
+    const message=passed?`You made ${state.correct} of ${state.total} best-play decisions, scored <strong>${state.score}</strong>, and earned a <strong>🧀 ${cheeseBonus}</strong> level bonus.${revealMessage}`:`Get ${level.unlock} correct to advance. You made ${state.correct} this time.`;
     const nextIndex=passed&&nextLevel?state.levelIndex+1:state.levelIndex;
     const celebration=passed?`<div class="finish-confetti" aria-hidden="true">${Array.from({length:30},(_,i)=>`<i style="--x:${(i*37)%100}%;--delay:${(i%10)*.08}s;--spin:${(i%2?1:-1)*(180+i*19)}deg;--colour:${['#ffcf54','#63e6ed','#ff6b35','#87efaf','#ffffff'][i%5]}"></i>`).join('')}</div>`:'';
     ui.startOverlay.innerHTML=`${celebration}${unlockedNew?'<div class="unlock-banner">New challenge unlocked</div>':''}<div class="score-logo" aria-hidden="true"><span>${Math.round(state.correct/state.total*100)}%</span></div><p class="overline">LEVEL ${state.levelIndex+1} COMPLETE</p><h2>${headline}</h2><p>${message}</p><div class="overlay-actions"><button class="primary-button" id="nextButton">${passed&&nextLevel?'Play next level':'Try again'} <span>→</span></button><button class="secondary-button" id="levelsButton">Choose a level</button></div><small>${state.score>oldBest?'New personal best':'Best score: '+Math.max(oldBest,state.score)}</small>`;
@@ -1050,12 +1230,12 @@
   }
 
   function tick(){
-    if(state.active&&!state.locked){state.timeLeft=state.duration-(performance.now()-state.startedAt)/1000;if(state.timeLeft<=0){state.timeLeft=0;decide('timeout');}ui.timer.textContent=state.timeLeft.toFixed(1);}
+    if(state.active&&!state.locked&&!state.paused){state.timeLeft=state.duration-(performance.now()-state.startedAt)/1000;if(state.timeLeft<=0){state.timeLeft=0;decide('timeout');}ui.timer.textContent=state.timeLeft.toFixed(1);}
     requestAnimationFrame(tick);
   }
 
   choiceButtons.forEach(b=>b.addEventListener('click',()=>decide(b.dataset.choice)));
-  document.addEventListener('keydown',e=>{if(e.repeat)return;const map={a:'left',ArrowLeft:'left',w:'shoot',ArrowUp:'shoot',d:'right',ArrowRight:'right',r:'rush',s:'regroup'};const key=e.key.length===1?e.key.toLowerCase():e.key;if(map[key]){e.preventDefault();decide(map[key]);}});
+  document.addEventListener('keydown',e=>{if(e.repeat)return;const map={ArrowLeft:'left',ArrowRight:'right',ArrowUp:'rush',ArrowDown:'regroup',Space:'shoot'};const choice=map[e.code]||map[e.key];if(choice){e.preventDefault();decide(choice);}});
   ui.soundButton.addEventListener('click',()=>{
     state.sound=!state.sound;
     if(state.sound&&audioCtx?.state==='suspended')audioCtx.resume();
@@ -1064,7 +1244,9 @@
   });
   ui.howButton.addEventListener('click',()=>ui.howDialog.showModal());ui.closeHow.addEventListener('click',()=>ui.howDialog.close());
   ui.howDialog.addEventListener('click',e=>{if(e.target===ui.howDialog)ui.howDialog.close();});
-  ui.lockerButton.addEventListener('click',openLocker);ui.closeLocker.addEventListener('click',()=>ui.lockerDialog.close());
-  ui.lockerDialog.addEventListener('click',e=>{if(e.target===ui.lockerDialog)ui.lockerDialog.close();});
-  window.addEventListener('resize',resizeCanvas);resizeCanvas();showLevelSelect();cancelAnimationFrame(raf);raf=requestAnimationFrame(drawGame);requestAnimationFrame(tick);
+  ui.lockerButton.addEventListener('click',openLocker);ui.closeLocker.addEventListener('click',closeLocker);
+  ui.viewPlayerButton.addEventListener('click',showPlayerShowcase);ui.backToLockerButton.addEventListener('click',()=>{showLockerCatalog();renderGearPreviews();ui.viewPlayerButton.focus();});
+  ui.sharePlayerButton.addEventListener('click',sharePlayerImage);ui.downloadPlayerButton.addEventListener('click',downloadPlayerImage);
+  ui.lockerDialog.addEventListener('click',e=>{if(e.target===ui.lockerDialog)closeLocker();});ui.lockerDialog.addEventListener('close',resumeAfterLocker);
+  window.addEventListener('resize',()=>{resizeCanvas();if(ui.lockerDialog?.open)renderGearPreviews();});resizeCanvas();showLevelSelect();cancelAnimationFrame(raf);raf=requestAnimationFrame(drawGame);requestAnimationFrame(tick);
 })();

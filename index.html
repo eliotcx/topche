@@ -6,9 +6,9 @@
   <meta name="theme-color" content="#071624">
   <meta name="description" content="A level-based hockey decision-training game with unlockable challenges for young players.">
   <link rel="icon" type="image/png" href="assets/cheese-logo.png">
-  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
   <title>Top Che’s Hockey Lab</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=20260912.5">
 </head>
 <body>
   <main class="app-shell">
@@ -64,11 +64,11 @@
         </div>
         <div class="feedback-zone"><div class="feedback" id="feedback" aria-live="assertive"></div></div>
         <div class="controls" aria-label="Decision controls">
-          <button data-choice="left"><kbd>A</kbd><span>Pass left</span></button>
-          <button data-choice="shoot" class="shoot"><kbd>W</kbd><span>Shoot</span></button>
-          <button data-choice="right"><kbd>D</kbd><span>Pass right</span></button>
-          <button data-choice="rush" class="strategy rush"><kbd>R</kbd><span>Rush</span></button>
-          <button data-choice="regroup" class="strategy regroup"><kbd>S</kbd><span>Regroup</span></button>
+          <button data-choice="left"><kbd>←</kbd><span>Pass left</span></button>
+          <button data-choice="shoot" class="shoot"><kbd>SPACE</kbd><span>Shoot</span></button>
+          <button data-choice="right"><kbd>→</kbd><span>Pass right</span></button>
+          <button data-choice="rush" class="strategy rush"><kbd>↑</kbd><span>Rush</span></button>
+          <button data-choice="regroup" class="strategy regroup"><kbd>↓</kbd><span>Regroup</span></button>
         </div>
       </section>
 
@@ -102,7 +102,7 @@
       <li><strong>Scan every option.</strong> Defenders may take away a teammate, the shot, or your skating lane.</li>
       <li><strong>Rush open ice.</strong> Choose Rush when a clear channel leads toward the net or either corner.</li>
       <li><strong>Reset under pressure.</strong> Choose Regroup when no teammate and no forward skating lane is open.</li>
-      <li><strong>Decide quickly.</strong> Press A, W, D, R, or S—or tap a choice—before the clock expires.</li>
+      <li><strong>Decide quickly.</strong> Press ← or → to pass, ↑ to Rush, ↓ to Regroup, or SPACE to Shoot—or tap a choice—before the clock expires.</li>
       <li><strong>Trust your eyes.</strong> Lane guides fade as you advance and disappear in the elite levels.</li>
       <li><strong>Earn Cheese Points.</strong> Make smart reads and complete levels, then spend your points on player gear in the Locker.</li>
     </ol>
@@ -111,20 +111,37 @@
 
   <dialog id="lockerDialog" class="locker-dialog">
     <button class="dialog-close" id="closeLocker" aria-label="Close locker">×</button>
-    <div class="locker-heading">
-      <div>
-        <p class="overline">PLAYER LOCKER</p>
-        <h2>Build your look</h2>
+    <div id="lockerCatalogView">
+      <div class="locker-heading">
+        <div>
+          <p class="overline">PLAYER LOCKER</p>
+          <h2>Build your look</h2>
+        </div>
+        <div class="locker-balance"><span aria-hidden="true">🧀</span><strong id="lockerPoints">0</strong><small>CHEESE POINTS</small></div>
       </div>
-      <div class="locker-balance"><span aria-hidden="true">🧀</span><strong id="lockerPoints">0</strong><small>CHEESE POINTS</small></div>
+      <button class="player-showcase-button" id="viewPlayerButton"><span aria-hidden="true">◉</span><span><strong>View My Player</strong><small>See and share your equipped look</small></span><span aria-hidden="true">→</span></button>
+      <p class="locker-note">Complete levels to reveal mystery gear. Then use Cheese Points to unlock it and equip your favourites.</p>
+      <div class="locker-tabs" id="lockerTabs" role="tablist" aria-label="Customization categories"></div>
+      <div class="locker-grid" id="lockerItems" aria-live="polite"></div>
+      <p class="locker-status" id="lockerStatus" aria-live="polite"></p>
+      <p class="brand-note">Original hockey-inspired designs. Team and equipment names are style references only; no official logos are used.</p>
     </div>
-    <p class="locker-note">Earn points with smart hockey decisions. Choose a category, unlock gear, and equip your favourites.</p>
-    <div class="locker-tabs" id="lockerTabs" role="tablist" aria-label="Customization categories"></div>
-    <div class="locker-grid" id="lockerItems" aria-live="polite"></div>
-    <p class="locker-status" id="lockerStatus" aria-live="polite"></p>
-    <p class="brand-note">Original hockey-inspired designs. Team and equipment names are style references only; no official logos are used.</p>
+    <section class="player-showcase" id="playerShowcase" hidden aria-labelledby="playerShowcaseTitle">
+      <button class="showcase-back" id="backToLockerButton"><span aria-hidden="true">←</span> Back to Locker</button>
+      <p class="overline">MY PLAYER</p>
+      <h2 id="playerShowcaseTitle">Ready for the spotlight</h2>
+      <div class="player-render-frame">
+        <canvas id="playerRender" width="1080" height="1350" aria-label="High-resolution render of your customized hockey player"></canvas>
+      </div>
+      <div class="equipped-summary" id="equippedSummary" aria-label="Currently equipped customizations"></div>
+      <div class="showcase-actions">
+        <button class="share-player-button" id="sharePlayerButton"><span aria-hidden="true">↗</span> Share My Player</button>
+        <button class="download-player-button" id="downloadPlayerButton">Save Image</button>
+      </div>
+      <p class="share-status" id="shareStatus" aria-live="polite">On iPhone, choose Instagram or another app from the share sheet.</p>
+    </section>
   </dialog>
 
-  <script src="game.js"></script>
+  <script src="game.js?v=20260912.5"></script>
 </body>
 </html>
