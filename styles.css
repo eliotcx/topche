@@ -72,6 +72,10 @@ h1 { margin: 10px 0 10px; font-size: clamp(1.8rem, 3vw, 3rem); line-height: .98;
 .hud .streak strong { color: var(--orange); }
 .canvas-wrap { position: relative; overflow: hidden; aspect-ratio: 9 / 8.6; background: var(--ice); }
 #rink { display: block; width: 100%; height: 100%; }
+.power-up-indicator { --power-progress: 360deg; position: absolute; z-index: 1; top: 8px; right: 8px; width: 30px; height: 30px; display: grid; place-items: center; padding: 3px; border-radius: 50%; background: conic-gradient(var(--cyan) var(--power-progress), rgba(7,27,43,.48) 0); box-shadow: 0 0 0 1px rgba(99,230,237,.45), 0 4px 12px rgba(0,0,0,.25); pointer-events: none; transition: opacity .75s linear; }
+.power-up-indicator[hidden] { display: none; }
+.power-up-indicator::before { content: ""; position: absolute; inset: 2px; border-radius: 50%; background: rgba(5,24,37,.92); }
+.power-up-indicator img { position: relative; z-index: 1; width: 20px; height: 20px; object-fit: contain; }
 .start-overlay { position: absolute; inset: 0; z-index: 2; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow-y: auto; text-align: center; padding: 20px; color: var(--white); background: radial-gradient(circle at 50% 45%, rgba(8, 40, 59, .72), rgba(4, 15, 25, .94)); backdrop-filter: blur(5px); transition: opacity .3s ease, visibility .3s ease; }
 .start-overlay.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
 .cheese-hero-logo { width: 86px; height: 68px; object-fit: contain; filter: drop-shadow(0 14px 22px rgba(0,0,0,.4)); margin-bottom: 10px; }
@@ -170,6 +174,10 @@ dialog li strong { color: var(--white); }
 .gear-card strong { position: relative; z-index: 1; padding: 0 3px; font-size: .83rem; }
 .gear-card small { position: relative; z-index: 1; padding: 0 3px; color: #9fb7c2; font-size: .68rem; }
 .gear-preview { display: block; width: 100%; height: 96px; margin-bottom: 3px; border-radius: 4px; background: #a7cdd5; object-fit: cover; image-rendering: auto; }
+.powerup-card { justify-content: flex-end; }
+.powerup-card.active { border-color: var(--cyan); box-shadow: inset 0 0 0 1px rgba(99,230,237,.32), 0 0 18px rgba(99,230,237,.1); }
+.powerup-preview { padding: 10px; object-fit: contain; background: radial-gradient(circle at 50% 42%, #1c5269, #071b2b 72%); }
+.powerup-card .powerup-effect { color: #c9e8ee; }
 .locker-status { min-height: 22px; margin: 12px 0 0; color: #ffdf79; font-size: .82rem; font-weight: 800; }
 .brand-note { margin: 2px 0 0; color: #6f8d9b; font-size: .68rem; line-height: 1.4; }
 
@@ -216,6 +224,8 @@ dialog li strong { color: var(--white); }
   .progress-block { grid-column: 2; grid-row: 1 / 3; width: 100px; align-self: center; }
   .arena-card { width: 100%; }
   .canvas-wrap { aspect-ratio: 9 / 10.2; }
+  .power-up-indicator { width: 26px; height: 26px; top: 6px; right: 6px; padding: 3px; }
+  .power-up-indicator img { width: 17px; height: 17px; }
   .hud { height: 58px; padding: 8px 14px; }
   .hud strong { font-size: 1.05rem; }
   .controls button { min-height: 58px; flex-direction: column; gap: 3px; }

@@ -8,7 +8,7 @@
   <link rel="icon" type="image/png" href="assets/cheese-logo.png">
   <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
   <title>Top Che’s Hockey Lab</title>
-  <link rel="stylesheet" href="styles.css?v=20260912.5">
+  <link rel="stylesheet" href="styles.css?v=20260913.1">
 </head>
 <body>
   <main class="app-shell">
@@ -54,6 +54,9 @@
         </div>
         <div class="canvas-wrap">
           <canvas id="rink" width="720" height="800" aria-label="Top-down hockey rink showing fully equipped skaters, passing lanes, defenders, and goalie"></canvas>
+          <div class="power-up-indicator" id="powerUpIndicator" role="img" hidden>
+            <img id="powerUpIcon" src="" alt="">
+          </div>
           <div class="start-overlay" id="startOverlay">
             <img class="cheese-hero-logo" src="assets/cheese-logo.png" alt="">
             <p class="overline">LEVEL UP YOUR HOCKEY BRAIN</p>
@@ -120,7 +123,7 @@
         <div class="locker-balance"><span aria-hidden="true">🧀</span><strong id="lockerPoints">0</strong><small>CHEESE POINTS</small></div>
       </div>
       <button class="player-showcase-button" id="viewPlayerButton"><span aria-hidden="true">◉</span><span><strong>View My Player</strong><small>See and share your equipped look</small></span><span aria-hidden="true">→</span></button>
-      <p class="locker-note">Complete levels to reveal mystery gear. Then use Cheese Points to unlock it and equip your favourites.</p>
+      <p class="locker-note">Complete levels to reveal mystery gear. Spend Cheese Points on equipment or a temporary Power Up. Only one Power Up can be active at a time.</p>
       <div class="locker-tabs" id="lockerTabs" role="tablist" aria-label="Customization categories"></div>
       <div class="locker-grid" id="lockerItems" aria-live="polite"></div>
       <p class="locker-status" id="lockerStatus" aria-live="polite"></p>
@@ -142,6 +145,6 @@
     </section>
   </dialog>
 
-  <script src="game.js?v=20260912.7"></script>
+  <script src="game.js?v=20260913.3"></script>
 </body>
 </html>

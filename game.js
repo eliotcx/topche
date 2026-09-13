@@ -22,7 +22,8 @@
     playerShowcase: document.getElementById('playerShowcase'), backToLockerButton: document.getElementById('backToLockerButton'),
     playerRender: document.getElementById('playerRender'), equippedSummary: document.getElementById('equippedSummary'),
     sharePlayerButton: document.getElementById('sharePlayerButton'), downloadPlayerButton: document.getElementById('downloadPlayerButton'),
-    shareStatus: document.getElementById('shareStatus')
+    shareStatus: document.getElementById('shareStatus'), powerUpIndicator: document.getElementById('powerUpIndicator'),
+    powerUpIcon: document.getElementById('powerUpIcon')
   };
   const choiceButtons = [...document.querySelectorAll('[data-choice]')];
 
@@ -103,11 +104,11 @@
   let state = {
     active:false, locked:true, round:0, total:6, levelIndex:0, score:0, streak:0, correct:0,
     elapsedTotal:0, duration:3.4, timeLeft:3.4, scenario:null, startedAt:0, sound:true,
-    animStart:performance.now(), reveal:null, action:null, deck:[], paused:false, pausedAt:0
+    animStart:performance.now(), reveal:null, action:null, deck:[], paused:false, pausedAt:0, lastTickAt:0
   };
   let raf;
   let audioCtx;
-  let arenaMusicTimer=null,arenaMusicStep=0;
+  let arenaMusicTimer=null,arenaMusicStep=0,arenaMusicTrackIndex=-1,arenaMusicTrackOrder=[],arenaMusicGeneration=0;
   const gearCatalog={
     jersey:[
       {id:'home-navy',name:'Home Navy',cost:0,color:'#1769ff',accent:'#ffffff',detail:'#071b2b'},
@@ -201,7 +202,14 @@
       {id:'21',name:'Number 21',symbol:'21',cost:430,unlockLevel:15,color:'#12344a',accent:'#ffffff'}
     ]
   };
-  const gearLabels={jersey:'Jerseys',logo:'Logos',helmet:'Helmets',tape:'Tape',shaft:'Sticks',socks:'Socks',gloves:'Gloves',skates:'Skates',number:'Numbers'};
+  const powerUpCatalog=[
+    {id:'banana',name:'Banana',cost:100,slowdown:.02,durationMs:5*60*1000,icon:'assets/powerup-banana.png'},
+    {id:'energy-drink',name:'Energy Drink',cost:250,slowdown:.04,durationMs:5*60*1000,icon:'assets/powerup-energy-drink.png'},
+    {id:'dryland',name:'Dryland',cost:2500,slowdown:.10,durationMs:15*60*1000,icon:'assets/powerup-dryland.png'},
+    {id:'power-skating',name:'Power Skating',cost:5000,slowdown:.25,durationMs:15*60*1000,icon:'assets/powerup-power-skating.png'}
+  ];
+  const lockerCategories=[...Object.keys(gearCatalog),'powerup'];
+  const gearLabels={jersey:'Jerseys',logo:'Logos',helmet:'Helmets',tape:'Tape',shaft:'Sticks',socks:'Socks',gloves:'Gloves',skates:'Skates',number:'Numbers',powerup:'Power Ups'};
   const gearSingular={jersey:'Jersey',logo:'Logo',helmet:'Helmet',tape:'Tape',shaft:'Stick',socks:'Sock design',gloves:'Gloves',skates:'Skates',number:'Number'};
   const defaultLoadout={jersey:'home-navy',logo:'cheese',helmet:'classic-navy',tape:'white-tape',shaft:'midnight',socks:'home-ice',gloves:'navy-gloves',skates:'classic-black',number:'10'};
   let lockerCategory='jersey';
@@ -209,6 +217,7 @@
   let cheesePoints=Number(localStorage.getItem('superHockeyCheesePoints')||0);
   let ownedGear=safeStoredObject('superHockeyOwned',{});
   let loadout={...defaultLoadout,...safeStoredObject('superHockeyLoadout',{})};
+  let activePowerUp=safeStoredObject('superHockeyActivePowerUp',null);
   const hockeySprites = new Image();
   let spritesReady = false;
   let customPlayerSprite=null,customPlayerKey='',customFallenSprite=null,customFallenKey='';
@@ -230,12 +239,42 @@
   function completedLevelCount(){return Math.max(0,Math.min(levels.length,Math.max(Number(localStorage.getItem('superHockeyCompletedThrough')||0),unlockedCount()-1)));}
   function safeStoredObject(key,fallback){try{return JSON.parse(localStorage.getItem(key)||'null')||fallback;}catch{return fallback;}}
   function gearItem(category,id){return gearCatalog[category].find(item=>item.id===id)||gearCatalog[category][0];}
+  function powerUpItem(id){return powerUpCatalog.find(item=>item.id===id)||null;}
+  function currentPowerUp(now=Date.now()){
+    const item=activePowerUp&&powerUpItem(activePowerUp.id);
+    if(!item||Number(activePowerUp.expiresAt)<=now){
+      if(activePowerUp){activePowerUp=null;localStorage.removeItem('superHockeyActivePowerUp');}
+      return null;
+    }
+    return item;
+  }
+  function timerRate(){const item=currentPowerUp();return item?1-item.slowdown:1;}
+  function formatPowerUpTime(ms){const seconds=Math.max(0,Math.ceil(ms/1000)),minutes=Math.floor(seconds/60);return `${minutes}:${String(seconds%60).padStart(2,'0')}`;}
+  function updatePowerUpIndicator(){
+    const item=currentPowerUp();
+    if(!item){ui.powerUpIndicator.hidden=true;ui.powerUpIndicator.style.opacity='0';return;}
+    const remaining=Math.max(0,activePowerUp.expiresAt-Date.now()),fraction=Math.max(0,Math.min(1,remaining/item.durationMs));
+    ui.powerUpIcon.src=item.icon;ui.powerUpIcon.alt='';ui.powerUpIndicator.hidden=false;
+    ui.powerUpIndicator.style.opacity=String(fraction);ui.powerUpIndicator.style.setProperty('--power-progress',`${fraction*360}deg`);
+    const description=`${item.name} active — ${Math.round(item.slowdown*100)}% slower timer — about ${formatPowerUpTime(remaining)} remaining`;
+    ui.powerUpIndicator.setAttribute('aria-label',description);ui.powerUpIndicator.title=description;
+  }
   function saveLocker(){localStorage.setItem('superHockeyCheesePoints',String(cheesePoints));localStorage.setItem('superHockeyOwned',JSON.stringify(ownedGear));localStorage.setItem('superHockeyLoadout',JSON.stringify(loadout));updateCheeseUI();}
   function updateCheeseUI(){if(ui.cheesePoints)ui.cheesePoints.textContent=cheesePoints;if(ui.lockerPoints)ui.lockerPoints.textContent=cheesePoints;}
   function awardCheese(amount){cheesePoints+=amount;saveLocker();return amount;}
   function renderLocker() {
-    ui.lockerTabs.innerHTML=Object.keys(gearCatalog).map(category=>`<button class="locker-tab ${category===lockerCategory?'active':''}" role="tab" aria-selected="${category===lockerCategory}" data-locker-category="${category}">${gearLabels[category]}</button>`).join('');
+    ui.lockerTabs.innerHTML=lockerCategories.map(category=>`<button class="locker-tab ${category===lockerCategory?'active':''}" role="tab" aria-selected="${category===lockerCategory}" data-locker-category="${category}">${gearLabels[category]}</button>`).join('');
     ui.lockerTabs.querySelectorAll('[data-locker-category]').forEach(button=>button.addEventListener('click',()=>{lockerCategory=button.dataset.lockerCategory;ui.lockerStatus.textContent='';renderLocker();}));
+    if(lockerCategory==='powerup'){
+      const active=currentPowerUp();
+      ui.lockerItems.innerHTML=powerUpCatalog.map(item=>{
+        const isActive=active?.id===item.id;
+        const durationMinutes=item.durationMs/60000;
+        return `<button class="gear-card powerup-card ${isActive?'active':''}" data-powerup-id="${item.id}"><img class="gear-preview powerup-preview" src="${item.icon}" alt=""><strong>${item.name}</strong><small class="powerup-effect">Slows timer ${Math.round(item.slowdown*100)}% · ${durationMinutes} min</small><small>${isActive?'Active now':`🧀 ${item.cost}`}</small></button>`;
+      }).join('');
+      ui.lockerItems.querySelectorAll('[data-powerup-id]').forEach(button=>button.addEventListener('click',()=>selectPowerUp(button.dataset.powerupId)));
+      updateCheeseUI();updatePowerUpIndicator();return;
+    }
     ui.lockerItems.innerHTML=gearCatalog[lockerCategory].map(item=>{
       const levelLocked=Boolean(item.unlockLevel&&completedLevelCount()<item.unlockLevel);
       if(levelLocked)return `<button class="gear-card level-locked" disabled aria-label="${gearSingular[lockerCategory]} customization locked until Level ${item.unlockLevel} is completed"><div class="gear-lock-preview" aria-hidden="true"><span>🔒</span></div><strong>Mystery ${gearSingular[lockerCategory]}</strong><small>Complete Level ${item.unlockLevel}</small></button>`;
@@ -256,6 +295,17 @@
     } else ui.lockerStatus.textContent=`${item.name} equipped.`;
     loadout[category]=id;saveLocker();refreshCustomPlayer();renderLocker();
   }
+  function selectPowerUp(id){
+    const item=powerUpItem(id),active=currentPowerUp();
+    if(!item)return;
+    if(active?.id===id){ui.lockerStatus.textContent=`${item.name} is already active for another ${formatPowerUpTime(activePowerUp.expiresAt-Date.now())}.`;return;}
+    if(cheesePoints<item.cost){ui.lockerStatus.textContent=`You need ${item.cost-cheesePoints} more Cheese Points for ${item.name}.`;return;}
+    cheesePoints-=item.cost;
+    const now=Date.now();activePowerUp={id:item.id,activatedAt:now,expiresAt:now+item.durationMs};
+    localStorage.setItem('superHockeyActivePowerUp',JSON.stringify(activePowerUp));saveLocker();updatePowerUpIndicator();
+    ui.lockerStatus.textContent=`${item.name} activated! The timer now counts down ${Math.round(item.slowdown*100)}% slower for ${item.durationMs/60000} minutes.`;
+    renderLocker();
+  }
   function openLocker(){
     if(ui.lockerDialog.open)return;
     if(state.active&&!state.paused){state.paused=true;state.pausedAt=performance.now();stopArenaMusic();}
@@ -269,8 +319,8 @@
     const pausedFor=Math.max(0,performance.now()-state.pausedAt);
     if(state.action)state.action.start+=pausedFor;
     else if(state.active&&!state.locked)state.startedAt+=pausedFor;
-    state.animStart+=pausedFor;state.paused=false;state.pausedAt=0;
-    if(state.active)startArenaMusic();
+    state.animStart+=pausedFor;state.lastTickAt=performance.now();state.paused=false;state.pausedAt=0;
+    if(state.active)startArenaMusic(false);
   }
 
   function closeLocker(){
@@ -442,20 +492,24 @@
       const helmetMask=insideEllipse(xr,yr,384,248,51,62)&&!skin;
       const leftGlove=insideEllipse(xr,yr,335,158,34,43),rightGlove=insideEllipse(xr,yr,450,247,38,46),gloveMask=(leftGlove||rightGlove)&&!skin;
       const skateMask=insideEllipse(xr,yr,353,472,33,57)||insideEllipse(xr,yr,411,534,37,65);
-      const sockMask=(insideEllipse(xr,yr,350,420,30,58)||insideEllipse(xr,yr,408,486,31,62))&&!skin&&brightness>.16;
+      const bluePixel=b>55&&b>r*1.28&&b>g*1.02;
+      const whiteUniformPixel=brightness>.5&&Math.max(r,g,b)-Math.min(r,g,b)<42;
+      // Socks begin below the jersey hem. Keeping this as a distinct lower-leg
+      // mask prevents patterned socks from recolouring the overlapping torso.
+      const sockMask=yr>=418&&(insideEllipse(xr,yr,350,430,30,48)||insideEllipse(xr,yr,408,486,31,62))&&!skin&&(bluePixel||whiteUniformPixel);
       const tapeMask=xr>180&&xr<288&&yr>23&&yr<76;
       const shaftMask=segmentDistance(xr,yr,245,53,352,181)<12;
-      const bluePixel=b>55&&b>r*1.28&&b>g*1.02;
-      const jerseyMask=bluePixel&&xr>230&&xr<525&&yr>162&&yr<451;
+      const jerseyMask=bluePixel&&xr>230&&xr<525&&yr>162&&yr<420;
       const stripeMask=xr>273&&xr<476&&yr>360&&yr<418&&brightness>.48&&!skin;
       if(tapeMask)tintPixel(data,i,tapePatternColor(tape,xr,yr),brightness);
       else if(helmetMask)tintPixel(data,i,helmet.color,brightness);
       else if(gloveMask)tintPixel(data,i,brightness>.54?gloves.accent:gloves.color,brightness);
       else if(skateMask)tintPixel(data,i,brightness>.58?skates.accent:skates.color,brightness);
-      else if(sockMask)tintPixel(data,i,sockPatternColor(socks,xr,yr),brightness);
       else if(shaftMask)tintPixel(data,i,shaftPatternColor(shaft,xr,yr),brightness);
+      // Jersey layers have priority wherever the top-down artwork overlaps a leg.
       else if(stripeMask)tintPixel(data,i,yr>394?(jersey.detail||jersey.accent):jersey.accent,brightness);
       else if(jerseyMask)tintPixel(data,i,jersey.color,brightness);
+      else if(sockMask)tintPixel(data,i,sockPatternColor(socks,xr,yr),brightness);
     }
     target.putImageData(image,0,0);drawHelmetGraphics(target,helmet,sx,sy);drawJerseyPrint(target,options,sx,sy);return surface;
   }
@@ -508,15 +562,17 @@
       const helmetMask=insideEllipse(x,y,256,106,39,45)&&!skin;
       const gloveMask=(insideEllipse(x,y,51,66,39,38)||insideEllipse(x,y,461,66,39,38))&&!skin;
       const skateMask=insideEllipse(x,y,63,438,48,43)||insideEllipse(x,y,449,438,48,43);
-      const sockMask=y>331&&y<436&&(x<207||x>305)&&brightness>.14&&!skin;
       const bluePixel=b>55&&b>r*1.28&&b>g*1.02;
+      const whiteUniformPixel=brightness>.5&&Math.max(r,g,b)-Math.min(r,g,b)<42;
+      const sockMask=y>331&&y<436&&(x<207||x>305)&&!skin&&(bluePixel||whiteUniformPixel);
+      const jerseyMask=bluePixel&&y<331;
       const uniformStripe=brightness>.5&&!skin&&x>175&&x<337&&y>220&&y<270;
       if(helmetMask)tintPixel(data,i,helmet.color,brightness);
       else if(gloveMask)tintPixel(data,i,brightness>.54?gloves.accent:gloves.color,brightness);
       else if(skateMask)tintPixel(data,i,brightness>.58?skates.accent:skates.color,brightness);
-      else if(sockMask)tintPixel(data,i,sockPatternColor(socks,x,y),brightness);
       else if(uniformStripe)tintPixel(data,i,y%28>14?(jersey.detail||jersey.accent):jersey.accent,brightness);
-      else if(bluePixel)tintPixel(data,i,jersey.color,brightness);
+      else if(jerseyMask)tintPixel(data,i,jersey.color,brightness);
+      else if(sockMask)tintPixel(data,i,sockPatternColor(socks,x,y),brightness);
     }
     target.putImageData(image,0,0);drawFallenHelmetGraphics(target,helmet);drawFallenJerseyPrint(target,loadout);return surface;
   }
@@ -1051,37 +1107,98 @@
     o.connect(g).connect(audio.destination);o.start(start);o.stop(start+duration+.02);
   }
 
-  const arenaOrganPattern=[
-    [196,392,493.88,587.33],[196,392,493.88,587.33],null,[261.63,523.25,659.25,783.99],
-    [293.66,587.33,739.99,880],[293.66,587.33,739.99,880],null,[261.63,523.25,659.25,783.99],
-    [220,440,554.37,659.25],[246.94,493.88,622.25,739.99],null,[293.66,587.33,739.99,880],
-    [261.63,523.25,659.25,783.99],[220,440,554.37,659.25],[196,392,493.88,587.33],null
+  const midiFrequency=note=>440*Math.pow(2,(note-69)/12);
+  const arenaOrganBlueprints=[
+    {
+      name:'Rink Rally',beatMs:178,quality:'major',
+      roots:[48,48,53,55,48,57,53,55,48,53,55,48,57,53,55,48,48,53,55,57,53,55,48,48],
+      riff:[12,16,19,24,19,16,14,19,12,16,21,19,17,16,14,12]
+    },
+    {
+      name:'Blue-Line Boogie',beatMs:188,quality:'dominant',swing:true,
+      roots:[50,50,55,50,57,55,50,57,50,55,57,50,59,57,55,50,50,55,50,57,55,57,50,50],
+      riff:[12,15,19,21,22,21,19,15,12,null,19,22,24,22,19,17]
+    },
+    {
+      name:'Power-Play Parade',beatMs:166,quality:'major',staccato:true,
+      roots:[53,53,58,60,53,57,58,60,53,58,60,57,53,55,57,60,53,58,55,60,57,58,60,53],
+      riff:[24,19,17,19,21,17,14,17,24,21,19,17,21,24,19,null]
+    },
+    {
+      name:'Overtime Charge',beatMs:154,quality:'major',
+      roots:[52,57,59,52,57,59,61,52,52,59,57,61,52,57,59,64,52,54,57,59,61,59,57,52],
+      riff:[12,16,19,23,16,19,23,28,19,23,28,31,28,23,19,16]
+    }
   ];
 
-  function playOrganChord(frequencies) {
-    const audio=getAudioContext();if(!audio||!state.active||!state.sound||!frequencies)return;
-    const start=audio.currentTime,filter=audio.createBiquadFilter();
-    filter.type='lowpass';filter.frequency.value=2300;filter.Q.value=.8;filter.connect(audio.destination);
-    frequencies.forEach((frequency,index)=>{
-      const oscillator=audio.createOscillator(),gain=audio.createGain();
-      oscillator.type=index===0?'square':'triangle';oscillator.frequency.value=frequency;
-      gain.gain.setValueAtTime(.001,start);gain.gain.exponentialRampToValueAtTime(index===0?.007:.0055,start+.012);
-      gain.gain.setValueAtTime(index===0?.007:.0055,start+.115);gain.gain.exponentialRampToValueAtTime(.001,start+.185);
-      oscillator.connect(gain).connect(filter);oscillator.start(start);oscillator.stop(start+.2);
+  function buildArenaOrganTrack(blueprint){
+    const chordIntervals=blueprint.quality==='dominant'?[0,4,7,10]:[0,4,7];
+    const steps=[];
+    blueprint.roots.forEach((root,bar)=>{
+      for(let beat=0;beat<4;beat++){
+        const index=bar*4+beat,leadOffset=blueprint.riff[index%blueprint.riff.length];
+        const chordRoot=root+12+(beat===3&&bar%4===3?2:0);
+        steps.push({
+          bass:midiFrequency(root+(beat%2?7:0)),
+          chord:chordIntervals.map(interval=>midiFrequency(chordRoot+interval)),
+          lead:leadOffset===null?null:midiFrequency(root+leadOffset+(bar%8>=4&&beat===3?12:0)),
+          accent:beat===0?1.18:beat===2?1.05:.88
+        });
+      }
+    });
+    return {...blueprint,steps};
+  }
+  const arenaOrganTracks=arenaOrganBlueprints.map(buildArenaOrganTrack);
+
+  function playOrganStep(step,track) {
+    const audio=getAudioContext();if(!audio||!state.active||!state.sound||!step)return;
+    const start=audio.currentTime,seconds=track.beatMs/1000,filter=audio.createBiquadFilter();
+    filter.type='lowpass';filter.frequency.value=track.name==='Overtime Charge'?2850:2500;filter.Q.value=.75;filter.connect(audio.destination);
+    const voices=[
+      {frequency:step.bass,type:'square',volume:.0068,duration:seconds*.8},
+      ...step.chord.map(frequency=>({frequency,type:'triangle',volume:.0046,duration:seconds*(track.staccato?.48:.72)})),
+      ...(step.lead?[{frequency:step.lead,type:'square',volume:.0048,duration:seconds*(track.staccato?.52:.66)}]:[])
+    ];
+    voices.forEach((voice,index)=>{
+      const oscillator=audio.createOscillator(),gain=audio.createGain(),peak=voice.volume*step.accent;
+      oscillator.type=voice.type;oscillator.frequency.value=voice.frequency;
+      if(index===voices.length-1&&step.lead){const vibrato=audio.createOscillator(),depth=audio.createGain();vibrato.frequency.value=5.5;depth.gain.value=2.1;vibrato.connect(depth).connect(oscillator.frequency);vibrato.start(start);vibrato.stop(start+voice.duration+.02);}
+      gain.gain.setValueAtTime(.001,start);gain.gain.exponentialRampToValueAtTime(peak,start+.012);
+      gain.gain.setValueAtTime(peak,start+Math.max(.018,voice.duration-.045));gain.gain.exponentialRampToValueAtTime(.001,start+voice.duration);
+      oscillator.connect(gain).connect(filter);oscillator.start(start);oscillator.stop(start+voice.duration+.025);
     });
   }
 
-  function startArenaMusic() {
-    stopArenaMusic();arenaMusicStep=0;
+  function shuffledTrackOrder(previous=-1){
+    const order=arenaOrganTracks.map((_,index)=>index);
+    for(let i=order.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[order[i],order[j]]=[order[j],order[i]];}
+    if(order[0]===previous)[order[0],order[1]]=[order[1],order[0]];
+    return order;
+  }
+
+  function startArenaMusic(reset=true) {
+    stopArenaMusic();
+    if(reset||arenaMusicTrackIndex<0){arenaMusicTrackOrder=shuffledTrackOrder();arenaMusicTrackIndex=arenaMusicTrackOrder.shift();arenaMusicStep=0;}
+    const generation=arenaMusicGeneration;
     const playNext=()=>{
-      if(state.active&&state.sound)playOrganChord(arenaOrganPattern[arenaMusicStep%arenaOrganPattern.length]);
-      arenaMusicStep++;
+      if(generation!==arenaMusicGeneration||!state.active||state.paused)return;
+      const track=arenaOrganTracks[arenaMusicTrackIndex];
+      if(arenaMusicStep>=track.steps.length){
+        const previous=arenaMusicTrackIndex;
+        if(!arenaMusicTrackOrder.length)arenaMusicTrackOrder=shuffledTrackOrder(previous);
+        arenaMusicTrackIndex=arenaMusicTrackOrder.shift();arenaMusicStep=0;
+        arenaMusicTimer=setTimeout(playNext,700);return;
+      }
+      if(state.sound)playOrganStep(track.steps[arenaMusicStep],track);
+      const swingScale=track.swing?(arenaMusicStep%2?.76:1.24):1;
+      arenaMusicStep++;arenaMusicTimer=setTimeout(playNext,Math.round(track.beatMs*swingScale));
     };
-    playNext();arenaMusicTimer=setInterval(playNext,225);
+    playNext();
   }
 
   function stopArenaMusic() {
-    if(arenaMusicTimer!==null){clearInterval(arenaMusicTimer);arenaMusicTimer=null;}
+    arenaMusicGeneration++;
+    if(arenaMusicTimer!==null){clearTimeout(arenaMusicTimer);arenaMusicTimer=null;}
   }
 
   function playNoise(duration,volume=.04,frequency=900,delay=0,type='bandpass') {
@@ -1179,7 +1296,7 @@
     if(state.round>=state.total) return finish();
     const level=levels[state.levelIndex];
     state.scenario=state.deck[state.round]; state.reveal=null; state.action=null; state.locked=false;
-    state.duration=Math.max(level.minTime,level.time-state.round*.07);state.timeLeft=state.duration;state.startedAt=performance.now();state.animStart=performance.now();
+    state.duration=Math.max(level.minTime,level.time-state.round*.07);state.timeLeft=state.duration;state.startedAt=performance.now();state.lastTickAt=state.startedAt;state.animStart=performance.now();
     choiceButtons.forEach(b=>b.disabled=false);
     ui.skillLabel.textContent=state.scenario.situation||level.focus;
     ui.timer.textContent=state.timeLeft.toFixed(1);
@@ -1195,7 +1312,7 @@
   function decide(choice) {
     if(!state.active||state.locked) return;
     state.locked=true;choiceButtons.forEach(b=>b.disabled=true);
-    const elapsed=Math.min(state.duration,(performance.now()-state.startedAt)/1000);state.elapsedTotal+=elapsed;
+    const elapsed=Math.max(0,(performance.now()-state.startedAt)/1000);state.elapsedTotal+=elapsed;
     const good=choice===state.scenario.answer;
     let cheeseEarned=0;
     if(good) { const speed=Math.round(state.timeLeft*80);state.streak++;state.correct++;state.score+=100+speed+Math.min(200,state.streak*20);cheeseEarned=awardCheese(10+(state.streak%3===0?5:0)); }
@@ -1269,7 +1386,14 @@
   }
 
   function tick(){
-    if(state.active&&!state.locked&&!state.paused){state.timeLeft=state.duration-(performance.now()-state.startedAt)/1000;if(state.timeLeft<=0){state.timeLeft=0;decide('timeout');}ui.timer.textContent=state.timeLeft.toFixed(1);}
+    const now=performance.now();
+    if(state.active&&!state.locked&&!state.paused){
+      const elapsed=Math.max(0,now-(state.lastTickAt||now))/1000;state.lastTickAt=now;
+      state.timeLeft=Math.max(0,state.timeLeft-elapsed*timerRate());
+      if(state.timeLeft<=0)decide('timeout');
+      ui.timer.textContent=state.timeLeft.toFixed(1);
+    } else state.lastTickAt=now;
+    updatePowerUpIndicator();
     requestAnimationFrame(tick);
   }
 
