@@ -626,7 +626,7 @@
     const ice=target.createLinearGradient(0,0,1080,1350);ice.addColorStop(0,'#effbfc');ice.addColorStop(.58,'#c9e7ec');ice.addColorStop(1,'#9fcbd4');target.fillStyle=ice;target.fillRect(0,0,1080,1350);
     target.save();target.globalAlpha=.22;target.strokeStyle='#4891a4';target.lineWidth=7;target.strokeRect(42,42,996,1266);
     target.beginPath();target.arc(540,610,205,0,Math.PI*2);target.stroke();target.strokeStyle='#1769ff';target.lineWidth=15;target.beginPath();target.moveTo(55,325);target.lineTo(1025,325);target.stroke();target.strokeStyle='#c9343c';target.beginPath();target.moveTo(55,895);target.lineTo(1025,895);target.stroke();target.restore();
-    target.fillStyle='#071b2b';target.font='900 40px system-ui, sans-serif';target.textAlign='left';target.fillText("TOP CHE’S",128,104);target.fillStyle='#176170';target.font='800 22px system-ui, sans-serif';target.fillText('HOCKEY LAB · MY PLAYER',128,136);
+    target.fillStyle='#176170';target.font='800 22px system-ui, sans-serif';target.textAlign='left';target.fillText("TOP CHE’S HOCKEY",128,104);target.fillText('MY PLAYER',128,136);
     if(cheeseLogo.complete&&cheeseLogo.naturalWidth)target.drawImage(cheeseLogo,48,53,66,68);
     if(playerReady){
       target.save();target.shadowColor='rgba(3,17,28,.38)';target.shadowBlur=38;target.shadowOffsetY=22;
@@ -669,7 +669,7 @@
     ui.sharePlayerButton.disabled=true;
     try{
       const blob=playerImageBlob(),file=new File([blob],`top-ches-player-${loadout.number}.png`,{type:'image/png'});
-      const shareData={title:"My Top Che’s Hockey Lab Player",text:"Check out my customized player from Top Che’s Hockey Lab!",files:[file]};
+      const shareData={title:"My Top Che’s Hockey Player",text:"Check out my customized player from Top Che’s Hockey!",files:[file]};
       if(navigator.share&&(!navigator.canShare||navigator.canShare(shareData))){await navigator.share(shareData);ui.shareStatus.textContent='Player shared!';}
       else{savePlayerBlob(blob);ui.shareStatus.textContent='Your browser saved the image. Open Instagram or another app and choose it from your photos or downloads.';}
     } catch(error){if(error?.name!=='AbortError')ui.shareStatus.textContent='Sharing was not available. Try Save Image instead.';}
@@ -1403,7 +1403,7 @@
     state.sound=!state.sound;
     if(state.sound&&audioCtx?.state==='suspended')audioCtx.resume();
     if(!state.sound&&audioCtx?.state==='running')audioCtx.suspend();
-    ui.soundButton.textContent=state.sound?'◖':'×';ui.soundButton.setAttribute('aria-label',state.sound?'Mute sound':'Turn on sound');
+    ui.soundButton.textContent='♪';ui.soundButton.dataset.muted=String(!state.sound);ui.soundButton.setAttribute('aria-label',state.sound?'Mute music and sound':'Turn on music and sound');
   });
   ui.howButton.addEventListener('click',()=>ui.howDialog.showModal());ui.closeHow.addEventListener('click',()=>ui.howDialog.close());
   ui.howDialog.addEventListener('click',e=>{if(e.target===ui.howDialog)ui.howDialog.close();});

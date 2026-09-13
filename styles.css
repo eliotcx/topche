@@ -34,11 +34,13 @@ button:focus-visible { outline: 3px solid var(--cyan); outline-offset: 3px; }
 .topbar { height: 60px; max-width: 1500px; margin: 0 auto 18px; display: flex; justify-content: space-between; align-items: center; }
 .brand { display: flex; gap: 11px; align-items: center; letter-spacing: .08em; }
 .brand-mark { width: 48px; height: 42px; object-fit: contain; filter: drop-shadow(0 5px 8px rgba(0,0,0,.35)); }
-.brand strong { display: block; font-size: .88rem; line-height: 1; }
-.brand small { font-size: .64rem; color: var(--cyan); letter-spacing: .18em; }
+.brand-name { display: block; font-size: .64rem; line-height: 1; color: var(--cyan); font-weight: 400; letter-spacing: .18em; }
 .top-actions { display: flex; align-items: center; gap: 10px; }
 .icon-button, .text-button, .points-button { color: #b8ced8; background: transparent; border: 1px solid #234156; border-radius: 8px; min-height: 38px; cursor: pointer; }
-.icon-button { width: 38px; }
+.icon-button { position: relative; width: 38px; font-size: 1.05rem; font-weight: 900; }
+.music-button { font-size: 1.2rem; }
+.music-button[data-muted="true"] { color: #688491; }
+.music-button[data-muted="true"]::after { content: ''; position: absolute; width: 22px; height: 2px; left: 7px; top: 17px; border-radius: 2px; background: currentColor; transform: rotate(-45deg); }
 .text-button { padding: 0 14px; }
 .points-button { display: flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 11px; color: #ffe07a; background: rgba(255, 207, 84, .07); border-color: #6e5d31; touch-action: manipulation; -webkit-tap-highlight-color: rgba(255,207,84,.18); }
 .points-button strong { font-variant-numeric: tabular-nums; color: #fff2b5; }
@@ -212,8 +214,7 @@ dialog li strong { color: var(--white); }
 @media (max-width: 700px) {
   .app-shell { padding: 10px 10px 24px; }
   .topbar { margin-bottom: 8px; }
-  .brand strong { font-size: .75rem; }
-  .text-button { padding: 0 10px; }
+  .brand-name { font-size: .64rem; }
   .points-button span:last-child { display: none; }
   .points-button { padding: 0 8px; }
   .game-layout { display: flex; flex-direction: column; gap: 12px; }
