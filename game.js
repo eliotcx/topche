@@ -347,6 +347,24 @@
     ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.strokeStyle=color; ctx.lineWidth=width; ctx.setLineDash(dash); ctx.stroke(); ctx.setLineDash([]);
   }
 
+  function attackingBlueLineY(m) { return m.h*.965; }
+
+  function drawFaceoffCircle(x,y,r) {
+    const red='rgba(200,49,58,.72)',mark=Math.max(4,r*.16);
+    ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.strokeStyle=red;ctx.lineWidth=2;ctx.stroke();
+    ctx.fillStyle='#c8313a';ctx.beginPath();ctx.arc(x,y,Math.max(3,r*.065),0,Math.PI*2);ctx.fill();
+    [-1,1].forEach(side=>[-1,1].forEach(vertical=>{
+      const yy=y+vertical*r*.42;
+      line(x+side*(r-mark*.25),yy,x+side*(r+mark),yy,red,2);
+    }));
+    const boxGap=r*.22,boxWidth=r*.28,boxHeight=r*.17;
+    [-1,1].forEach(side=>[-1,1].forEach(vertical=>{
+      const innerX=x+side*boxGap,outerX=innerX+side*boxWidth,yy=y+vertical*boxGap;
+      line(innerX,yy,outerX,yy,red,2);
+      line(innerX,yy,innerX,yy+vertical*boxHeight,red,2);
+    }));
+  }
+
   function drawRink(m) {
     const {w,h,cx,pad}=m;
     ctx.clearRect(0,0,w,h);
@@ -356,13 +374,12 @@
     for(let y=0;y<h;y+=14) line(0,y,w,y,'#427b8b',1);
     ctx.restore();
     ctx.strokeStyle='#5b9aaa'; ctx.lineWidth=3; ctx.strokeRect(pad, -12, w-pad*2, h+24);
-    line(pad,h*.67,w-pad,h*.67,'#d24a4a',Math.max(3,w*.007));
-    line(pad,h*.24,w-pad,h*.24,'#2e66bb',Math.max(3,w*.006));
-    ctx.beginPath(); ctx.arc(cx,h*.67,w*.09,0,Math.PI*2); ctx.strokeStyle='#2e66bb'; ctx.lineWidth=2; ctx.stroke();
-    ctx.beginPath(); ctx.arc(cx,h*.24,w*.07,0,Math.PI*2); ctx.strokeStyle='#d24a4a'; ctx.lineWidth=2; ctx.stroke();
-    [[w*.23,h*.36],[w*.77,h*.36]].forEach(([x,y])=>{ ctx.beginPath();ctx.arc(x,y,w*.085,0,Math.PI*2);ctx.strokeStyle='rgba(210,74,74,.45)';ctx.lineWidth=2;ctx.stroke(); });
-    ctx.fillStyle='rgba(60,150,180,.22)'; ctx.beginPath(); ctx.arc(cx,h*.105,w*.105,0,Math.PI); ctx.fill();
-    ctx.strokeStyle='#d54c4c';ctx.lineWidth=3;ctx.stroke();
+    const goalLineY=h*.068,blueLineY=attackingBlueLineY(m),creaseRadius=w*.105;
+    line(pad,goalLineY,w-pad,goalLineY,'#c8313a',Math.max(2,w*.005));
+    ctx.beginPath();ctx.moveTo(cx+creaseRadius,goalLineY);ctx.arc(cx,goalLineY,creaseRadius,0,Math.PI);ctx.closePath();
+    ctx.fillStyle='rgba(70,170,207,.24)';ctx.fill();ctx.strokeStyle='#c8313a';ctx.lineWidth=2;ctx.stroke();
+    [[w*.25,h*.34],[w*.75,h*.34]].forEach(([x,y])=>drawFaceoffCircle(x,y,w*.105));
+    line(pad,blueLineY,w-pad,blueLineY,'#2467bd',Math.max(5,w*.013));
   }
 
   function drawNet(m) {
@@ -974,7 +991,10 @@
           }
         }
       } else if(choice==='regroup') {
-        const theta=Math.PI*2*progress,rx=m.w*.15,ry=m.h*.08;
+        const theta=Math.PI*2*progress,rx=m.w*.15;
+        const playerClearance=Math.max(42,m.w*.09);
+        const roomBeforeBlueLine=Math.max(0,attackingBlueLineY(m)-playerClearance-puck.y);
+        const ry=Math.min(m.h*.06,roomBeforeBlueLine/2);
         carrier={x:puck.x-Math.sin(theta)*rx,y:puck.y+(1-Math.cos(theta))*ry};
         const direction={x:-Math.cos(theta)*rx,y:Math.sin(theta)*ry};
         carrierAngle=skaterAngle(direction,'orange');
