@@ -79,7 +79,7 @@
   ];
 
   const levels = [
-    { id:'rookie', title:'Rookie Reads', short:'Pass or shoot', mission:'Learn to spot the open pass and the perfect shot.', focus:'See the simple play', rounds:6, time:4.2, minTime:3.7, unlock:4, scenarios:[0,2,4,5,1,3] },
+    { id:'rookie', title:'Rookie Reads', short:'Pass or shoot', mission:'Learn to spot the open pass and the perfect shot.', focus:'See the simple play', rounds:6, time:10, minTime:10, unlock:4, scenarios:[0,2,4,5,1,3] },
     { id:'open-ice', title:'Open Ice', short:'Add the Rush', mission:'Read covered teammates and attack a wide-open skating lane.', focus:'Find open ice', rounds:8, time:3.8, minTime:3.25, unlock:6, scenarios:[0,2,4,5,6,7,8,1] },
     { id:'pressure', title:'Pressure Test', short:'Add Regroup', mission:'Protect the puck when every forward option has disappeared.', focus:'Manage pressure', rounds:10, time:3.4, minTime:2.8, unlock:7, scenarios:[0,1,2,3,4,5,6,7,9,10] },
     { id:'super', title:'Super Lab', short:'All core skills', mission:'Use every core hockey read at game speed and master the full challenge.', focus:'Game-speed decisions', rounds:12, time:3, minTime:2.35, unlock:9, scenarios:[0,1,2,3,4,5,6,7,8,9,10,11] },
