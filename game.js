@@ -885,7 +885,7 @@
       const raw=Math.min(1,(gameTime-state.action.start)/state.action.duration),progress=easeInOut(raw);
       const {choice,outcome,good}=state.action;
       if(good&&choice!=='regroup'){
-        const celebrationStart=choice==='shoot'?.54:choice==='left'||choice==='right'?.84:.9;
+        const celebrationStart=choice==='shoot'?.7:choice==='left'||choice==='right'?.84:.9;
         celebrationProgress=segment(raw,celebrationStart,1);
       }
       if(good&&(choice==='left'||choice==='right')){
@@ -907,11 +907,22 @@
           if(raw>.97)puckOpacity=1-(raw-.97)/.03;
         }
       } else if(good&&choice==='shoot'){
-        const start=playerPuckPosition(puck,0),target={x:m.cx-s.goalie*m.w*.075,y:m.h*.055};
-        const shotProgress=segment(raw,0,.58);movingPuck=pointLerp(start,target,shotProgress);previousPuck=pointLerp(start,target,Math.max(0,shotProgress-.1));
+        const releaseAt=.22,glideEnd=.34,shotSpot={x:lerp(puck.x,m.cx,.08),y:puck.y-m.h*.045};
+        const approach={x:shotSpot.x-puck.x,y:shotSpot.y-puck.y};
+        const approachAngle=skaterAngle(approach,'orange');
+        const glideProgress=easeInOut(segment(raw,0,glideEnd));
+        carrier=pointLerp(puck,shotSpot,glideProgress);carrierAngle=approachAngle;
+        if(raw<releaseAt){
+          movingPuck=playerPuckPosition(carrier,carrierAngle);
+        } else {
+          const releaseProgress=easeInOut(segment(releaseAt,0,glideEnd));
+          const releaseSpot=pointLerp(puck,shotSpot,releaseProgress);
+          const start=playerPuckPosition(releaseSpot,approachAngle),target={x:m.cx-s.goalie*m.w*.075,y:m.h*.055};
+          const shotProgress=segment(raw,releaseAt,.68);movingPuck=pointLerp(start,target,shotProgress);previousPuck=pointLerp(start,target,Math.max(0,shotProgress-.1));
+          if(raw>.66){goalFlash=target;goalProgress=segment(raw,.66,.94);}
+          if(raw>.7)puckOpacity=Math.max(0,1-segment(raw,.7,.8));
+        }
         goalieAngle=s.goalie*.18;goalieScale=1.06;
-        if(raw>.5){goalFlash=target;goalProgress=segment(raw,.5,.88);}
-        if(raw>.62)puckOpacity=Math.max(0,1-(raw-.62)/.1);
       } else if(good&&choice==='rush') {
         const lane=s.rush||'centre';
         if(lane==='centre'){
@@ -1252,16 +1263,17 @@
 
   function playDecisionSounds(choice,good,outcome,actionDuration,scenario) {
     if(!state.sound||choice==='timeout') return;
-    if(choice==='left'||choice==='right'||choice==='shoot')playPuckKnock();
+    if(choice==='left'||choice==='right'||(choice==='shoot'&&!good))playPuckKnock();
     if(good&&(choice==='left'||choice==='right'))setTimeout(playPuckKnock,Math.round(actionDuration*.54));
+    if(good&&choice==='shoot')setTimeout(playPuckKnock,Math.round(actionDuration*.22));
     if(good&&choice==='rush')setTimeout(playPuckKnock,Math.round(actionDuration*(scenario.rush==='centre'?.82:.79)));
     const skatingOutcome=['shot-blocked','goalie-easy-save','pass-intercepted','rush-bodycheck','rush-goalie-recovery'].includes(outcome);
-    if(choice==='rush'||choice==='regroup'||skatingOutcome){
-      const skateDuration=outcome==='rush-bodycheck'?actionDuration*.48:outcome==='goalie-easy-save'?actionDuration*.58:actionDuration*.88;
+    if(choice==='rush'||choice==='regroup'||skatingOutcome||(good&&choice==='shoot')){
+      const skateDuration=good&&choice==='shoot'?actionDuration*.34:outcome==='rush-bodycheck'?actionDuration*.48:outcome==='goalie-easy-save'?actionDuration*.58:actionDuration*.88;
       playSkating(skateDuration);
     }
     if(good){
-      const delay=choice==='rush'?Math.round(actionDuration*.9):choice==='left'||choice==='right'?Math.round(actionDuration*.84):choice==='shoot'?Math.round(actionDuration*.54):280;
+      const delay=choice==='rush'?Math.round(actionDuration*.9):choice==='left'||choice==='right'?Math.round(actionDuration*.84):choice==='shoot'?Math.round(actionDuration*.68):280;
       setTimeout(choice==='regroup'?playCheer:playGoalCelebrationSound,delay);
     } else {
       setTimeout(playAww,180);
@@ -1329,7 +1341,7 @@
     const correctSideRush=good&&choice==='rush'&&state.scenario.rush!=='centre';
     const correctPass=good&&(choice==='left'||choice==='right');
     const correctShoot=good&&choice==='shoot';
-    const actionDuration=choice==='timeout'?700:outcomeDurations[outcome]||(choice==='regroup'?1500:correctCentreRush||correctSideRush?2900:choice==='rush'?1200:correctPass?2400:correctShoot?1800:760);
+    const actionDuration=choice==='timeout'?700:outcomeDurations[outcome]||(choice==='regroup'?1500:correctCentreRush||correctSideRush?2900:choice==='rush'?1200:correctPass?2400:correctShoot?2200:760);
     state.action=choice==='timeout'?null:{choice,outcome,good,start:performance.now(),duration:actionDuration};
     state.round++;state.reveal=null;playDecisionSounds(choice,good,outcome,actionDuration,state.scenario);
     const outcomeText={

@@ -103,11 +103,11 @@ h1 { margin: 10px 0 10px; font-size: clamp(1.8rem, 3vw, 3rem); line-height: .98;
 .finish-confetti { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
 .finish-confetti i { position: absolute; left: var(--x); top: -18px; width: 8px; height: 14px; border-radius: 2px; background: var(--colour); animation: finish-confetti-fall 2.35s cubic-bezier(.22,.72,.44,1) var(--delay) both; }
 @keyframes finish-confetti-fall { 0% { transform: translateY(-20px) rotate(0); opacity: 0; } 12% { opacity: 1; } 100% { transform: translateY(620px) rotate(var(--spin)); opacity: .15; } }
-.feedback-zone { min-height: 52px; padding: 6px 12px; display: grid; place-items: center; background: #081827; border-top: 1px solid #1d4258; border-bottom: 1px solid #1d4258; }
-.feedback { max-width: 100%; padding: 7px 14px; border-radius: 3px; font-weight: 900; letter-spacing: .05em; line-height: 1.3; text-align: center; text-transform: uppercase; opacity: 0; transform: translateY(-4px); transition: .2s ease; }
-.feedback.show { opacity: 1; transform: translateY(0); }
-.feedback.good { background: #0b442d; color: var(--success); border: 1px solid #20875c; }
-.feedback.bad { background: #562118; color: #ffd2ca; border: 1px solid #b54a36; }
+.feedback-zone { position: relative; z-index: 12; height: 0; pointer-events: none; }
+.feedback { position: absolute; top: 8px; left: 50%; width: max-content; max-width: calc(100% - 24px); padding: 8px 14px; border-radius: 9px; box-shadow: 0 8px 22px rgba(0,0,0,.42); font-size: .76rem; font-weight: 900; letter-spacing: .045em; line-height: 1.25; text-align: center; text-transform: uppercase; opacity: 0; visibility: hidden; transform: translate(-50%, 5px) scale(.98); transition: opacity .18s ease, transform .18s ease, visibility 0s linear .18s; }
+.feedback.show { opacity: 1; visibility: visible; transform: translate(-50%, 0) scale(1); transition-delay: 0s; }
+.feedback.good { background: rgba(7,66,48,.96); color: var(--success); border: 1px solid #32a876; }
+.feedback.bad { background: rgba(86,33,24,.97); color: #ffd2ca; border: 1px solid #d05a42; }
 .controls { display: grid; grid-template-columns: repeat(6, 1fr); gap: 1px; background: #1a3d52; }
 .controls button { min-height: 68px; border: 0; color: #bfd1d8; background: #0a2133; display: flex; justify-content: center; align-items: center; gap: 10px; cursor: pointer; transition: background .15s, color .15s; }
 .controls button { grid-column: span 2; }
