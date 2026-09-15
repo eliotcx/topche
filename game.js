@@ -971,7 +971,8 @@
   const reboundTotalTime=Object.values(reboundTiming).reduce((sum,value)=>sum+value,0);
 
   function reboundPuckPosition(m,t){
-    const p=state.bonusPuck||{start:{x:m.cx,y:m.h*.9},save:{x:m.cx,y:m.h*.48},bounce:{x:m.cx,y:m.h*.7},apex:{x:m.cx,y:m.h*.73},land:{x:m.cx,y:m.h*.77},exit:{x:m.w*1.08,y:m.h*.8}};
+    const candidate=state.bonusPuck,hasReboundPath=candidate&&candidate.start&&candidate.save&&candidate.bounce&&candidate.apex&&candidate.land&&candidate.exit;
+    const p=hasReboundPath?candidate:{start:{x:m.cx,y:m.h*.9},save:{x:m.cx,y:m.h*.48},bounce:{x:m.cx,y:m.h*.7},apex:{x:m.cx,y:m.h*.73},land:{x:m.cx,y:m.h*.77},exit:{x:m.w*1.08,y:m.h*.8}};
     const place=(ground,height,stage,progress=0,tappable=false,tier=null,windowRemaining=0,done=false)=>({x:ground.x,y:ground.y-height,groundX:ground.x,groundY:ground.y,height,stage,progress,tappable,tier,windowRemaining,done});
     if(state.bonusPhase==='shot'){const q=easeInOut(clamp((t-state.startedAt)/700)),ground=pointLerp(p.start,p.save,q);return place(ground,0,'shot',q);}
     if(state.bonusPhase==='result'){const point=state.bonusTapPoint||p.exit;return place(point,0,'result',1);}
@@ -1055,6 +1056,9 @@
 
   function drawBonusGame(t){
     resizeCanvas();const m=rinkMetrics(),bonus=currentIntermission();
+    if(state.bonusPhase==='intro'){
+      drawBonusArena(m);drawPremiumNet(m);drawPremiumGoalie(m,t,'ready');return;
+    }
     if(bonus.type==='open-net')drawOpenNetBonus(m,t);
     else if(bonus.type==='deflection')drawDeflectionBonus(m,t);
     else drawReboundBonus(m,t);
@@ -1584,7 +1588,7 @@
 
   function startIntermission(index,fromProgression=false){
     clearBonusTimers();stopArenaMusic();const bonus=intermissions[index];setBonusPanel(index);
-    state={...state,mode:'bonus',bonusIndex:index,bonusFromProgression:fromProgression,active:false,locked:true,round:0,total:bonus.rounds,score:0,streak:0,correct:0,elapsedTotal:0,action:null,bonusAnswer:null,bonusChoice:null,bonusResult:null,bonusPhase:'intro',paused:false,pausedAt:0};
+    state={...state,mode:'bonus',bonusIndex:index,bonusFromProgression:fromProgression,active:false,locked:true,round:0,total:bonus.rounds,score:0,streak:0,correct:0,elapsedTotal:0,action:null,bonusAnswer:null,bonusChoice:null,bonusResult:null,bonusPhase:'intro',bonusPuck:null,bonusStick:null,bonusStickTarget:null,bonusGoalTarget:null,bonusTapPoint:null,bonusReboundStage:null,bonusReboundTier:null,bonusReactionAt:0,bonusDropAt:0,bonusGoalieFrom:0,bonusGoalieTo:0,bonusGoalieMoveAt:performance.now(),paused:false,pausedAt:0};
     canvas.setAttribute('aria-label',`${bonus.title} intermission reaction game`);ui.startOverlay.classList.add('hidden');ui.standardControls.hidden=true;ui.bonusControls.hidden=true;ui.feedback.className='feedback';ui.powerUpIndicator.hidden=true;ui.lockerButton.disabled=true;updateUI();
     ui.bonusBannerTitle.textContent=bonus.title;ui.bonusBannerCopy.textContent=bonus.type==='open-net'?'Find the opening. Fire fast.':bonus.type==='deflection'?'Track it. Tip it. Score.':'Watch the save. Attack the rebound.';
     ui.bonusBanner.hidden=false;requestAnimationFrame(()=>ui.bonusBanner.classList.add('show'));playBonusIntroSound();
