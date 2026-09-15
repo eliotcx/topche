@@ -8,7 +8,7 @@
   <link rel="icon" type="image/png" href="assets/cheese-logo.png">
   <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
   <title>Top Che’s Hockey</title>
-  <link rel="stylesheet" href="styles.css?v=20260914.1">
+  <link rel="stylesheet" href="styles.css?v=20260914.2">
 </head>
 <body>
   <main class="app-shell">
@@ -57,6 +57,13 @@
           <div class="power-up-indicator" id="powerUpIndicator" role="img" hidden>
             <img id="powerUpIcon" src="" alt="">
           </div>
+          <div class="bonus-banner" id="bonusBanner" hidden aria-live="assertive">
+            <div class="bonus-rays" aria-hidden="true"></div>
+            <img src="assets/cheese-logo.png" alt="">
+            <span>INTERMISSION BONUS!</span>
+            <strong id="bonusBannerTitle">OPEN NET RUSH!</strong>
+            <small id="bonusBannerCopy">Find the opening. Fire fast.</small>
+          </div>
           <div class="start-overlay" id="startOverlay">
             <img class="cheese-hero-logo" src="assets/cheese-logo.png" alt="">
             <p class="overline">LEVEL UP YOUR HOCKEY BRAIN</p>
@@ -66,13 +73,14 @@
           </div>
         </div>
         <div class="feedback-zone"><div class="feedback" id="feedback" aria-live="assertive"></div></div>
-        <div class="controls" aria-label="Decision controls">
+        <div class="controls" id="standardControls" aria-label="Decision controls">
           <button data-choice="left"><kbd>←</kbd><span>Pass left</span></button>
           <button data-choice="shoot" class="shoot"><kbd>SPACE</kbd><span>Shoot</span></button>
           <button data-choice="right"><kbd>→</kbd><span>Pass right</span></button>
           <button data-choice="rush" class="strategy rush"><kbd>↑</kbd><span>Rush</span></button>
           <button data-choice="regroup" class="strategy regroup"><kbd>↓</kbd><span>Regroup</span></button>
         </div>
+        <div class="bonus-controls" id="bonusControls" aria-label="Intermission controls" hidden></div>
       </section>
 
       <aside class="stats-panel" aria-label="Session stats">
@@ -108,6 +116,7 @@
       <li><strong>Decide quickly.</strong> Press ← or → to pass, ↑ to Rush, ↓ to Regroup, or SPACE to Shoot—or tap a choice—before the clock expires.</li>
       <li><strong>Trust your eyes.</strong> Lane guides fade as you advance and disappear in the elite levels.</li>
       <li><strong>Earn Cheese Points.</strong> Make smart reads and complete levels, then spend your points on player gear in the Locker.</li>
+      <li><strong>Play intermission bonuses.</strong> After every third level, take a quick break with Open Net Rush, Deflection Perfection, or Rebound Rush. Play directly on the ice by tapping openings and rebounds or dragging your stick into a puck’s path. Bonus games never block your progress.</li>
     </ol>
     <p class="tip">Tip: moving backward to keep possession is better than forcing a play into pressure.</p>
   </dialog>
@@ -145,6 +154,6 @@
     </section>
   </dialog>
 
-  <script src="game.js?v=20260914.5"></script>
+  <script src="game.js?v=20260914.6"></script>
 </body>
 </html>
