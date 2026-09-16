@@ -216,6 +216,7 @@ dialog li strong { color: var(--white); }
 @keyframes bonus-rays-spin { to { transform: rotate(360deg); } }
 
 .bonus-heading { margin: 15px 0 7px; color: #ffe274; font-size: .68rem; font-weight: 950; letter-spacing: .19em; }
+.level-grid + .bonus-heading { margin-top: 32px; }
 .bonus-test-badge { margin: 0 0 9px; padding: 7px 11px; color: #071b2b; border-radius: 5px; background: linear-gradient(90deg, #ffcf54, #ffe88e); box-shadow: 0 7px 18px rgba(255,207,84,.18); font-size: .64rem; font-weight: 950; letter-spacing: .1em; }
 .bonus-grid { width: min(540px, 100%); display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; padding-bottom: 8px; }
 .bonus-card { position: relative; min-height: 72px; padding: 9px 10px; color: #fff; text-align: left; border: 1px solid #8f7430; border-radius: 7px; background: radial-gradient(circle at 90% 10%, rgba(255,211,75,.2), transparent 35%), linear-gradient(135deg, #18384a, #2b223a); cursor: pointer; transition: transform .15s, border-color .15s, box-shadow .15s; }

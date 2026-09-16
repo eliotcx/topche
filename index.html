@@ -8,9 +8,39 @@
   <link rel="icon" type="image/png" href="assets/cheese-logo.png">
   <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
   <title>Top Che’s Hockey</title>
-  <link rel="stylesheet" href="styles.css?v=20260914.2">
+  <style>
+    body.app-loading { overflow: hidden; }
+    #bootLoader { position: fixed; inset: 0; z-index: 9999; display: grid; place-items: center; padding: 28px; color: #f7fbfc; background: radial-gradient(circle at 50% 38%, #164761 0, #0a293d 34%, #06111d 76%); opacity: 1; visibility: visible; transition: opacity .38s ease, visibility 0s linear .38s; }
+    #bootLoader[hidden] { display: none; }
+    #bootLoader.boot-ready { opacity: 0; visibility: hidden; }
+    .boot-rink { position: absolute; inset: 7% 8%; overflow: hidden; border: 1px solid rgba(150,211,225,.18); border-radius: 46%; opacity: .42; }
+    .boot-rink::before { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; width: 1px; background: rgba(99,230,237,.3); }
+    .boot-rink::after { content: ''; position: absolute; left: 50%; top: 50%; width: min(42vw,280px); aspect-ratio: 1; border: 1px solid rgba(255,107,53,.3); border-radius: 50%; transform: translate(-50%,-50%); }
+    .boot-card { position: relative; width: min(330px,100%); text-align: center; }
+    .boot-logo-wrap { width: 118px; height: 118px; display: grid; place-items: center; margin: 0 auto 15px; border: 1px solid rgba(255,207,84,.35); border-radius: 50%; background: radial-gradient(circle, rgba(255,207,84,.2), rgba(255,207,84,.03) 62%, transparent 64%); box-shadow: 0 0 52px rgba(255,207,84,.14); animation: boot-pulse 1.5s ease-in-out infinite; }
+    .boot-logo { width: 82px; height: 82px; object-fit: contain; filter: drop-shadow(0 9px 12px rgba(0,0,0,.4)); }
+    .boot-kicker { margin: 0 0 7px; color: #63e6ed; font: 900 .7rem/1 system-ui,sans-serif; letter-spacing: .24em; }
+    .boot-title { margin: 0; font: 950 clamp(1.75rem,8vw,2.45rem)/.95 system-ui,sans-serif; letter-spacing: -.055em; }
+    .boot-status { min-height: 20px; margin: 15px 0 10px; color: #c2d9e1; font: 800 .78rem/1.25 system-ui,sans-serif; letter-spacing: .08em; text-transform: uppercase; }
+    .boot-track { height: 5px; overflow: hidden; border-radius: 8px; background: rgba(99,230,237,.13); box-shadow: inset 0 0 0 1px rgba(99,230,237,.08); }
+    .boot-progress { display: block; width: 12%; height: 100%; border-radius: inherit; background: linear-gradient(90deg,#63e6ed,#ffcf54); box-shadow: 0 0 14px rgba(99,230,237,.45); animation: boot-load 3.4s cubic-bezier(.16,.72,.24,1) forwards; transition: width .28s ease; }
+    @keyframes boot-pulse { 50% { transform: scale(1.045); box-shadow: 0 0 68px rgba(255,207,84,.22); } }
+    @keyframes boot-load { to { width: 84%; } }
+    @media (prefers-reduced-motion: reduce) { .boot-logo-wrap,.boot-progress { animation: none; } .boot-progress { width: 72%; } }
+  </style>
+  <link rel="stylesheet" href="styles.css?v=20260916.1">
 </head>
-<body>
+<body class="app-loading">
+  <div id="bootLoader" role="status" aria-live="polite" aria-label="Top Che’s Hockey is loading">
+    <div class="boot-rink" aria-hidden="true"></div>
+    <div class="boot-card">
+      <div class="boot-logo-wrap"><img class="boot-logo" src="assets/cheese-logo.png" alt=""></div>
+      <p class="boot-kicker">TOP CHE’S HOCKEY</p>
+      <div class="boot-title">LACING UP…</div>
+      <p class="boot-status" id="bootStatus">Preparing the rink</p>
+      <div class="boot-track" aria-hidden="true"><span class="boot-progress" id="bootProgress"></span></div>
+    </div>
+  </div>
   <main class="app-shell">
     <header class="topbar">
       <div class="brand" aria-label="Top Che’s Hockey">
@@ -154,6 +184,6 @@
     </section>
   </dialog>
 
-  <script src="game.js?v=20260914.6"></script>
+  <script src="game.js?v=20260916.1"></script>
 </body>
 </html>
