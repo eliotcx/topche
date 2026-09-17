@@ -255,7 +255,7 @@
   const cheeseLogo = new Image();
   cheeseLogo.onload = () => { markBootAssetReady();if(ui.playerShowcase&&!ui.playerShowcase.hidden)renderPlayerShowcase(); };
   cheeseLogo.onerror = markBootAssetReady;
-  cheeseLogo.src = 'assets/cheese-logo.png';
+  cheeseLogo.src = 'assets/top-ches-logo-v44.png';
   const fallenPlayerSprite = new Image();
   let fallenPlayerReady = false;
   fallenPlayerSprite.onload = () => { fallenPlayerReady = true;refreshCustomPlayer();markBootAssetReady(); };
@@ -1689,7 +1689,7 @@
     const levelGrid=`<div class="level-grid" aria-label="Hockey challenges">${levels.map((level,index)=>{const locked=index>=unlocked,complete=index<unlocked-1,targetLabel=index===levels.length-1?'TARGET':'TO ADVANCE';return `<button class="level-card" data-level="${index}" ${locked?'disabled':''}><span class="level-number">LEVEL ${index+1} · ${level.unlock}/${level.rounds} ${targetLabel}</span><strong>${level.title}</strong><small>${level.short}</small><span class="level-state">${locked?'🔒':complete?'✓':'▶'}</span></button>`;}).join('')}</div>`;
     const bonusGrid=`<p class="bonus-heading">INTERMISSION BONUSES</p><div class="bonus-grid" aria-label="Intermission bonus games">${intermissions.map((bonus,index)=>{const locked=!bonusTestMode&&completed<bonus.afterLevel;return `<button class="bonus-card" data-bonus="${index}" ${locked?'disabled':''}><span>AFTER LEVEL ${bonus.afterLevel} · ${bonus.difficulty.toUpperCase()}</span><strong>${bonus.title}</strong><small>${locked?'Complete Level '+bonus.afterLevel:bonus.short}</small></button>`;}).join('')}</div>`;
     const testBadge=bonusTestMode?'<div class="bonus-test-badge">BONUS TEST MODE · ALL SIX UNLOCKED</div>':'';
-    ui.startOverlay.innerHTML=`<img class="cheese-hero-logo" src="assets/cheese-logo.png" alt=""><p class="overline">${bonusTestMode?'INTERMISSION TEST BENCH':'LEVEL UP YOUR HOCKEY BRAIN'}</p><h2>Choose your<br><em>${bonusTestMode?'bonus game.':'challenge.'}</em></h2><p>${bonusTestMode?'Jump directly into any intermission bonus. Your regular level unlocks stay unchanged.':'Beat the accuracy target to unlock the next level.'}</p>${testBadge}${bonusTestMode?bonusGrid+levelGrid:levelGrid+bonusGrid}`;
+    ui.startOverlay.innerHTML=`<img class="cheese-hero-logo" src="assets/top-ches-logo-v44.png" alt=""><p class="overline">${bonusTestMode?'INTERMISSION TEST BENCH':'LEVEL UP YOUR HOCKEY BRAIN'}</p><h2>Choose your<br><em>${bonusTestMode?'bonus game.':'challenge.'}</em></h2><p>${bonusTestMode?'Jump directly into any intermission bonus. Your regular level unlocks stay unchanged.':'Beat the accuracy target to unlock the next level.'}</p>${testBadge}${bonusTestMode?bonusGrid+levelGrid:levelGrid+bonusGrid}`;
     ui.startOverlay.classList.remove('hidden');
     ui.startOverlay.querySelectorAll('[data-level]').forEach(button=>button.addEventListener('click',()=>startGame(Number(button.dataset.level))));
     ui.startOverlay.querySelectorAll('[data-bonus]').forEach(button=>button.addEventListener('click',()=>startIntermission(Number(button.dataset.bonus),false)));

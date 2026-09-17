@@ -32,7 +32,7 @@ button:focus-visible { outline: 3px solid var(--cyan); outline-offset: 3px; }
 
 .app-shell { min-height: 100vh; padding: 22px clamp(18px, 3vw, 48px) 32px; }
 .topbar { height: 60px; max-width: 1500px; margin: 0 auto 18px; display: flex; justify-content: space-between; align-items: center; }
-.brand { display: flex; gap: 11px; align-items: center; letter-spacing: .08em; }
+.brand { display: flex; gap: 1px; align-items: center; letter-spacing: .08em; }
 .brand-mark { width: 48px; height: 42px; object-fit: contain; filter: drop-shadow(0 5px 8px rgba(0,0,0,.35)); }
 .brand-name { display: block; font-size: .64rem; line-height: 1; color: var(--cyan); font-weight: 400; letter-spacing: .18em; }
 .top-actions { display: flex; align-items: center; gap: 10px; }
@@ -215,8 +215,8 @@ dialog li strong { color: var(--white); }
 @keyframes bonus-logo-pop { 0% { transform: scale(.35) rotate(-18deg); opacity: 0; } 70% { transform: scale(1.12) rotate(5deg); opacity: 1; } 100% { transform: scale(1) rotate(0); } }
 @keyframes bonus-rays-spin { to { transform: rotate(360deg); } }
 
-.bonus-heading { margin: 15px 0 7px; color: #ffe274; font-size: .68rem; font-weight: 950; letter-spacing: .19em; }
-.level-grid + .bonus-heading { margin-top: 32px; }
+.start-overlay > p.bonus-heading { max-width: none; margin: 20px 0 9px; color: #ffe274; font-size: .68rem; font-weight: 950; letter-spacing: .19em; line-height: 1.25; }
+.start-overlay > .level-grid + p.bonus-heading { margin-top: 48px; }
 .bonus-test-badge { margin: 0 0 9px; padding: 7px 11px; color: #071b2b; border-radius: 5px; background: linear-gradient(90deg, #ffcf54, #ffe88e); box-shadow: 0 7px 18px rgba(255,207,84,.18); font-size: .64rem; font-weight: 950; letter-spacing: .1em; }
 .bonus-grid { width: min(540px, 100%); display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; padding-bottom: 8px; }
 .bonus-card { position: relative; min-height: 72px; padding: 9px 10px; color: #fff; text-align: left; border: 1px solid #8f7430; border-radius: 7px; background: radial-gradient(circle at 90% 10%, rgba(255,211,75,.2), transparent 35%), linear-gradient(135deg, #18384a, #2b223a); cursor: pointer; transition: transform .15s, border-color .15s, box-shadow .15s; }
@@ -291,6 +291,7 @@ dialog li strong { color: var(--white); }
   .score-logo { width: 58px; height: 58px; margin-bottom: 14px; }
   .start-overlay { padding: 12px; justify-content: flex-start; }
   .level-grid { gap: 6px; }
+  .start-overlay > .level-grid + p.bonus-heading { margin-top: 52px; }
   .level-card { min-height: 74px; padding: 9px; }
   .level-card strong { font-size: .86rem; }
   .bonus-banner { padding: 15px; }
