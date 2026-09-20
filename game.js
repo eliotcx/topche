@@ -90,8 +90,63 @@
     { situation:'Delayed release', answer:'shoot', carrier:[.45,.6], goalie:-1, shot:false, rush:null, showLeft:true, showRight:true, teammates:[[.18,.4],[.82,.4]], defenders:[[.2,.38],[.8,.38]], cue:'Both defenders committed outside. The goalie is pinned left and the slot has opened.' },
     { situation:'Disguised backdoor left', answer:'left', carrier:[.73,.64], goalie:0, shot:true, rush:null, showLeft:true, showRight:true, teammates:[[.15,.27],[.82,.4]], defenders:[[.51,.39],[.69,.47],[.8,.38]], cue:'Look through the traffic: the left backdoor player is completely unattended.' },
     { situation:'Disguised backdoor right', answer:'right', carrier:[.27,.64], goalie:0, shot:true, rush:null, showLeft:true, showRight:true, teammates:[[.18,.4],[.85,.27]], defenders:[[.2,.38],[.31,.47],[.49,.39]], cue:'Look through the traffic: the right backdoor player is completely unattended.' },
-    { situation:'Five-man box', answer:'regroup', carrier:[.5,.71], goalie:0, shot:true, rush:null, showLeft:true, showRight:true, teammates:[[.16,.38],[.84,.38]], defenders:[[.16,.36],[.32,.48],[.5,.33],[.68,.48],[.84,.36]], cue:'The five-player box is intact. Do not feed the counterattack—reset the formation.' }
+    { situation:'Five-man box', answer:'regroup', carrier:[.5,.71], goalie:0, shot:true, rush:null, showLeft:true, showRight:true, teammates:[[.16,.38],[.84,.38]], defenders:[[.16,.36],[.32,.48],[.5,.33],[.68,.48],[.84,.36]], cue:'The five-player box is intact. Do not feed the counterattack—reset the formation.' },
+    // New moving situations. Route arrows show developing plays, never the answer.
+    { situation:'Trailing winger', answer:'left', carrier:[.64,.7], goalie:0, shot:true, rush:null, showLeft:true, showRight:true, teammates:[[.18,.46],[.79,.4]], defenders:[[.43,.46],[.61,.43],[.78,.39]], routes:[['blue','left',.25,.41],['white',2,.78,.43]], cue:'The right winger is marked and the middle is crowded. The late left winger has a clear passing lane.' },
+    { situation:'Far-side rotation', answer:'right', carrier:[.34,.7], goalie:0, shot:true, rush:null, showLeft:true, showRight:true, teammates:[[.18,.38],[.82,.47]], defenders:[[.18,.41],[.41,.48],[.54,.46]], routes:[['blue','right',.78,.39],['white',0,.2,.4]], cue:'The left option is covered as the defence rotates. Find the right-side teammate arriving behind it.' },
+    { situation:'Point-to-post seam', answer:'left', carrier:[.76,.61], goalie:0, shot:true, rush:null, showLeft:true, showRight:true, teammates:[[.17,.29],[.82,.4]], defenders:[[.57,.6],[.69,.45],[.81,.41]], routes:[['blue','left',.21,.32],['white',1,.68,.48]], cue:'The defenders press the puck side. Pass across to the teammate behind the far post.' },
+    { situation:'Escape across the slot', answer:'right', carrier:[.22,.76], goalie:0, shot:true, rush:null, showLeft:true, showRight:true, teammates:[[.15,.42],[.83,.32]], defenders:[[.17,.4],[.35,.53],[.48,.47]], routes:[['blue','right',.78,.35],['white',1,.37,.53]], cue:'The near wall is trapped. Pass across the open upper slot to your right-side teammate.' },
+    { situation:'Wide goalie, free lane', answer:'shoot', carrier:[.37,.63], goalie:1, shot:false, rush:null, showLeft:true, showRight:true, teammates:[[.17,.39],[.8,.4]], defenders:[[.18,.39],[.78,.41]], routes:[['white',1,.82,.4],['blue','right',.8,.39]], cue:'Both passes are covered, but the middle is empty and the goalie is over at the right post. Shoot.' },
+    { situation:'Outside defender peels', answer:'shoot', carrier:[.58,.61], goalie:-1, shot:false, rush:null, showLeft:true, showRight:true, teammates:[[.18,.4],[.82,.41]], defenders:[[.18,.41],[.81,.42]], routes:[['white',1,.84,.4],['white',0,.16,.4]], cue:'The defenders peel to the wings while the goalie stays left. Take the clear shot to the far side.' },
+    { situation:'Slot opens behind the press', answer:'shoot', carrier:[.48,.59], goalie:1, shot:false, rush:null, showLeft:true, showRight:true, teammates:[[.16,.36],[.84,.38]], defenders:[[.18,.37],[.82,.39]], routes:[['white',0,.16,.39],['white',1,.84,.37]], cue:'The defenders follow both wings, leaving a shooting lane. The goalie is stranded right.' },
+    { situation:'Late cut to the middle', answer:'shoot', carrier:[.6,.65], goalie:-1, shot:false, rush:null, showLeft:true, showRight:true, teammates:[[.18,.42],[.83,.38]], defenders:[[.19,.42],[.83,.4]], routes:[['blue','left',.17,.4],['white',1,.84,.38]], cue:'The pass options are tied up. With no body between you and the net, shoot away from the left-side goalie.' },
+    { situation:'Left-side pressure release', answer:'rush', carrier:[.56,.77], goalie:0, shot:true, rush:'left', showLeft:false, showRight:true, teammates:[[.19,.43],[.8,.42]], defenders:[[.52,.4],[.74,.44],[.81,.4]], routes:[['white',1,.7,.46],['white',2,.81,.42]], cue:'The forecheck crowds the middle and your only teammate is covered on the right. Rush into the empty left lane.' },
+    { situation:'Right-side counter lane', answer:'rush', carrier:[.44,.76], goalie:0, shot:true, rush:'right', showLeft:true, showRight:false, teammates:[[.17,.42],[.83,.4]], defenders:[[.17,.43],[.29,.46],[.51,.39]], routes:[['white',1,.31,.48],['blue','left',.18,.4]], cue:'The left side is swarming and the shot is covered. Skate up the unguarded right wall.' },
+    { situation:'Two defenders split wide', answer:'rush', carrier:[.5,.78], goalie:0, shot:true, rush:'centre', showLeft:true, showRight:true, teammates:[[.17,.4],[.83,.4]], defenders:[[.18,.4],[.83,.4],[.5,.26]], routes:[['white',0,.16,.42],['white',1,.85,.42]], cue:'The wide defenders stay with your wingers; the middle skating gap is open below the high shot blocker.' },
+    { situation:'Forechecker overcommits', answer:'rush', carrier:[.3,.72], goalie:0, shot:false, rush:'right', showLeft:true, showRight:false, teammates:[[.14,.4],[.82,.43]], defenders:[[.16,.41],[.32,.43],[.5,.34]], routes:[['white',1,.29,.44],['white',2,.53,.34]], cue:'The checker lunges toward the left wall while the goalie is set. Cut back and rush the open right-side space.' },
+    { situation:'Three-way squeeze', answer:'regroup', carrier:[.47,.78], goalie:0, shot:true, rush:null, showLeft:true, showRight:true, teammates:[[.16,.38],[.83,.42]], defenders:[[.18,.39],[.34,.55],[.49,.42],[.66,.54],[.81,.41]], routes:[['white',1,.36,.57],['white',3,.64,.55]], cue:'The two outlets, shooting lane, and both routes forward are covered. Loop back to retain the puck.' },
+    { situation:'High forecheck closes', answer:'regroup', carrier:[.61,.73], goalie:0, shot:true, rush:null, showLeft:true, showRight:true, teammates:[[.18,.4],[.82,.39]], defenders:[[.18,.39],[.38,.52],[.56,.42],[.7,.54],[.81,.38]], routes:[['white',1,.4,.53],['white',3,.69,.55]], cue:'The forecheck arrives from both sides and the high defender blocks the shot. Regroup.' },
+    { situation:'Wall exits denied', answer:'regroup', carrier:[.36,.75], goalie:0, shot:true, rush:null, showLeft:true, showRight:true, teammates:[[.17,.4],[.81,.4]], defenders:[[.17,.39],[.28,.53],[.48,.4],[.65,.53],[.82,.39]], routes:[['white',1,.29,.54],['white',3,.63,.54]], cue:'Both walls are sealed and the centre is screened by a defender. Turn out of pressure.' },
+    { situation:'Corner trap resets', answer:'regroup', carrier:[.77,.71], goalie:0, shot:true, rush:null, showLeft:true, showRight:true, teammates:[[.18,.38],[.82,.39]], defenders:[[.18,.38],[.49,.55],[.58,.41],[.73,.51],[.84,.39]], routes:[['white',1,.51,.56],['white',3,.71,.52]], cue:'The corner trap removes the nearby wall, cross-ice pass, and shot. Protect possession and regroup.' },
+    { situation:'Delayed weak-side seam', answer:'left', carrier:[.71,.69], goalie:0, shot:true, rush:null, showLeft:true, showRight:true, teammates:[[.18,.37],[.82,.41]], defenders:[[.52,.43],[.64,.43],[.83,.41]], routes:[['blue','left',.22,.33],['white',1,.66,.44]], cue:'The defence steps to the puck on the right. Send the puck to the late weak-side skater on the left.' },
+    { situation:'Bumper moves to space', answer:'right', carrier:[.28,.68], goalie:0, shot:false, rush:null, showLeft:true, showRight:true, teammates:[[.17,.41],[.82,.29]], defenders:[[.17,.42],[.43,.5],[.54,.57]], routes:[['blue','right',.78,.31],['white',1,.41,.45]], cue:'The left wing is checked and the goalie is square. Find the right-side bumper arriving alone above the crease.' },
+    { situation:'Support on the left wall', answer:'left', carrier:[.64,.63], goalie:0, shot:true, rush:null, showLeft:true, showRight:true, teammates:[[.18,.51],[.8,.38]], defenders:[[.49,.45],[.58,.41],[.81,.38]], routes:[['blue','left',.2,.48],['white',1,.58,.43]], cue:'The shooting lane and right winger are blocked. Use the open support skater along the left boards.' },
+    { situation:'High point changes side', answer:'right', carrier:[.23,.72], goalie:0, shot:true, rush:null, showLeft:true, showRight:true, teammates:[[.16,.4],[.82,.35]], defenders:[[.17,.4],[.35,.51],[.53,.42]], routes:[['blue','right',.79,.32],['white',1,.36,.52]], cue:'The left wall is defended and your shot would hit traffic. Switch play to the right-side point.' }
   ];
+
+  // Each developing read builds on a checked lane layout. The distinct player
+  // movement and coaching cue describe the particular decision being tested.
+  const additionalReads = [
+    {base:48,situation:'Late centre outlet',routes:[['blue','left',.23,.4],['white',2,.8,.42]],cue:'The centre drops into open space to your left while the right wing remains covered. Feed the late outlet.'},
+    {base:49,situation:'Weak-side winger cuts in',routes:[['blue','right',.76,.37],['white',0,.2,.39]],cue:'The defender stays with the near winger. Find the weak-side skater cutting into space on the right.'},
+    {base:50,situation:'Far-post slip behind coverage',routes:[['blue','left',.19,.32],['white',1,.7,.47]],cue:'The defenders follow the puck down the right wall. Slip the pass to the unmarked far-post teammate.'},
+    {base:51,situation:'Blue-line switch under pressure',routes:[['blue','right',.79,.33],['white',1,.38,.52]],cue:'The defender steps into the near passing lane. Switch the puck to the open right-side point.'},
+    {base:64,situation:'Low support behind the press',routes:[['blue','left',.23,.47],['white',1,.6,.43]],cue:'Pressure closes around the puck and the right winger. The low left-side support remains free.'},
+    {base:65,situation:'High-cycle release',routes:[['blue','right',.8,.3],['white',1,.38,.51]],cue:'The left lane is trapped. A high right-side skater arrives above the collapsing coverage.'},
+    {base:66,situation:'Delayed trailer at the circle',routes:[['blue','left',.21,.34],['white',1,.67,.43]],cue:'The defence loads up on the right. The trailing attacker arrives alone at the left circle.'},
+    {base:67,situation:'Reverse to the open point',routes:[['blue','right',.8,.32],['white',1,.37,.51]],cue:'The near-side wall is sealed; reverse play to the right point before the pressure arrives.'},
+    {base:48,situation:'Cross-ice option after a pinch',carrier:[.66,.7],routes:[['blue','left',.23,.42],['white',2,.79,.43]],cue:'A defender pinches toward the right wing. The pass across to the left-side support is still clear.'},
+    {base:49,situation:'Far winger escapes the check',carrier:[.32,.7],routes:[['blue','right',.78,.38],['white',0,.2,.4]],cue:'The near winger is checked. Send the puck to the right winger escaping behind the defender.'},
+    {base:52,situation:'Screen clears the shooting lane',routes:[['white',0,.16,.39],['white',1,.82,.4]],cue:'Both defenders peel off to the flanks and the goalie is stranded on the right. Release a clear shot.'},
+    {base:53,situation:'Goalie tracks the wrong wing',routes:[['white',0,.16,.4],['white',1,.84,.39]],cue:'The goalie stays left as the defence follows the wings. The open middle gives you a shot far side.'},
+    {base:54,situation:'Wingers drag the coverage out',routes:[['white',0,.17,.38],['white',1,.83,.38]],cue:'Both checkers stretch wide with their marks. Shoot through the now-empty slot past the right-side goalie.'},
+    {base:55,situation:'Late release against a slide',routes:[['white',0,.19,.41],['white',1,.84,.38]],cue:'The goalie has slid left and both passing targets are covered. Fire through the unblocked lane.'},
+    {base:52,situation:'Clear lane after a switch',carrier:[.39,.63],routes:[['white',0,.16,.39],['white',1,.83,.4]],cue:'The defensive switch pulls both checkers to the wings. Shoot while the right-side goalie is out of position.'},
+    {base:56,situation:'Vacated lane on a pinch',routes:[['white',1,.7,.45],['white',2,.82,.41]],cue:'The right-side defenders close on your winger and abandon the left lane. Carry the puck through it.'},
+    {base:57,situation:'Counter through the empty wall',routes:[['white',1,.31,.47],['blue','left',.17,.4]],cue:'The defence collapses left after the turnover. Rush the open right wall instead of forcing a pass.'},
+    {base:58,situation:'Split the stretching defence',routes:[['white',0,.16,.42],['white',1,.85,.41]],cue:'Each defender shadows a winger, leaving an open centre route below the shot blocker. Rush the gap.'},
+    {base:59,situation:'Forecheck misses the turn',routes:[['white',1,.29,.45],['white',2,.53,.35]],cue:'A forechecker commits to the left wall. Turn into the space on the right and carry it forward.'},
+    {base:56,situation:'Outside lane after overload',carrier:[.55,.77],routes:[['white',1,.71,.46],['white',2,.82,.42]],cue:'The overload seals the shot and the right pass. Skate into the left-side space it leaves behind.'},
+    {base:60,situation:'No outlet against layered pressure',routes:[['white',1,.36,.56],['white',3,.64,.56]],cue:'The first checker blocks the shot while the second layer seals both outlets. Regroup with possession.'},
+    {base:61,situation:'Forecheck closes both boards',routes:[['white',1,.4,.54],['white',3,.7,.55]],cue:'Two forecheckers take the boards and a third stays in the shooting lane. Turn back to reset.'},
+    {base:62,situation:'Neutral-zone squeeze',routes:[['white',1,.29,.55],['white',3,.64,.55]],cue:'The defenders squeeze both passing lanes and protect the middle. Regroup before skating into traffic.'},
+    {base:63,situation:'Corner pressure with no seam',routes:[['white',1,.5,.56],['white',3,.71,.53]],cue:'The corner press leaves no clean shot, outlet, or forward skating gap. Curl back with the puck.'},
+    {base:60,situation:'Full-ice trap holds its shape',carrier:[.48,.78],routes:[['white',1,.35,.57],['white',3,.65,.55]],cue:'Both wings remain checked and the middle is blocked as the trap shifts. Keep possession and regroup.'}
+  ];
+  for(const read of additionalReads){
+    const {base,...details}=read;
+    scenarios.push({...scenarios[base],...details});
+  }
 
   const levels = [
     { id:'rookie', title:'Rookie Reads', short:'Pass or shoot', mission:'Learn to spot the open pass and the perfect shot.', focus:'See the simple play', rounds:6, time:10, minTime:10, unlock:4, scenarios:[0,2,4,5,1,3] },
@@ -115,6 +170,14 @@
     { id:'impossible-ice', title:'Impossible Ice', short:'Almost no reaction time', mission:'Read twenty elite situations with virtually no hesitation.', focus:'Instant recognition', rounds:20, time:1.18, minTime:.76, unlock:19, scenarios:[24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,47] },
     { id:'gauntlet', title:'Top Che’s Gauntlet', short:'Perfect reads required', mission:'Complete the hardest test in the Lab: twenty perfect decisions at maximum speed.', focus:'Master-level hockey sense', rounds:20, time:1.08, minTime:.7, unlock:20, scenarios:[45,26,31,37,24,43,29,40,34,42,25,36,30,46,27,41,35,38,44,47] }
   ];
+
+  // Mix guaranteed fresh reads into levels 3–20 while retaining each level's
+  // round count and its original pass / shoot / rush / regroup balance.
+  const freshScenariosByLevel=[[],[],[48,60,68],[49,52,69],[50,70],[51,53,71],
+    [54,61,72,73],[55,56,74],[57,75,76],[58,62,77],[59,63,78],
+    [64,79,80],[65,81],[66,82,83],[67,84],[48,54,60,85,86],
+    [49,55,61,87],[56,59,62,88,89],[50,53,57,63,90,91],
+    [51,52,58,64,65,66,67,92]];
 
   const intermissions = [
     { id:'open-net-rookie', type:'open-net', afterLevel:3, title:'Open Net Rush!', short:'Find the gap', difficulty:'Beginner', rounds:6, time:1.8, cue:'Read the goalie and tap the open part of the net.' },
@@ -1328,6 +1391,24 @@
       direction:{x:side*rx*Math.sin(turn),y:-ry*Math.cos(turn)}};
   }
 
+  function drawDevelopingRoutes(s,left,right,defenders,phase,m){
+    if(!s.routes)return;
+    const progress=(1-Math.cos(phase*Math.PI*2))/2;
+    for(const [team,who,px,py] of s.routes){
+      const skater=team==='blue'?(who==='left'?left:right):defenders[who];
+      if(!skater)continue;
+      const start={x:skater.x,y:skater.y},end={x:px*m.w,y:py*m.h};
+      const dx=end.x-start.x,dy=end.y-start.y,length=Math.hypot(dx,dy);
+      if(length<8)continue;
+      ctx.save();ctx.globalAlpha=.48;ctx.strokeStyle=team==='blue'?'#267dda':'#ce6060';
+      ctx.lineWidth=2.5;ctx.setLineDash([4,6]);ctx.beginPath();ctx.moveTo(start.x,start.y);ctx.lineTo(end.x,end.y);ctx.stroke();
+      ctx.setLineDash([]);ctx.fillStyle=ctx.strokeStyle;ctx.beginPath();
+      ctx.moveTo(end.x,end.y);ctx.lineTo(end.x-dx/length*10-dy/length*5,end.y-dy/length*10+dx/length*5);
+      ctx.lineTo(end.x-dx/length*10+dy/length*5,end.y-dy/length*10-dx/length*5);ctx.fill();ctx.restore();
+      skater.x+=dx*progress;skater.y+=dy*progress;
+    }
+  }
+
   function drawGame(t) {
     if(state.mode==='bonus'){
       drawBonusGame(t);
@@ -1354,6 +1435,8 @@
     if(!s.defenders&&(s.cover==='left'||s.cover==='both')) defenders.push({x:m.w*.34,y:m.h*.48});
     if(!s.defenders&&(s.cover==='right'||s.cover==='both')) defenders.push({x:m.w*.66,y:m.h*.48});
     if(!s.defenders&&s.shot) defenders.push({x:m.cx+sway*5,y:m.h*.34});
+    const routePhase=(((state.action?.start??gameTime)-state.animStart)%2200)/2200;
+    drawDevelopingRoutes(s,left,right,defenders,routePhase,m);
 
     let carrier={...puck},carrierAngle=0,carrierScale=1.08,carrierFallen=0,fallenAngle=0,movingPuck=null,previousPuck=null,puckOpacity=1;
     let actionRaw=0;
@@ -1859,7 +1942,14 @@
   }
 
   function shuffledScenarios(level) {
-    const deck=level.scenarios.map(index=>({...scenarios[index]}));
+    const ids=[...level.scenarios],used=new Set();
+    for(const index of freshScenariosByLevel[levels.indexOf(level)]||[]){
+      let replace=-1;
+      for(let i=ids.length-1;i>=0;i--){if(!used.has(i)&&scenarios[ids[i]].answer===scenarios[index].answer){replace=i;break;}}
+      if(replace<0)for(let i=ids.length-1;i>=0;i--){if(!used.has(i)){replace=i;break;}}
+      ids[replace]=index;used.add(replace);
+    }
+    const deck=ids.map(index=>({...scenarios[index]}));
     for(let i=deck.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[deck[i],deck[j]]=[deck[j],deck[i]];}
     return deck.slice(0,level.rounds);
   }

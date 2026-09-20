@@ -146,6 +146,9 @@ dialog li { margin: 12px 0; padding-left: 5px; }
 dialog li strong { color: var(--white); }
 .dialog-close { position: absolute; right: 12px; top: 10px; background: transparent; border: 0; color: var(--muted); font-size: 1.8rem; cursor: pointer; }
 .tip { padding: 14px; background: #102e42; border-left: 3px solid var(--cyan); color: #c7d8de; font-size: .88rem; line-height: 1.5; }
+#howDialog { max-height: calc(100dvh - 32px); overflow-y: auto; }
+.how-version { display: flex; justify-content: space-between; gap: 14px; margin: 24px 0 0; padding-top: 14px; border-top: 1px solid #28516a; color: #91aebb; font-size: .67rem; font-weight: 850; letter-spacing: .14em; }
+.how-version span { color: var(--cyan); white-space: nowrap; }
 
 .locker-dialog { width: min(780px, calc(100% - 24px)); max-height: min(820px, calc(100vh - 24px)); overflow: auto; padding: 24px; }
 .locker-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; padding-right: 24px; }
