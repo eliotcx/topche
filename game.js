@@ -148,6 +148,114 @@
     scenarios.push({...scenarios[base],...details});
   }
 
+  // These routes progress once with the round clock. Every play shows a
+  // teammate finding space or drawing coverage while opponents react.
+  const timedReads = [
+    {base:48,situation:'Centre curls into the seam',routes:[['blue','left',.24,.42],['white',2,.79,.43]],cue:'The centre curls into the left seam as a checker follows the far winger. Pass left before the window shrinks.'},
+    {base:49,situation:'Weak-side wing attacks the gap',routes:[['blue','right',.76,.37],['white',0,.2,.39]],cue:'The left winger remains covered while the right winger cuts through a gap. Move the puck right.'},
+    {base:50,situation:'Net-front slip to the left',routes:[['blue','left',.23,.32],['white',1,.68,.48]],cue:'A checker reaches toward the puck, leaving the left net-front player free. Make the cross-ice pass.'},
+    {base:51,situation:'Pressure follows the strong side',routes:[['blue','right',.79,.34],['white',1,.37,.52]],cue:'The forechecker follows your strong side. The right-side teammate moves into an open lane.'},
+    {base:64,situation:'Wall support arrives below pressure',routes:[['blue','left',.23,.48],['white',1,.58,.43]],cue:'The right side is guarded; a supporting left winger drops below pressure to offer a pass.'},
+    {base:65,situation:'High weak-side option',routes:[['blue','right',.77,.29],['white',1,.38,.51]],cue:'The defenders follow the puck to the left wall. Switch to the high right-side option.'},
+    {base:66,situation:'Trailer arcs into the left circle',routes:[['blue','left',.22,.32],['white',1,.61,.42]],cue:'The trailer arcs into the left circle while the defence shifts right. Feed the open skater.'},
+    {base:67,situation:'Point exchange across the ice',routes:[['blue','right',.78,.3],['white',1,.36,.53]],cue:'A checker seals the left wall as your right point backs into open space. Switch sides.'},
+    {base:68,situation:'Low centre stays available',routes:[['blue','left',.27,.41],['white',2,.8,.42]],cue:'The centre drops lower for a clean left-side outlet while a defender tracks the right winger.'},
+    {base:69,situation:'Right winger separates late',routes:[['blue','right',.76,.36],['white',0,.2,.39]],cue:'The right winger accelerates away from coverage. Look past the checked left side and pass right.'},
+    {base:52,situation:'Wingers pull the defenders wide',routes:[['blue','left',.15,.36],['white',0,.16,.39],['white',1,.82,.4]],cue:'As both wingers draw their marks wider, a clean shooting lane opens against an off-centre goalie.'},
+    {base:53,situation:'Right post vacated',routes:[['blue','right',.84,.39],['white',0,.16,.4],['white',1,.85,.4]],cue:'The goalie stays left while defenders follow the wide attackers. Take the unblocked shot.'},
+    {base:54,situation:'Bumper drags the coverage',routes:[['blue','left',.13,.34],['white',0,.16,.39],['white',1,.85,.37]],cue:'The wide skaters pull defenders away from the slot. Shoot through the middle past the right-side goalie.'},
+    {base:55,situation:'Late shot after a rotation',routes:[['blue','right',.86,.37],['white',0,.17,.41],['white',1,.85,.39]],cue:'The rotation carries both defenders away from your lane. Shoot far side while the goalie is left.'},
+    {base:78,situation:'Middle opens behind the winger',routes:[['blue','right',.84,.38],['white',0,.16,.4],['white',1,.85,.4]],cue:'The winger carries a checker toward the boards; the uncovered middle remains a direct shot.'},
+    {base:79,situation:'Far-side release under pressure',routes:[['blue','left',.15,.38],['white',0,.16,.4],['white',1,.85,.41]],cue:'The defenders chase your passing outlets. Shoot past the goalie stranded to the left.'},
+    {base:56,situation:'Winger pulls the pinch inward',routes:[['blue','right',.82,.39],['white',1,.73,.44],['white',2,.83,.4]],cue:'The right winger drags defenders toward the puck side. Rush up the abandoned left lane.'},
+    {base:57,situation:'Defender chases the left outlet',routes:[['blue','left',.16,.38],['white',1,.31,.46],['white',2,.52,.39]],cue:'The defence chases your left outlet. Carry through the open right-side skating lane.'},
+    {base:58,situation:'Wide coverage leaves a split',routes:[['blue','left',.14,.37],['white',0,.15,.4],['white',1,.86,.41]],cue:'As both wingers drift wide with their checkers, drive through the middle gap.'},
+    {base:59,situation:'Lunging forechecker leaves a lane',routes:[['blue','left',.12,.37],['white',1,.29,.44],['white',2,.53,.34]],cue:'The forechecker lunges left. Turn and skate up the free right-side route.'},
+    {base:84,situation:'Left wing pins the defence',routes:[['blue','left',.16,.39],['white',1,.29,.49],['white',2,.51,.4]],cue:'The left wing remains checked as the defence crowds that side. Rush the open right skating lane.'},
+    {base:85,situation:'Turn away from the wall pressure',routes:[['blue','right',.85,.38],['white',0,.17,.38],['white',1,.85,.38]],cue:'Both wingers draw the checkers outward. Rush through the unguarded centre.'},
+    {base:86,situation:'Attacking gap beside the check',routes:[['blue','left',.15,.38],['white',0,.16,.42],['white',1,.3,.43]],cue:'The left outlet draws the checker. Turn away from pressure and rush the open right lane.'},
+    {base:60,situation:'Centre support gets swallowed',routes:[['blue','left',.18,.36],['white',0,.19,.36],['white',1,.35,.56],['white',3,.64,.55]],cue:'Both teammates are checked and the forecheck keeps closing the middle. Regroup and protect the puck.'},
+    {base:61,situation:'Forecheck takes away the outlets',routes:[['blue','right',.84,.37],['white',1,.4,.53],['white',3,.7,.55]],cue:'Your right winger tries to separate, but the forecheck owns both outlets and the shot lane. Reset.'},
+    {base:62,situation:'Two layers deny the breakout',routes:[['blue','left',.15,.37],['white',0,.16,.37],['white',1,.29,.54],['white',3,.64,.54]],cue:'The first layer checks your winger and the second closes the middle. Regroup instead of forcing it.'},
+    {base:63,situation:'Corner trap tracks the support',routes:[['blue','right',.84,.36],['white',1,.5,.56],['white',3,.72,.54]],cue:'A defender follows your supporting winger while the others protect the shot and left pass. Curl back.'},
+    {base:88,situation:'High pressure denies the reset pass',routes:[['blue','left',.14,.35],['white',0,.16,.36],['white',1,.34,.55],['white',3,.65,.56]],cue:'Even as the left winger drifts wider, the defender tracks them. No direct attack lane remains.'},
+    {base:89,situation:'Both boards close at once',routes:[['blue','right',.85,.38],['white',1,.4,.55],['white',3,.69,.55]],cue:'The forecheck tightens on both boards while the high defender screens the net. Turn back.'},
+    {base:90,situation:'Traffic builds across the slot',routes:[['blue','left',.15,.36],['white',0,.16,.37],['white',1,.29,.54],['white',3,.63,.55]],cue:'The checking layer moves with your left winger and keeps every forward choice shut. Regroup.'}
+  ];
+  for(const read of timedReads){
+    const {base,...details}=read;
+    scenarios.push({...scenarios[base],...details,timedRoutes:true});
+  }
+
+  // New formations place support at different depths and angles. The defenders
+  // track covered teammates; the shot screen follows the puck-to-net lane.
+  // Matching route timing keeps the single safe action legible as everyone moves.
+  const shiftingFormations = [
+    {situation:'Low-to-high release',answer:'left',carrier:[.73,.59],teammates:[[.27,.51],[.78,.3]],ends:[[.17,.33],[.85,.36]],shot:false,cue:'The low left support backs into room while a defender mirrors the right winger. Find the free left outlet.'},
+    {situation:'Inside-out curl',answer:'left',carrier:[.6,.82],teammates:[[.34,.48],[.75,.55]],ends:[[.14,.38],[.85,.44]],shot:true,cue:'A teammate curls from the inside lane to open ice on your left as the right side stays marked.'},
+    {situation:'Far-side escape',answer:'left',carrier:[.77,.77],teammates:[[.28,.34],[.72,.42]],ends:[[.13,.4],[.84,.3]],shot:false,cue:'A forechecker shadows your near winger; the far-side skater escapes into the left lane.'},
+    {situation:'Blue-line drop',answer:'left',carrier:[.67,.58],teammates:[[.31,.62],[.82,.43]],ends:[[.16,.49],[.76,.31]],shot:true,cue:'The left point drops to support the puck as the opposite outlet is taken away. Pass left.'},
+    {situation:'Net-front peel',answer:'left',carrier:[.81,.68],teammates:[[.28,.27],[.7,.32]],ends:[[.14,.39],[.85,.4]],shot:false,cue:'The far-post teammate peels toward space on the left. The near-post route is checked.'},
+    {situation:'Weak-side regroup pass',answer:'left',carrier:[.56,.84],teammates:[[.24,.58],[.76,.37]],ends:[[.14,.45],[.83,.49]],shot:true,cue:'The weak-side teammate loops low for a clear pass while the high right winger stays covered.'},
+    {situation:'Right point slides down',answer:'right',carrier:[.26,.57],teammates:[[.19,.3],[.66,.58]],ends:[[.13,.41],[.84,.42]],shot:false,cue:'The right point slides toward open ice. The left post option is tracked by a checker.'},
+    {situation:'Cycle through the seam',answer:'right',carrier:[.39,.83],teammates:[[.24,.46],[.7,.5]],ends:[[.13,.34],[.86,.33]],shot:true,cue:'The far winger cuts through the right seam as the defence closes around the left-side option.'},
+    {situation:'Trailing right support',answer:'right',carrier:[.2,.73],teammates:[[.28,.36],[.62,.64]],ends:[[.13,.42],[.84,.46]],shot:false,cue:'The right-side trailer accelerates into open ice behind the press. Pass across.'},
+    {situation:'Cross-ice wheel',answer:'right',carrier:[.31,.65],teammates:[[.2,.58],[.7,.27]],ends:[[.13,.42],[.85,.39]],shot:true,cue:'A teammate wheels out to the right while the close left-side lane remains covered.'},
+    {situation:'Backdoor drift',answer:'right',carrier:[.22,.79],teammates:[[.18,.32],[.67,.38]],ends:[[.13,.45],[.84,.24]],shot:false,cue:'The far-post teammate drifts behind the defence on the right. Send the puck across.'},
+    {situation:'Right wall outlet',answer:'right',carrier:[.44,.58],teammates:[[.23,.26],[.7,.61]],ends:[[.13,.42],[.85,.44]],shot:true,cue:'The right wall winger moves up into space as the left-side check stays with its target.'},
+    {situation:'Slot clears to shoot',answer:'shoot',carrier:[.46,.74],teammates:[[.23,.49],[.72,.45]],ends:[[.11,.31],[.86,.3]],goalie:1,cue:'Both defenders move out with your wingers, opening a straight shot past the right-side goalie.'},
+    {situation:'Low cycle shot window',answer:'shoot',carrier:[.69,.6],teammates:[[.29,.38],[.79,.55]],ends:[[.13,.28],[.87,.39]],goalie:-1,cue:'As the near-side defender tracks the cycling winger, the shot lane stays clear to the far side.'},
+    {situation:'High-slot step-in',answer:'shoot',carrier:[.42,.57],teammates:[[.27,.61],[.79,.37]],ends:[[.12,.44],[.87,.48]],goalie:1,cue:'The markers follow both support skaters outward. Step into the clear slot and shoot.'},
+    {situation:'Post-to-post misread',answer:'shoot',carrier:[.61,.77],teammates:[[.22,.34],[.7,.55]],ends:[[.12,.42],[.87,.35]],goalie:-1,cue:'The goalie reads a left-side pass and stays at that post. The middle shot is uncovered.'},
+    {situation:'Late trailer releases',answer:'shoot',carrier:[.48,.66],teammates:[[.29,.55],[.77,.28]],ends:[[.1,.35],[.87,.42]],goalie:1,cue:'Both passing targets carry their checkers away; shoot through the middle before the goalie resets.'},
+    {situation:'Wide decoys, clear shot',answer:'shoot',carrier:[.55,.56],teammates:[[.18,.47],[.75,.53]],ends:[[.1,.3],[.88,.42]],goalie:-1,cue:'The wide teammates draw both defenders, leaving a clear shot while the goalie is pinned left.'},
+    {situation:'Break up the left boards',answer:'rush',carrier:[.73,.83],teammates:[[.63,.48],[.82,.31]],ends:[[.65,.34],[.86,.46]],rush:'left',shot:true,cue:'Both right-side teammates are checked. The left boards remain empty as the defenders follow them.'},
+    {situation:'Escape the right corner',answer:'rush',carrier:[.25,.78],teammates:[[.18,.35],[.39,.56]],ends:[[.14,.48],[.31,.37]],rush:'right',shot:true,cue:'The left corner is crowded and your outlets are followed. Skate into the open right-side lane.'},
+    {situation:'Split the retreating pair',answer:'rush',carrier:[.51,.86],teammates:[[.21,.59],[.8,.51]],ends:[[.12,.39],[.87,.37]],rush:'centre',shot:true,cue:'The retreating defenders stay with the wide wingers, leaving a centre skating gap.'},
+    {situation:'Turn off the overload',answer:'rush',carrier:[.66,.65],teammates:[[.69,.38],[.85,.51]],ends:[[.62,.29],[.86,.36]],rush:'left',shot:true,cue:'The overload rushes to the right-side support. Cut into the unguarded left lane.'},
+    {situation:'Inside lane opens right',answer:'rush',carrier:[.35,.82],teammates:[[.16,.52],[.3,.37]],ends:[[.12,.34],[.37,.3]],rush:'right',shot:true,cue:'Both left-side teammates are tied up; the moving checkers leave the right side open.'},
+    {situation:'Race through centre ice',answer:'rush',carrier:[.48,.75],teammates:[[.19,.32],[.76,.59]],ends:[[.13,.44],[.86,.38]],rush:'centre',shot:true,cue:'The wingers stretch the two defenders apart. Rush through the empty centre route.'},
+    {situation:'High forecheck reset',answer:'regroup',carrier:[.64,.84],teammates:[[.21,.46],[.75,.53]],ends:[[.14,.32],[.85,.4]],cue:'The forecheck tracks both outlets and closes the middle lane. Curl back with possession.'},
+    {situation:'Corner cycle sealed',answer:'regroup',carrier:[.79,.62],teammates:[[.24,.31],[.83,.46]],ends:[[.13,.42],[.87,.3]],cue:'Every cycle outlet is followed and the shot lane is screened. Regroup before forcing a play.'},
+    {situation:'Pinch across the wall',answer:'regroup',carrier:[.34,.8],teammates:[[.21,.57],[.78,.37]],ends:[[.12,.4],[.86,.49]],cue:'Two defenders pinch across the passing lanes while a third guards the net. Turn away.'},
+    {situation:'Middle support marked',answer:'regroup',carrier:[.5,.7],teammates:[[.3,.37],[.7,.56]],ends:[[.12,.3],[.85,.42]],cue:'The moving middle support is still checked. Both passes, the shot, and the rush are defended.'},
+    {situation:'Both outlets collapse',answer:'regroup',carrier:[.62,.78],teammates:[[.2,.59],[.82,.32]],ends:[[.12,.43],[.86,.47]],cue:'Each outlet draws a defender and the middle is blocked. Reverse course to retain the puck.'},
+    {situation:'Trap tracks the late winger',answer:'regroup',carrier:[.41,.86],teammates:[[.16,.38],[.71,.52]],ends:[[.12,.51],[.86,.34]],cue:'The late winger cannot shake the checker and every forward lane closes. Regroup.'}
+  ];
+  function buildShiftingRead(formation){
+    const {ends,...read}=formation;
+    const carrier=read.carrier;
+    const covered=read.answer==='left'?[1]:read.answer==='right'?[0]:[0,1];
+    const defenders=[],routes=[];
+    // Each covered teammate and their checker use the same staggered clock.
+    for(let side=0;side<2;side++){
+      const start=read.teammates[side],end=ends[side];
+      const begin=side===0?.04:.14,finish=side===0?.88:.96;
+      routes.push(['blue',side===0?'left':'right',...end,begin,finish]);
+      if(covered.includes(side)){
+        const marker=(point)=>[+(carrier[0]+(point[0]-carrier[0])*.68).toFixed(4),+(carrier[1]+(point[1]-carrier[1])*.68).toFixed(4)];
+        defenders.push(marker(start));
+        routes.push(['white',defenders.length-1,...marker(end),begin,finish]);
+      }
+    }
+    if(read.shot!==false&&read.answer!=='shoot'){
+      const shotPoint=(fraction)=>[+(carrier[0]+(.5-carrier[0])*fraction).toFixed(4),+(carrier[1]+(.095-carrier[1])*fraction).toFixed(4)];
+      defenders.push(shotPoint(.77));routes.push(['white',defenders.length-1,...shotPoint(.71),.18,.9]);
+    }
+    if(read.answer==='regroup'){
+      // Two lower checkers guard the skating exits while upper defenders
+      // follow the passing lanes and screen the shot.
+      for(const side of [-1,1]){
+        const x=Math.max(.12,Math.min(.88,carrier[0]+side*.23));
+        defenders.push([x,carrier[1]-.19]);
+        routes.push(['white',defenders.length-1,Math.max(.12,Math.min(.88,x+side*.02)),carrier[1]-.22,.06,.75]);
+      }
+    }
+    return {...read,goalie:read.goalie??0,shot:read.shot??(read.answer!=='shoot'),rush:read.rush??null,
+      showLeft:true,showRight:true,defenders,routes,timedRoutes:true};
+  }
+  scenarios.push(...shiftingFormations.map(buildShiftingRead));
+
   const levels = [
     { id:'rookie', title:'Rookie Reads', short:'Pass or shoot', mission:'Learn to spot the open pass and the perfect shot.', focus:'See the simple play', rounds:6, time:10, minTime:10, unlock:4, scenarios:[0,2,4,5,1,3] },
     { id:'open-ice', title:'Open Ice', short:'Add the Rush', mission:'Read covered teammates and attack a wide-open skating lane.', focus:'Find open ice', rounds:8, time:3.8, minTime:3.25, unlock:6, scenarios:[0,2,4,5,6,7,8,1] },
@@ -168,16 +276,38 @@
     { id:'elite-chaos', title:'Elite Chaos', short:'Broken plays · deception', mission:'Solve unpredictable-looking plays before the defence can recover.', focus:'Chaos recognition', rounds:18, time:1.4, minTime:.92, unlock:17, scenarios:[14,15,17,20,22,23,24,25,26,27,30,31,34,35,39,40,45,46] },
     { id:'sudden-death', title:'Sudden Death', short:'One mistake changes everything', mission:'Make near-perfect decisions under an unforgiving clock.', focus:'Clutch decisions', rounds:18, time:1.3, minTime:.84, unlock:17, scenarios:[24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,41,42,47] },
     { id:'impossible-ice', title:'Impossible Ice', short:'Almost no reaction time', mission:'Read twenty elite situations with virtually no hesitation.', focus:'Instant recognition', rounds:20, time:1.18, minTime:.76, unlock:19, scenarios:[24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,47] },
-    { id:'gauntlet', title:'Top Che’s Gauntlet', short:'Perfect reads required', mission:'Complete the hardest test in the Lab: twenty perfect decisions at maximum speed.', focus:'Master-level hockey sense', rounds:20, time:1.08, minTime:.7, unlock:20, scenarios:[45,26,31,37,24,43,29,40,34,42,25,36,30,46,27,41,35,38,44,47] }
+    { id:'gauntlet', title:'Top Che’s Gauntlet', short:'Perfect reads required', mission:'Complete twenty master-level decisions before the advanced moving-player challenges.', focus:'Master-level hockey sense', rounds:20, time:1.08, minTime:.7, unlock:20, scenarios:[45,26,31,37,24,43,29,40,34,42,25,36,30,46,27,41,35,38,44,47] },
+    { id:'moving-lanes', title:'Moving Lanes', short:'Developing passing options', mission:'Track skaters as lanes open and defenders close throughout the countdown.', focus:'Watch the routes', rounds:18, time:1.85, minTime:1.4, unlock:15, scenarios:[12,13,14,18,19,20,24,25,26,27,28,29,30,31,32,33,34,35] },
+    { id:'coverage-rotation', title:'Coverage Rotation', short:'Support · switches · screens', mission:'Read the rotation rather than the first opening you see.', focus:'Follow the coverage', rounds:20, time:1.7, minTime:1.28, unlock:17, scenarios:[14,18,20,22,24,25,26,27,30,31,32,33,34,35,36,37,38,39,40,41] },
+    { id:'closing-window', title:'Closing Window', short:'Quick passes · timed shots', mission:'Identify the reliable play while your teammates and the checkers are moving.', focus:'Choose in motion', rounds:20, time:1.55, minTime:1.18, unlock:17, scenarios:[12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31] },
+    { id:'full-ice-read', title:'Full-Ice Read', short:'Every option under pressure', mission:'See the whole play develop and protect the puck when routes disappear.', focus:'Read ahead', rounds:22, time:1.4, minTime:1.05, unlock:19, scenarios:[24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45] },
+    { id:'breakthrough', title:'Top Che’s Breakthrough', short:'Another leap in hockey IQ', mission:'Follow fast-moving routes as fresh challenges open up ahead.', focus:'Complete hockey vision', rounds:24, time:1.3, minTime:.95, unlock:21, scenarios:[24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47] },
+    { id:'support-switch', title:'Support Switch', short:'New passing angles', mission:'Find low support, trailing options, and switches across the ice.', focus:'Off-puck support', rounds:20, time:1.85, minTime:1.37, unlock:17, scenarios:[12,13,14,18,19,20,21,22,24,25,26,27,28,29,30,31,32,33,34,35] },
+    { id:'rotating-coverage', title:'Rotating Coverage', short:'Checkers on the move', mission:'Track a changing defensive shape while you find an open play.', focus:'Defensive rotations', rounds:21, time:1.7, minTime:1.25, unlock:18, scenarios:[14,15,17,18,19,20,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36] },
+    { id:'odd-man-motion', title:'Odd-Man Motion', short:'Rushing into space', mission:'Read moving support and skating gaps on the counterattack.', focus:'Transition vision', rounds:22, time:1.55, minTime:1.13, unlock:19, scenarios:[12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33] },
+    { id:'changing-lanes', title:'Changing Lanes', short:'Pass · shoot · protect', mission:'See the reliable decision through shifting pass and shot lanes.', focus:'Quick adjustments', rounds:23, time:1.4, minTime:1.02, unlock:20, scenarios:[24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46] },
+    { id:'next-horizon', title:'Next Horizon', short:'Keep building your reads', mission:'Keep scanning as skaters move into new patterns and new challenges await.', focus:'Hockey IQ in motion', rounds:24, time:1.3, minTime:.95, unlock:21, scenarios:[24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47] }
   ];
 
-  // Mix guaranteed fresh reads into levels 3–20 while retaining each level's
-  // round count and its original pass / shoot / rush / regroup balance.
-  const freshScenariosByLevel=[[],[],[48,60,68],[49,52,69],[50,70],[51,53,71],
-    [54,61,72,73],[55,56,74],[57,75,76],[58,62,77],[59,63,78],
-    [64,79,80],[65,81],[66,82,83],[67,84],[48,54,60,85,86],
-    [49,55,61,87],[56,59,62,88,89],[50,53,57,63,90,91],
-    [51,52,58,64,65,66,67,92]];
+  // Every new timed read is guaranteed a place somewhere after Open Ice.
+  // Replacement preserves the round count and favours an original of the same action.
+  const freshScenariosByLevel=[[],[],[48,60,68,93],[49,52,69,94],[50,70,95,116],[51,53,71,96],
+    [54,61,72,73,97],[55,56,74,98],[57,75,76,99,117],[58,62,77,100],[59,63,78,101],
+    [64,79,80,102,118],[65,81,103],[66,82,83,104],[67,84,105],[48,54,60,85,86,106,119],
+    [49,55,61,87,107],[56,59,62,88,89,108],[50,53,57,63,90,91,109,120],
+    [51,52,58,64,65,66,67,92,110],
+    [111,93,94,103,116],[112,121,95,96,104,109],
+    [113,97,98,105,117],[114,99,100,106,118,110],
+    [115,122,101,102,107,108,119,111],
+    [146,123,129,135,147],[141,124,130,136,148],
+    [142,125,131,137,149],[143,126,132,138,150],
+    [144,127,133,139,151,145,128,134,140,152]];
+  // Introduce every new formation throughout levels 3–30 as well as
+  // revisiting the new patterns in the advanced levels.
+  for(let slot=0;slot<shiftingFormations.length;slot++){
+    const levelIndex=2+slot%28,scenarioIndex=123+slot;
+    if(!freshScenariosByLevel[levelIndex].includes(scenarioIndex))freshScenariosByLevel[levelIndex].push(scenarioIndex);
+  }
 
   const intermissions = [
     { id:'open-net-rookie', type:'open-net', afterLevel:3, title:'Open Net Rush!', short:'Find the gap', difficulty:'Beginner', rounds:6, time:1.8, cue:'Read the goalie and tap the open part of the net.' },
@@ -185,7 +315,10 @@
     { id:'rebound-rookie', type:'rebound', afterLevel:9, title:'Rebound Rush!', short:'Tap the rebound', difficulty:'Beginner', rounds:6, time:1.25, cue:'Track the wobbling rebound and tap it before it slides off the ice.' },
     { id:'open-net-advanced', type:'open-net', afterLevel:12, title:'Open Net Rush!', short:'Smaller openings', difficulty:'Advanced', rounds:8, time:1.15, cue:'The opening is smaller now. Find it before the goalie recovers.' },
     { id:'deflection-advanced', type:'deflection', afterLevel:15, title:'Deflection Perfection!', short:'Faster tips', difficulty:'Advanced', rounds:8, time:1.05, cue:'Track the faster puck and meet it cleanly with your blade.' },
-    { id:'rebound-advanced', type:'rebound', afterLevel:18, title:'Rebound Rush!', short:'Faster rebounds', difficulty:'Advanced', rounds:8, time:.8, cue:'Track the wobbling rebound and tap it before it slides off the ice.' }
+    { id:'rebound-advanced', type:'rebound', afterLevel:18, title:'Rebound Rush!', short:'Faster rebounds', difficulty:'Advanced', rounds:8, time:.8, cue:'Track the wobbling rebound and tap it before it slides off the ice.' },
+    { id:'open-net-expert', type:'open-net', afterLevel:21, title:'Open Net Rush!', short:'Expert openings', difficulty:'Expert', rounds:9, time:1.05, cue:'Spot the open net quickly while the goalie stretches to make the save.' },
+    { id:'deflection-expert', type:'deflection', afterLevel:24, title:'Deflection Perfection!', short:'Expert deflections', difficulty:'Expert', rounds:9, time:.95, cue:'Move your blade into the glowing outline before the puck arrives.' },
+    { id:'rebound-expert', type:'rebound', afterLevel:27, title:'Rebound Rush!', short:'Expert rebounds', difficulty:'Expert', rounds:9, time:.8, cue:'Track the bouncing puck and tap the rebound before it gets away.' }
   ];
 
   let state = {
@@ -362,12 +495,31 @@
   }
   function timerRate(){const item=currentPowerUp();return item?1-item.slowdown:1;}
   function formatPowerUpTime(ms){const seconds=Math.max(0,Math.ceil(ms/1000)),minutes=Math.floor(seconds/60);return `${minutes}:${String(seconds%60).padStart(2,'0')}`;}
+  const powerUpAssetBase=new URL('.',document.currentScript?.src||document.baseURI);
+  const powerUpEmoji={banana:'🍌','energy-drink':'🥤',dryland:'🏋️','power-skating':'⛸️'};
+  function powerUpImageUrl(item){return new URL(item.icon,powerUpAssetBase).href+'?v=56';}
+  function installPowerUpFallback(img,item){
+    if(img.dataset.fallbackInstalled)return;
+    img.dataset.fallbackInstalled='true';
+    img.addEventListener('error',()=>{
+      const icon=document.createElement('span');
+      icon.className=img.id==='powerUpIcon'?'powerup-indicator-fallback':'gear-preview powerup-preview powerup-fallback';
+      icon.setAttribute('aria-hidden','true');icon.textContent=powerUpEmoji[item.id]||'🏒';
+      img.replaceWith(icon);
+      if(img.id==='powerUpIcon')ui.powerUpIcon=icon;
+    },{once:true});
+  }
   function updatePowerUpIndicator(){
     if(state.mode==='bonus'){ui.powerUpIndicator.hidden=true;ui.powerUpIndicator.style.opacity='0';return;}
     const item=currentPowerUp();
     if(!item){ui.powerUpIndicator.hidden=true;ui.powerUpIndicator.style.opacity='0';return;}
     const remaining=Math.max(0,activePowerUp.expiresAt-Date.now()),fraction=Math.max(0,Math.min(1,remaining/item.durationMs));
-    ui.powerUpIcon.src=item.icon;ui.powerUpIcon.alt='';ui.powerUpIndicator.hidden=false;
+    if(ui.powerUpIcon.tagName==='IMG'){
+      installPowerUpFallback(ui.powerUpIcon,item);
+      ui.powerUpIcon.src=powerUpImageUrl(item);
+      ui.powerUpIcon.alt='';
+    }else ui.powerUpIcon.textContent=powerUpEmoji[item.id]||'🏒';
+    ui.powerUpIndicator.hidden=false;
     ui.powerUpIndicator.style.opacity=String(fraction);ui.powerUpIndicator.style.setProperty('--power-progress',`${fraction*360}deg`);
     const description=`${item.name} active — ${Math.round(item.slowdown*100)}% slower timer — about ${formatPowerUpTime(remaining)} remaining`;
     ui.powerUpIndicator.setAttribute('aria-label',description);ui.powerUpIndicator.title=description;
@@ -383,8 +535,9 @@
       ui.lockerItems.innerHTML=powerUpCatalog.map(item=>{
         const isActive=active?.id===item.id;
         const durationMinutes=item.durationMs/60000;
-        return `<button class="gear-card powerup-card ${isActive?'active':''}" data-powerup-id="${item.id}"><img class="gear-preview powerup-preview" src="${item.icon}" alt=""><strong>${item.name}</strong><small class="powerup-effect">Slows timer ${Math.round(item.slowdown*100)}% · ${durationMinutes} min</small><small>${isActive?'Active now':`🧀 ${item.cost}`}</small></button>`;
+        return `<button class="gear-card powerup-card ${isActive?'active':''}" data-powerup-id="${item.id}"><img class="gear-preview powerup-preview" src="${powerUpImageUrl(item)}" alt="" decoding="async"><strong>${item.name}</strong><small class="powerup-effect">Slows timer ${Math.round(item.slowdown*100)}% · ${durationMinutes} min</small><small>${isActive?'Active now':`🧀 ${item.cost}`}</small></button>`;
       }).join('');
+      ui.lockerItems.querySelectorAll('[data-powerup-id]').forEach(button=>installPowerUpFallback(button.querySelector('img'),powerUpCatalog.find(item=>item.id===button.dataset.powerupId)));
       ui.lockerItems.querySelectorAll('[data-powerup-id]').forEach(button=>button.addEventListener('click',()=>selectPowerUp(button.dataset.powerupId)));
       updateCheeseUI();updatePowerUpIndicator();return;
     }
@@ -1190,7 +1343,7 @@
   function drawIceInstruction(m,text){const y=m.h*.035,h=49,objectiveFont=`800 ${Math.max(9,m.w*.014)}px system-ui`,instructionFont=`900 ${Math.max(14,m.w*.024)}px system-ui`;ctx.save();ctx.font=instructionFont;const w=Math.min(m.w*.9,Math.max(m.w*.62,ctx.measureText(text).width+54)),x=(m.w-w)/2;ctx.shadowColor='rgba(0,0,0,.45)';ctx.shadowBlur=18;const panel=ctx.createLinearGradient(x,y,x+w,y);panel.addColorStop(0,'rgba(5,23,37,.96)');panel.addColorStop(.5,'rgba(15,52,72,.96)');panel.addColorStop(1,'rgba(5,23,37,.96)');ctx.fillStyle=panel;ctx.strokeStyle='rgba(99,230,237,.62)';ctx.lineWidth=1.5;ctx.beginPath();ctx.roundRect(x,y,w,h,8);ctx.fill();ctx.stroke();ctx.fillStyle='#ffcf54';ctx.fillRect(x,y,5,h);ctx.shadowBlur=0;ctx.fillStyle='#8fadb9';ctx.textAlign='center';ctx.font=objectiveFont;ctx.fillText('BONUS OBJECTIVE',m.cx,y+16);ctx.fillStyle='#fff';ctx.font=instructionFont;ctx.fillText(text,m.cx,y+36);ctx.restore();}
 
   function drawOpenNetBonus(m,t){
-    drawBonusArena(m);const layout=openNetLayout(m),n=drawPremiumNet(m),pulse=.55+.45*Math.sin(t/115),advanced=currentIntermission().difficulty==='Advanced';
+    drawBonusArena(m);const layout=openNetLayout(m),n=drawPremiumNet(m),pulse=.55+.45*Math.sin(t/115),advanced=currentIntermission().difficulty!=='Beginner';
     const answer=Number.isInteger(state.bonusAnswer)?state.bonusAnswer:0,target=layout.targets[answer],goaliePose=state.action?(state.action.good?'miss':'save'):'ready';drawPremiumGoalie(m,t,goaliePose);
     const r=Math.max(15,m.w*(advanced?.025:.031));if(!state.locked){ctx.save();ctx.globalAlpha=.75+.25*pulse;ctx.strokeStyle='#63e6ed';ctx.lineWidth=4;ctx.shadowColor='#63e6ed';ctx.shadowBlur=20;ctx.fillStyle='rgba(99,230,237,.14)';ctx.beginPath();ctx.arc(target.x,target.y,r*(1+.08*pulse),0,Math.PI*2);ctx.fill();ctx.stroke();ctx.restore();}
     const puckStart={x:m.cx,y:m.h*.92};drawPuckMotion(puckStart);
@@ -1265,7 +1418,7 @@
   }
 
   function drawOpenNetBonusLegacy(m,t){
-    drawBonusArena(m);const layout=openNetLayout(m),pulse=.55+.45*Math.sin(t/115),advanced=currentIntermission().difficulty==='Advanced';
+    drawBonusArena(m);const layout=openNetLayout(m),pulse=.55+.45*Math.sin(t/115),advanced=currentIntermission().difficulty!=='Beginner';
     ctx.save();ctx.fillStyle='rgba(238,249,250,.35)';ctx.fillRect(layout.left,layout.top,layout.width,layout.height);
     ctx.strokeStyle='rgba(220,244,248,.38)';ctx.lineWidth=1;
     for(let i=1;i<12;i++)line(layout.left+layout.width*i/12,layout.top,layout.left+layout.width*i/12,layout.top+layout.height,'rgba(188,220,226,.42)',1);
@@ -1391,10 +1544,16 @@
       direction:{x:side*rx*Math.sin(turn),y:-ry*Math.cos(turn)}};
   }
 
+  function routeFraction(s,route,phase){
+    if(!s.timedRoutes)return (1-Math.cos(phase*Math.PI*2))/2;
+    const begin=route[4]??0,end=route[5]??1;
+    return Math.max(0,Math.min(1,(phase-begin)/(end-begin)));
+  }
+
   function drawDevelopingRoutes(s,left,right,defenders,phase,m){
     if(!s.routes)return;
-    const progress=(1-Math.cos(phase*Math.PI*2))/2;
-    for(const [team,who,px,py] of s.routes){
+    for(const route of s.routes){
+      const [team,who,px,py]=route,progress=routeFraction(s,route,phase);
       const skater=team==='blue'?(who==='left'?left:right):defenders[who];
       if(!skater)continue;
       const start={x:skater.x,y:skater.y},end={x:px*m.w,y:py*m.h};
@@ -1435,7 +1594,9 @@
     if(!s.defenders&&(s.cover==='left'||s.cover==='both')) defenders.push({x:m.w*.34,y:m.h*.48});
     if(!s.defenders&&(s.cover==='right'||s.cover==='both')) defenders.push({x:m.w*.66,y:m.h*.48});
     if(!s.defenders&&s.shot) defenders.push({x:m.cx+sway*5,y:m.h*.34});
-    const routePhase=(((state.action?.start??gameTime)-state.animStart)%2200)/2200;
+    const routePhase=s.timedRoutes
+      ?(state.action?.routeProgress??(state.active?1-state.timeLeft/state.duration:0))
+      :(((state.action?.start??gameTime)-state.animStart)%2200)/2200;
     drawDevelopingRoutes(s,left,right,defenders,routePhase,m);
 
     let carrier={...puck},carrierAngle=0,carrierScale=1.08,carrierFallen=0,fallenAngle=0,movingPuck=null,previousPuck=null,puckOpacity=1;
@@ -1674,7 +1835,7 @@
     if(!state.sound) return null;
     const AudioEngine=window.AudioContext||window.webkitAudioContext;
     if(!AudioEngine) return null;
-    audioCtx ||= new AudioEngine();
+    if(!audioCtx){audioCtx=new AudioEngine();preloadHockeySounds(audioCtx);}
     if(audioCtx.state==='suspended') audioCtx.resume();
     return audioCtx;
   }
@@ -1795,7 +1956,36 @@
     source.connect(filter).connect(gain).connect(audio.destination);source.start(start);source.stop(start+duration+.02);
   }
 
+  // Load the short rink recordings only after a player enables audio. This keeps
+  // the initial screen fast and lets iOS unlock Web Audio during a tap.
+  const hockeySoundFiles={shot:'puck-shot.mp3',pass:'puck-pass.mp3',receive:'puck-receive.mp3',skate:'fast-skating.mp3',bodycheck:'bodycheck.mp3'};
+  const hockeySounds={};
+  function preloadHockeySounds(audio){
+    Object.entries(hockeySoundFiles).forEach(([kind,file])=>{
+      fetch(new URL(`assets/sounds/${file}`,powerUpAssetBase))
+        .then(response=>{if(!response.ok)throw new Error(`Audio ${response.status}`);return response.arrayBuffer();})
+        .then(bytes=>audio.decodeAudioData(bytes))
+        .then(buffer=>{hockeySounds[kind]=buffer;})
+        .catch(()=>{/* Keep the generated sound if a recording cannot load. */});
+    });
+  }
+  function playHockeySound(kind,durationMs){
+    const buffer=hockeySounds[kind];if(!buffer)return false;
+    const audio=getAudioContext();if(!audio||!state.sound)return false;
+    const source=audio.createBufferSource(),gain=audio.createGain(),start=audio.currentTime;
+    const duration=kind==='skate'?Math.max(.15,durationMs/1000):buffer.duration;
+    source.buffer=buffer;source.loop=kind==='skate'&&duration>buffer.duration;
+    gain.gain.setValueAtTime(.001,start);
+    gain.gain.linearRampToValueAtTime(kind==='skate'?.42:kind==='shot'?.72:.58,start+.025);
+    gain.gain.setValueAtTime(kind==='skate'?.42:kind==='shot'?.72:.58,start+Math.max(.03,duration-.09));
+    gain.gain.linearRampToValueAtTime(.001,start+duration);
+    source.connect(gain).connect(audio.destination);source.start(start);
+    source.stop(start+duration+.01);
+    return true;
+  }
+
   function playSkating(durationMs) {
+    if(playHockeySound('skate',durationMs))return;
     const audio=getAudioContext();if(!audio)return;
     const duration=Math.max(.25,durationMs/1000),start=audio.currentTime;
     const buffer=audio.createBuffer(1,Math.floor(audio.sampleRate*.12),audio.sampleRate),data=buffer.getChannelData(0);
@@ -1809,8 +1999,10 @@
   }
 
   function playPuckKnock() {
-    playNoise(.07,.11,620,0,'bandpass');playTone(145,82,.1,.08,'square');
+    if(!playHockeySound('shot')){playNoise(.07,.11,620,0,'bandpass');playTone(145,82,.1,.08,'square');}
   }
+  function playPassSound(){if(!playHockeySound('pass'))playPuckKnock();}
+  function playReceiveSound(){if(!playHockeySound('receive'))playPuckKnock();}
 
   function playCheer() {
     playNoise(.7,.045,1250,0,'bandpass');
@@ -1835,15 +2027,19 @@
     playTone(155,105,.52,.065,'sawtooth');playTone(110,78,.52,.04,'square',.015);
   }
 
+  function playBodycheckImpact() {
+    if(!playHockeySound('bodycheck'))playNoise(.12,.1,340,.2,'bandpass');
+  }
+
   function playBodycheckOh() {
-    playNoise(.12,.1,340,0,'bandpass');
     playTone(285,105,.75,.075,'sine');playTone(570,210,.7,.025,'triangle',.02);
   }
 
   function playDecisionSounds(choice,good,outcome,actionDuration,scenario) {
     if(!state.sound||choice==='timeout') return;
-    if(choice==='left'||choice==='right'||(choice==='shoot'&&!good))playPuckKnock();
-    if(good&&(choice==='left'||choice==='right'))setTimeout(playPuckKnock,Math.round(actionDuration*.54));
+    if(choice==='left'||choice==='right')playPassSound();
+    if(choice==='shoot'&&!good)playPuckKnock();
+    if(choice==='left'||choice==='right')setTimeout(playReceiveSound,Math.round(actionDuration*.54));
     if(good&&choice==='shoot')setTimeout(playPuckKnock,Math.round(actionDuration*.22));
     if(good&&choice==='rush')setTimeout(playPuckKnock,Math.round(actionDuration*(scenario.rush==='centre'?.82:.79)));
     const skatingOutcome=['shot-blocked','goalie-easy-save','pass-intercepted','rush-bodycheck','rush-goalie-recovery'].includes(outcome);
@@ -1856,7 +2052,11 @@
       setTimeout(choice==='regroup'?playCheer:playGoalCelebrationSound,delay);
     } else {
       setTimeout(playAww,180);
-      if(outcome==='rush-bodycheck')setTimeout(playBodycheckOh,Math.round(actionDuration*.48));
+      if(outcome==='rush-bodycheck'){
+        // The recording starts with a brief approach; its hit lands at the collision pose.
+        setTimeout(playBodycheckImpact,Math.round(actionDuration*.39));
+        setTimeout(playBodycheckOh,Math.round(actionDuration*.48));
+      }
     }
   }
 
@@ -1968,7 +2168,7 @@
     ui.levelStatus.textContent=`${unlocked} of ${levels.length} levels · ${bonusUnlocked} of ${intermissions.length} bonuses`;
     const levelGrid=`<div class="level-grid" aria-label="Hockey challenges">${levels.map((level,index)=>{const locked=index>=unlocked,complete=index<unlocked-1,targetLabel=index===levels.length-1?'TARGET':'TO ADVANCE';return `<button class="level-card" data-level="${index}" ${locked?'disabled':''}><span class="level-number">LEVEL ${index+1} · ${level.unlock}/${level.rounds} ${targetLabel}</span><strong>${level.title}</strong><small>${level.short}</small><span class="level-state">${locked?'🔒':complete?'✓':'▶'}</span></button>`;}).join('')}</div>`;
     const bonusGrid=`<p class="bonus-heading">INTERMISSION BONUSES</p><div class="bonus-grid" aria-label="Intermission bonus games">${intermissions.map((bonus,index)=>{const locked=!bonusTestMode&&completed<bonus.afterLevel;return `<button class="bonus-card" data-bonus="${index}" ${locked?'disabled':''}><span>AFTER LEVEL ${bonus.afterLevel} · ${bonus.difficulty.toUpperCase()}</span><strong>${bonus.title}</strong><small>${locked?'Complete Level '+bonus.afterLevel:bonus.short}</small></button>`;}).join('')}</div>`;
-    const testBadge=bonusTestMode?'<div class="bonus-test-badge">BONUS TEST MODE · ALL SIX UNLOCKED</div>':'';
+    const testBadge=bonusTestMode?`<div class="bonus-test-badge">BONUS TEST MODE · ALL ${intermissions.length} UNLOCKED</div>`:'';
     ui.startOverlay.innerHTML=`<img class="cheese-hero-logo" src="assets/top-ches-logo-v44.png" alt=""><p class="overline">${bonusTestMode?'INTERMISSION TEST BENCH':'LEVEL UP YOUR HOCKEY BRAIN'}</p><h2>Choose your<br><em>${bonusTestMode?'bonus game.':'challenge.'}</em></h2><p>${bonusTestMode?'Jump directly into any intermission bonus. Your regular level unlocks stay unchanged.':'Beat the accuracy target to unlock the next level.'}</p>${testBadge}${bonusTestMode?bonusGrid+levelGrid:levelGrid+bonusGrid}`;
     ui.startOverlay.classList.remove('hidden');
     ui.startOverlay.querySelectorAll('[data-level]').forEach(button=>button.addEventListener('click',()=>startGame(Number(button.dataset.level))));
@@ -2015,7 +2215,8 @@
     const correctPass=good&&(choice==='left'||choice==='right');
     const correctShoot=good&&choice==='shoot';
     const actionDuration=choice==='timeout'?700:outcomeDurations[outcome]||(choice==='regroup'?1500:correctCentreRush||correctSideRush?2900:choice==='rush'?1200:correctPass?2400:correctShoot?2200:760);
-    state.action=choice==='timeout'?null:{choice,outcome,good,start:performance.now(),duration:actionDuration};
+    state.action=choice==='timeout'?null:{choice,outcome,good,start:performance.now(),duration:actionDuration,
+      routeProgress:state.scenario.timedRoutes?Math.max(0,Math.min(1,1-state.timeLeft/state.duration)):null};
     state.round++;state.reveal=null;playDecisionSounds(choice,good,outcome,actionDuration,state.scenario);
     const outcomeText={
       'shot-blocked':'Shot blocked — turnover','goalie-easy-save':'Goalie square — easy save',
@@ -2057,7 +2258,7 @@
     const nowUnlocked=unlockedCount(),nowCompleted=completedLevelCount(),bonusUnlocked=intermissions.filter(bonus=>nowCompleted>=bonus.afterLevel).length;
     ui.bestScore.textContent=Math.max(oldBest,state.score);
     ui.levelStatus.textContent=`${nowUnlocked} of ${levels.length} levels · ${bonusUnlocked} of ${intermissions.length} bonuses`;
-    const headline=unlockedNew?`${nextLevel.title} unlocked!`:passed&&state.levelIndex===levels.length-1?'Gauntlet conquered!':passed?'Level complete!':'So close!';
+    const headline=unlockedNew?`${nextLevel.title} unlocked!`:passed&&state.levelIndex===levels.length-1?'New heights reached!':passed?'Level complete!':'So close!';
     const revealedGear=passed?Object.values(gearCatalog).flat().filter(item=>item.unlockLevel===state.levelIndex+1).length:0;
     const revealMessage=revealedGear?` <strong>${revealedGear} new mystery ${revealedGear===1?'customization has':'customizations have'} been revealed in the Locker!</strong>`:'';
     const message=passed?`You made ${state.correct} of ${state.total} best-play decisions, scored <strong>${state.score}</strong>, and earned a <strong>🧀 ${cheeseBonus}</strong> level bonus.${revealMessage}`:`Get ${level.unlock} correct to advance. You made ${state.correct} this time.`;

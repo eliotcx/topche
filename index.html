@@ -28,7 +28,7 @@
     @keyframes boot-load { to { width: 84%; } }
     @media (prefers-reduced-motion: reduce) { .boot-logo-wrap,.boot-progress { animation: none; } .boot-progress { width: 72%; } }
   </style>
-  <link rel="stylesheet" href="styles.css?v=20260920.2">
+  <link rel="stylesheet" href="styles.css?v=20260920.5">
 </head>
 <body class="app-loading">
   <div id="bootLoader" role="status" aria-live="polite" aria-label="Top Che’s Hockey is loading">
@@ -117,7 +117,7 @@
         <div class="stat-card featured">
           <small>BEST SCORE</small>
           <strong id="bestScore">0</strong>
-          <span id="levelStatus">1 of 20 levels unlocked</span>
+          <span id="levelStatus">1 of 30 levels unlocked</span>
         </div>
         <div class="stat-card">
           <div class="stat-row"><span>Reads</span><strong id="reads">0</strong></div>
@@ -139,7 +139,7 @@
     <p class="overline">HOW TO PLAY</p>
     <h2>Read the whole ice</h2>
     <ol>
-      <li><strong>Climb twenty levels.</strong> Reach each accuracy target to unlock faster challenges, new situations, and near-impossible elite tests.</li>
+      <li><strong>Climb thirty levels.</strong> Reach each accuracy target to unlock faster challenges and new situations.</li>
       <li><strong>Scan every option.</strong> Defenders may take away a teammate, the shot, or your skating lane.</li>
       <li><strong>Rush open ice.</strong> Choose Rush when a clear channel leads toward the net or either corner.</li>
       <li><strong>Reset under pressure.</strong> Choose Regroup when no teammate and no forward skating lane is open.</li>
@@ -149,7 +149,10 @@
       <li><strong>Play intermission bonuses.</strong> After every third level, take a quick break with Open Net Rush, Deflection Perfection, or Rebound Rush. Play directly on the ice by tapping openings and rebounds or dragging your stick into a puck’s path. Bonus games never block your progress.</li>
     </ol>
     <p class="tip">Tip: moving backward to keep possession is better than forcing a play into pressure.</p>
-    <p class="how-version">TOP CHE’S HOCKEY <span>VERSION 53</span></p>
+    <details class="sound-credits"><summary>Hockey sound credits</summary>
+      <p>Skating: <a href="https://soundbible.com/2198-Ice-Skating.html" target="_blank" rel="noopener">Ice Skating</a> by Daniel Simion. Shot: <a href="https://soundbible.com/1556-Hockey-Puck-Slap.html" target="_blank" rel="noopener">Hockey Puck Slap</a> by jameb32. Pass and reception: <a href="https://soundbible.com/1747-Hockey-Stick-Slap-2.html" target="_blank" rel="noopener">Hockey Stick Slap 2</a> by jameb32. These clips are <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener">CC BY 3.0</a>; they were trimmed, equalized, and adjusted for volume, and the reception clip was softened. Bodycheck: <a href="https://freesound.org/people/producerdan/sounds/161996/" target="_blank" rel="noopener">Hockey - Huge Body Check Hit Into Boards</a> by producerdan, <a href="https://creativecommons.org/publicdomain/zero/1.0/" target="_blank" rel="noopener">CC0</a>; trimmed, filtered, and faded.</p>
+    </details>
+    <p class="how-version">TOP CHE’S HOCKEY <span>VERSION 57</span></p>
   </dialog>
 
   <dialog id="lockerDialog" class="locker-dialog">
@@ -185,6 +188,6 @@
     </section>
   </dialog>
 
-  <script src="game.js?v=20260920.2"></script>
+  <script src="game.js?v=20260920.6"></script>
 </body>
 </html>
