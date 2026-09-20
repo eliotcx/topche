@@ -248,6 +248,7 @@
   let activePowerUp=safeStoredObject('superHockeyActivePowerUp',null);
   const hockeySprites = new Image();
   let spritesReady = false;
+  const motionFrames=new Map();
   let customPlayerSprite=null,customPlayerKey='',customFallenSprite=null,customFallenKey='';
   hockeySprites.onload = () => { spritesReady = true;refreshCustomPlayer();markBootAssetReady();if(ui.lockerDialog?.open){if(ui.playerShowcase.hidden)scheduleGearPreviews();else renderPlayerShowcase();} };
   hockeySprites.onerror = markBootAssetReady;
@@ -645,7 +646,7 @@
 
   function refreshCustomPlayer(){
     const key=JSON.stringify(loadout);
-    if(spritesReady&&key!==customPlayerKey){customPlayerSprite=createCustomizedPlayer();customPlayerKey=key;}
+    if(spritesReady&&key!==customPlayerKey){customPlayerSprite=createCustomizedPlayer();customPlayerKey=key;motionFrames.clear();motionParts.clear();}
     if(fallenPlayerReady&&key!==customFallenKey){customFallenSprite=createCustomizedFallen();customFallenKey=key;}
   }
 
@@ -766,6 +767,179 @@
       ctx.fillStyle='#fff';ctx.font=`800 ${10*scale}px system-ui`;ctx.textAlign='center';ctx.fillText(label,0,4*scale);
     }
     ctx.restore();
+  }
+
+  // Rig the original recolourable skater as a layered figure. The planted skate,
+  // pushing leg, hips, shoulders, both arms and blade move as one kinetic chain.
+  const motionMasks={
+    left:[[297,390],[381,390],[381,515],[297,515]],
+    right:[[381,390],[475,390],[495,617],[380,617]],
+    torso:[[174,0],[540,0],[540,430],[275,430]],
+    leadArm:[[177,7],[271,7],[377,145],[374,186],[338,207],[339,256],[315,291],[245,282],[236,199],[284,142],[177,83]]
+  };
+  const motionParts=new Map();
+  let teammateMotionSprite=null;
+  function motionPath(target,points,ox=0,oy=0){
+    target.beginPath();target.moveTo(points[0][0]+ox,points[0][1]+oy);
+    for(let i=1;i<points.length;i++)target.lineTo(points[i][0]+ox,points[i][1]+oy);
+    target.closePath();
+  }
+  function motionPart(source,points,cutouts=[]){
+    const surface=document.createElement('canvas');surface.width=648;surface.height=608;
+    const target=surface.getContext('2d');target.save();motionPath(target,points);target.clip();
+    target.drawImage(source,0,0);target.restore();
+    target.save();target.globalCompositeOperation='destination-out';
+    for(const mask of cutouts){motionPath(target,mask);target.fill();}
+    target.beginPath();target.ellipse(240,96,24,23,0,0,Math.PI*2);target.fill();target.restore();
+    return surface;
+  }
+  function originalMotionFrame(name,team='orange'){
+    refreshCustomPlayer();if(!customPlayerSprite||!spritesReady)return null;
+    const key=`${team}:${name}`;
+    if(motionFrames.has(key))return motionFrames.get(key);
+    if(team==='blue'&&!teammateMotionSprite){
+      teammateMotionSprite=document.createElement('canvas');teammateMotionSprite.width=648;teammateMotionSprite.height=608;
+      const painter=teammateMotionSprite.getContext('2d');
+      painter.filter='brightness(.83) saturate(.98)';
+      painter.drawImage(hockeySprites,0,0,hockeySprites.width/2,hockeySprites.height/2,0,0,648,608);
+    }
+    const source=team==='blue'?teammateMotionSprite:customPlayerSprite;
+    if(name==='ready'){
+      const surface=document.createElement('canvas');surface.width=648;surface.height=608;
+      const target=surface.getContext('2d');target.drawImage(source,0,0);
+      target.globalCompositeOperation='destination-out';target.beginPath();
+      target.ellipse(240,96,24,23,0,0,Math.PI*2);target.fill();
+      motionFrames.set(key,surface);return surface;
+    }
+    if(!motionParts.has(team)){
+      const parts={
+        left:motionPart(source,motionMasks.left),right:motionPart(source,motionMasks.right),
+        torso:motionPart(source,motionMasks.torso,[motionMasks.leadArm]),
+        leadArm:motionPart(source,motionMasks.leadArm)
+      };
+      // The arm in the source covers part of the sweater beneath it. Rebuild a
+      // narrow underlay so a shoulder turn cannot reveal a transparent hole.
+      const core=parts.torso.getContext('2d');core.save();core.globalCompositeOperation='destination-over';
+      core.fillStyle=team==='blue'?'#0754bf':gearItem('jersey',loadout.jersey).color;
+      core.beginPath();core.ellipse(310,260,36,36,-.3,0,Math.PI*2);core.fill();
+      core.restore();
+      motionParts.set(team,parts);
+    }
+    const parts=motionParts.get(team);
+    const poses={
+      // [left stride, right stride, shoulder turn, lateral weight shift,
+      //  lead arm, forward weight shift]
+      'stride-left':[.45,.015,.075,10,-.035,2],
+      'stride-right':[.015,-.45,-.075,-10,.035,2],
+      'cross-left':[-.14,.12,-.075,-8,.04,0],
+      'cross-right':[.12,-.14,.075,8,-.04,0],
+      'forehand-load':[.08,-.13,-.11,-10,-.23,3],
+      'forehand-contact':[.02,-.08,.09,9,.23,-7],
+      'forehand-release':[.12,-.025,.16,15,.38,-13],
+      'backhand-load':[.13,-.02,.105,9,.21,2],
+      'backhand-contact':[-.07,.07,-.09,-8,-.23,-5],
+      'backhand-release':[-.14,.08,-.16,-15,-.37,-12],
+      'shot-load':[.02,-.25,-.19,-17,-.3,6],
+      'shot-release':[.09,-.08,.12,12,.3,-11],
+      'shot-follow':[.24,-.015,.22,20,.47,-17],
+      'check-brace':[.24,-.18,-.1,-9,.11,2],
+      'check-impact':[-.14,.21,.2,16,-.27,-8],
+      'check-recoil':[-.35,.32,-.22,-19,-.42,2],
+      'check-stumble':[.48,-.42,.25,22,.38,-9],
+      'check-fall':[-.55,.52,-.29,-20,-.45,4]
+    };
+    const [left,right,shoulders,weight,leadArm,forward]=poses[name]||[0,0,0,0,0,0];
+    const surface=document.createElement('canvas');surface.width=760;surface.height=760;
+    const target=surface.getContext('2d'),ox=56,oy=76;
+    target.drawImage(source,ox,oy);
+    target.save();target.globalCompositeOperation='destination-out';
+    for(const key of ['left','right','torso']){motionPath(target,motionMasks[key],ox,oy);target.fill();}
+    target.beginPath();target.ellipse(ox+240,oy+96,24,23,0,0,Math.PI*2);target.fill();
+    target.restore();
+    for(const [part,angle,pivot,extension] of [
+      [parts.left,left,[351,397],name==='stride-left'?1.085:1],
+      [parts.right,right,[421,398],name==='stride-right'?1.085:1]
+    ]){
+      target.save();target.translate(ox+pivot[0],oy+pivot[1]);target.rotate(angle);
+      target.scale(1,extension);target.drawImage(part,-pivot[0],-pivot[1]);target.restore();
+    }
+    target.save();target.translate(ox+385+weight,oy+411+forward);target.rotate(shoulders);
+    target.drawImage(parts.torso,-385,-411);
+    target.save();target.translate(302-385,250-411);target.rotate(leadArm);
+    target.drawImage(parts.leadArm,-302,-250);target.restore();
+    target.restore();
+    motionFrames.set(key,surface);return surface;
+  }
+
+  function playerAnimationTrack(action,raw,phase,celebration){
+    if(!action)return [{at:0,pose:'ready'}];
+    if(celebration>.12&&action.good)return [{at:0,pose:'ready'}];
+    const {choice,outcome}=action;
+    if(choice==='left'||choice==='right'){
+      const side=choice==='left'?'backhand':'forehand';
+      return [{at:0,pose:`${side}-load`},{at:.12,pose:`${side}-contact`},{at:.25,pose:`${side}-release`},{at:.48,pose:'ready'}];
+    }
+    if(choice==='shoot'||outcome==='shot-blocked'||outcome==='goalie-easy-save')
+      return [{at:0,pose:'shot-load'},{at:.15,pose:'shot-release'},{at:.27,pose:'shot-follow'},{at:.52,pose:'stride-left'},{at:.7,pose:'ready'}];
+    if(choice==='rush'||outcome==='rush-bodycheck'){
+      const track=[{at:0,pose:'stride-left'},{at:.12,pose:'stride-right'},{at:.24,pose:'stride-left'},
+        {at:.36,pose:'stride-right'},{at:.48,pose:'stride-left'},{at:.6,pose:'stride-right'},
+        {at:.72,pose:'stride-left'},{at:.84,pose:'stride-right'}];
+      if(outcome==='rush-bodycheck')track.splice(4,4,
+        {at:.44,pose:'check-brace'},{at:.49,pose:'check-impact'},
+        {at:.56,pose:'check-recoil'},{at:.64,pose:'check-stumble'},
+        {at:.73,pose:'check-fall'});
+      else track.push({at:.91,pose:'shot-release'});
+      return track;
+    }
+    if(choice==='regroup')return [{at:0,pose:'stride-left'},{at:.15,pose:'stride-right'},
+      {at:.3,pose:'cross-left'},{at:.45,pose:'stride-left'},
+      {at:.6,pose:'cross-right'},{at:.75,pose:'stride-right'},{at:.9,pose:'ready'}];
+    return [{at:0,pose:'ready'}];
+  }
+
+  // Shared pose vocabulary for future teammate puck carriers as well as the
+  // current receiver. A caller supplies progress from 0 to 1 for one action.
+  function teammateAnimationTrack(kind){
+    if(kind==='skate')return [{at:0,pose:'stride-left'},{at:.25,pose:'stride-right'},
+      {at:.5,pose:'stride-left'},{at:.75,pose:'stride-right'}];
+    if(kind==='pass-left'||kind==='pass-right'){
+      const side=kind==='pass-left'?'backhand':'forehand';
+      return [{at:0,pose:`${side}-load`},{at:.34,pose:`${side}-contact`},
+        {at:.56,pose:`${side}-release`},{at:.87,pose:'ready'}];
+    }
+    if(kind==='shoot')return [{at:0,pose:'ready'},{at:.075,pose:'shot-load'},{at:.32,pose:'shot-release'},
+      {at:.45,pose:'shot-follow'},{at:.82,pose:'ready'}];
+    return [{at:0,pose:'ready'}];
+  }
+
+  function drawAnimatedSkater(x,y,angle,scale,team,label,track,raw,opacity=1){
+    if(!spritesReady){player(x,y,team,label,angle,scale,opacity);return;}
+    let index=0;while(index+1<track.length&&raw>=track[index+1].at)index++;
+    const fade=.055;
+    const mix=index>0?clamp((raw-track[index].at)/fade):1;
+    ctx.save();ctx.translate(x,y);ctx.rotate(angle);if(team==='blue')ctx.scale(-1,1);
+    ctx.globalAlpha=opacity;ctx.fillStyle='rgba(5,22,32,.2)';
+    ctx.beginPath();ctx.ellipse(3,18,19.2*scale,8.8*scale,0,0,Math.PI*2);ctx.fill();
+    ctx.strokeStyle=team==='blue'?'#1769ff':'#43a5ff';ctx.globalAlpha=.8*opacity;ctx.lineWidth=2.5;
+    ctx.beginPath();ctx.arc(0,2,20.8*scale,0,Math.PI*2);ctx.stroke();
+    const drawPose=(pose,alpha)=>{
+      const frame=originalMotionFrame(pose,team);if(!frame)return;
+      const height=83.2*scale,width=height*648/608,ratio=height/608;
+      ctx.globalAlpha=opacity*alpha;
+      if(pose==='ready')ctx.drawImage(frame,-width/2,-height/2,width,height);
+      else ctx.drawImage(frame,-width/2-56*ratio,-height/2-76*ratio,760*ratio,760*ratio);
+    };
+    if(index>0&&mix<1)drawPose(track[index-1].pose,1-mix);
+    drawPose(track[index].pose,mix);ctx.restore();
+  }
+
+  function animatedPlayer(x,y,angle,scale,action,raw,phase,celebration,opacity=1){
+    drawAnimatedSkater(x,y,angle,scale,'orange','10',playerAnimationTrack(action,raw,phase,celebration),raw,opacity);
+  }
+
+  function animatedTeammate(x,y,label,angle,scale,kind='skate',raw=0,opacity=1){
+    drawAnimatedSkater(x,y,angle,scale,'blue',label,teammateAnimationTrack(kind),raw,opacity);
   }
 
   function fallenPlayer(x,y,angle=0,scale=1,opacity=1) {
@@ -1147,6 +1321,13 @@
 
   function soloScenario(s){return !teammateVisible(s,'left')&&!teammateVisible(s,'right')&&!scenarioHasDefenders(s);}
 
+  function regroupLoop(puck,m,progress){
+    const side=puck.x>m.cx?-1:1,turn=progress*Math.PI*2;
+    const rx=m.w*.12,ry=m.h*.075;
+    return {position:{x:puck.x+side*rx*(1-Math.cos(turn)),y:puck.y-ry*Math.sin(turn)},
+      direction:{x:side*rx*Math.sin(turn),y:-ry*Math.cos(turn)}};
+  }
+
   function drawGame(t) {
     if(state.mode==='bonus'){
       drawBonusGame(t);
@@ -1159,14 +1340,15 @@
     const phase=((gameTime-state.animStart)%2200)/2200;
     const sway=Math.sin(phase*Math.PI*2);
     const s=state.scenario || scenarios[0];
+    const carrierPuckPosition=playerPuckPosition;
     const carrierSpot=s.carrier||[.5,.76];
     const puck={x:m.w*carrierSpot[0],y:m.h*carrierSpot[1]};
     const leftVisible=teammateVisible(s,'left');
     const rightVisible=teammateVisible(s,'right');
     const leftSpot=s.teammates?.[0]||[s.answer==='left'?.17:.22,.45];
     const rightSpot=s.teammates?.[1]||[s.answer==='right'?.83:.78,.45];
-    const left={x:m.w*leftSpot[0]+sway*4,y:m.h*leftSpot[1]};
-    const right={x:m.w*rightSpot[0]-sway*4,y:m.h*rightSpot[1]};
+    const left={x:m.w*leftSpot[0],y:m.h*leftSpot[1]};
+    const right={x:m.w*rightSpot[0],y:m.h*rightSpot[1]};
     const goalY=m.h*.095;
     const defenders=s.defenders ? s.defenders.map(([x,y])=>({x:m.w*x,y:m.h*y})) : [];
     if(!s.defenders&&(s.cover==='left'||s.cover==='both')) defenders.push({x:m.w*.34,y:m.h*.48});
@@ -1174,17 +1356,19 @@
     if(!s.defenders&&s.shot) defenders.push({x:m.cx+sway*5,y:m.h*.34});
 
     let carrier={...puck},carrierAngle=0,carrierScale=1.08,carrierFallen=0,fallenAngle=0,movingPuck=null,previousPuck=null,puckOpacity=1;
+    let actionRaw=0;
     let goalieOffset=s.goalie*m.w*.09,goalieAngle=0,goalieScale=1,leftAngle=-.08,rightAngle=.08;
     let movingOpponent=null,movingOpponentIndex=-1,impact=null,impactProgress=0,looseStick=null,saveFlash=null,saveProgress=0,goalFlash=null,goalProgress=0,celebrationProgress=0;
     if(state.action){
       const raw=Math.min(1,(gameTime-state.action.start)/state.action.duration),progress=easeInOut(raw);
+      actionRaw=raw;
       const {choice,outcome,good}=state.action;
       if(good&&choice!=='regroup'){
         const celebrationStart=choice==='shoot'?.7:choice==='left'||choice==='right'?.84:.9;
         celebrationProgress=segment(raw,celebrationStart,1);
       }
       if(good&&(choice==='left'||choice==='right')){
-        const start=playerPuckPosition(puck,0);
+        const start=carrierPuckPosition(puck,0);
         const target=choice==='left'?left:right;
         const goal={x:m.cx+(choice==='left'?m.w*.045:-m.w*.045),y:m.h*.027};
         const receiverAngle=skaterAngle({x:goal.x-target.x,y:goal.y-target.y},'blue');
@@ -1208,11 +1392,11 @@
         const glideProgress=easeInOut(segment(raw,0,glideEnd));
         carrier=pointLerp(puck,shotSpot,glideProgress);carrierAngle=approachAngle;
         if(raw<releaseAt){
-          movingPuck=playerPuckPosition(carrier,carrierAngle);
+          movingPuck=carrierPuckPosition(carrier,carrierAngle);
         } else {
           const releaseProgress=easeInOut(segment(releaseAt,0,glideEnd));
           const releaseSpot=pointLerp(puck,shotSpot,releaseProgress);
-          const start=playerPuckPosition(releaseSpot,approachAngle),target={x:m.cx-s.goalie*m.w*.075,y:m.h*.055};
+          const start=carrierPuckPosition(releaseSpot,approachAngle),target={x:m.cx-s.goalie*m.w*.075,y:m.h*.055};
           const shotProgress=segment(raw,releaseAt,.68);movingPuck=pointLerp(start,target,shotProgress);previousPuck=pointLerp(start,target,Math.max(0,shotProgress-.1));
           if(raw>.66){goalFlash=target;goalProgress=segment(raw,.66,.94);}
           if(raw>.7)puckOpacity=Math.max(0,1-segment(raw,.7,.8));
@@ -1227,15 +1411,15 @@
             carrier=quadraticPoint(puck,control,fake,p);
             carrierAngle=skaterAngle(quadraticDirection(puck,control,fake,p),'orange');
             goalieOffset=lerp(0,-m.w*.045,segment(raw,.12,.42));
-            movingPuck=playerPuckPosition(carrier,carrierAngle);
+            movingPuck=carrierPuckPosition(carrier,carrierAngle);
           } else if(raw<.82){
             const p=segment(raw,.42,.82),control={x:m.cx-m.w*.13,y:m.h*.29};
             carrier=quadraticPoint(fake,control,finish,p);
             carrierAngle=skaterAngle(quadraticDirection(fake,control,finish,p),'orange');
             goalieOffset=lerp(-m.w*.045,-m.w*.08,segment(raw,.42,.7));goalieAngle=-.2;goalieScale=1.06;
-            movingPuck=playerPuckPosition(carrier,carrierAngle);
+            movingPuck=carrierPuckPosition(carrier,carrierAngle);
           } else {
-            const shotStart=playerPuckPosition(finish,skaterAngle({x:finish.x-fake.x,y:finish.y-fake.y},'orange'));
+            const shotStart=carrierPuckPosition(finish,skaterAngle({x:finish.x-fake.x,y:finish.y-fake.y},'orange'));
             const goal={x:m.cx+m.w*.025,y:m.h*.025},shotProgress=segment(raw,.82,.97);
             carrier=finish;carrierAngle=skaterAngle({x:finish.x-fake.x,y:finish.y-fake.y},'orange');
             goalieOffset=-m.w*.08;goalieAngle=-.2;goalieScale=1.06;
@@ -1251,16 +1435,16 @@
             const p=segment(raw,0,.44),control={x:m.cx+side*m.w*.32,y:m.h*.59};
             carrier=quadraticPoint(puck,control,wide,p);
             carrierAngle=skaterAngle(quadraticDirection(puck,control,wide,p),'orange');
-            movingPuck=playerPuckPosition(carrier,carrierAngle);
+            movingPuck=carrierPuckPosition(carrier,carrierAngle);
           } else if(raw<.79){
             const p=segment(raw,.44,.79),control={x:m.cx+side*m.w*.37,y:m.h*.2};
             carrier=quadraticPoint(wide,control,cut,p);
             carrierAngle=skaterAngle(quadraticDirection(wide,control,cut,p),'orange');
-            movingPuck=playerPuckPosition(carrier,carrierAngle);
+            movingPuck=carrierPuckPosition(carrier,carrierAngle);
             goalieOffset=lerp(s.goalie*m.w*.09,side*m.w*.065,segment(raw,.52,.79));goalieAngle=side*.16;goalieScale=1.05;
           } else {
             const approachAngle=skaterAngle({x:cut.x-wide.x,y:cut.y-wide.y},'orange');
-            const shotStart=playerPuckPosition(cut,approachAngle),goal={x:m.cx-side*m.w*.06,y:m.h*.025};
+            const shotStart=carrierPuckPosition(cut,approachAngle),goal={x:m.cx-side*m.w*.06,y:m.h*.025};
             const shotProgress=segment(raw,.79,.97);
             carrier=cut;carrierAngle=approachAngle;goalieOffset=side*m.w*.065;goalieAngle=side*.16;goalieScale=1.05;
             movingPuck=pointLerp(shotStart,goal,shotProgress);previousPuck=pointLerp(shotStart,goal,Math.max(0,shotProgress-.1));
@@ -1269,16 +1453,14 @@
           }
         }
       } else if(choice==='regroup') {
-        const theta=Math.PI*2*progress,rx=m.w*.15;
-        const playerClearance=Math.max(42,m.w*.09);
-        const roomBeforeBlueLine=Math.max(0,attackingBlueLineY(m)-playerClearance-puck.y);
-        const ry=Math.min(m.h*.06,roomBeforeBlueLine/2);
-        carrier={x:puck.x-Math.sin(theta)*rx,y:puck.y+(1-Math.cos(theta))*ry};
-        const direction={x:-Math.cos(theta)*rx,y:Math.sin(theta)*ry};
+        // One closed loop: begin toward the net, curl inward around pressure,
+        // skate behind the start point, and finish facing the net again.
+        const {position,direction}=regroupLoop(puck,m,progress);
+        carrier=position;
         carrierAngle=skaterAngle(direction,'orange');
-        movingPuck=playerPuckPosition(carrier,carrierAngle);
+        movingPuck=carrierPuckPosition(carrier,carrierAngle);
       } else if(outcome==='shot-blocked') {
-        const start=playerPuckPosition(puck,0);
+        const start=carrierPuckPosition(puck,0);
         const index=closestDefender(defenders,{x:m.cx,y:m.h*.31});
         const blocker=index>=0?defenders[index]:{x:m.cx,y:m.h*.36};
         const receive={x:blocker.x,y:blocker.y+18};
@@ -1297,20 +1479,20 @@
           movingOpponent={position,angle,label:'4'};movingPuck=playerPuckPosition(position,angle,'white');
         }
       } else if(outcome==='goalie-easy-save') {
-        const start=playerPuckPosition(puck,0),shuffle=segment(raw,0,.55);
+        const start=carrierPuckPosition(puck,0),shuffle=segment(raw,0,.55);
         goalieOffset=lerp(s.goalie*m.w*.09,0,shuffle);goalieScale=1+Math.sin(Math.min(1,raw/.7)*Math.PI)*.06;
         const save={x:m.cx+goalieOffset+8,y:goalY+16};
         const p=segment(raw,0,.62);movingPuck=pointLerp(start,save,p);
         previousPuck=pointLerp(start,save,Math.max(0,p-.1));
         if(raw>.58){movingPuck=save;saveFlash=save;saveProgress=segment(raw,.58,1);}
       } else if(outcome==='empty-pass') {
-        const start=playerPuckPosition(puck,0),side=choice==='left'?-1:1;
+        const start=carrierPuckPosition(puck,0),side=choice==='left'?-1:1;
         const corner={x:side<0?m.pad+m.w*.035:m.w-m.pad-m.w*.035,y:m.h*.12};
         const control={x:m.cx+side*m.w*.3,y:m.h*.43},p=segment(raw,0,.88);
         movingPuck=quadraticPoint(start,control,corner,p);previousPuck=quadraticPoint(start,control,corner,Math.max(0,p-.08));
         if(raw>.88)puckOpacity=1-segment(raw,.88,1)*.35;
       } else if(outcome==='pass-intercepted') {
-        const start=playerPuckPosition(puck,0),target=choice==='left'?left:right;
+        const start=carrierPuckPosition(puck,0),target=choice==='left'?left:right;
         const index=closestDefender(defenders,puck),base=index>=0?defenders[index]:{x:m.cx,y:m.h*.37};
         const meeting=pointLerp(puck,target,.62);
         movingOpponentIndex=index;
@@ -1337,14 +1519,14 @@
           carrier=pointLerp(puck,collision,p);carrierAngle=skaterAngle(direction,'orange');
           const defenderPosition=pointLerp(checker,collision,segment(raw,.12,.48));
           const checkingDirection={x:collision.x-checker.x,y:collision.y-checker.y};
-          movingOpponent={position:defenderPosition,angle:skaterAngle(checkingDirection,'white'),label:'6'};movingPuck=playerPuckPosition(carrier,carrierAngle);
+          movingOpponent={position:defenderPosition,angle:skaterAngle(checkingDirection,'white'),label:'6'};movingPuck=carrierPuckPosition(carrier,carrierAngle);
         } else {
           const p=segment(raw,.48,1),side=collision.x<m.cx?-1:1;
           const impactAngle=skaterAngle({x:collision.x-puck.x,y:collision.y-puck.y},'orange');
-          const exit={x:side<0?-m.w*.2:m.w*1.2,y:Math.min(m.h*1.06,collision.y+m.h*.28)};
+          const exit={x:side<0?m.w*.14:m.w*.86,y:Math.min(m.h*.89,collision.y+m.h*.24)};
           carrier=pointLerp(collision,exit,p);
           carrierAngle=lerp(impactAngle,impactAngle+side*Math.PI*.55,Math.min(1,p*1.3));carrierScale=lerp(1.08,.96,p);
-          carrierFallen=segment(raw,.5,.7);fallenAngle=impactAngle+side*.35;
+          carrierFallen=segment(raw,.72,.88);fallenAngle=impactAngle+side*.35;
           movingOpponent={position:collision,angle:side*.18,label:'6'};
           movingPuck={x:collision.x-side*m.w*.16*p,y:collision.y+m.h*.1*p};
           impact=collision;impactProgress=segment(raw,.48,.82);
@@ -1356,9 +1538,9 @@
         carrier=quadraticPoint(puck,control,approach,p);
         const direction=quadraticDirection(puck,control,approach,p);carrierAngle=skaterAngle(direction,'orange');
         goalieOffset=lerp(s.goalie*m.w*.09,0,segment(raw,.08,.76));
-        if(raw<.74)movingPuck=playerPuckPosition(carrier,carrierAngle);
+        if(raw<.74)movingPuck=carrierPuckPosition(carrier,carrierAngle);
         else {
-          const start=playerPuckPosition(approach,carrierAngle),save={x:m.cx+8,y:goalY+17},saveP=segment(raw,.74,.93);
+          const start=carrierPuckPosition(approach,carrierAngle),save={x:m.cx+8,y:goalY+17},saveP=segment(raw,.74,.93);
           movingPuck=pointLerp(start,save,saveP);previousPuck=pointLerp(start,save,Math.max(0,saveP-.1));
           goalieAngle=-s.goalie*.18;goalieScale=1.08;
           if(raw>.9){movingPuck=save;saveFlash=save;saveProgress=segment(raw,.9,1);}
@@ -1381,14 +1563,22 @@
       drawLane(puck.x,puck.y,m.cx,goalY,s.answer==='shoot',guideStrength*.78);
     }
     goalie(m.cx,goalY,goalieOffset,goalieAngle,goalieScale);
-    if(leftVisible) player(left.x,left.y,'blue','7',leftAngle);
-    if(rightVisible) player(right.x,right.y,'blue','9',rightAngle);
+    const receiver=state.action?.good&&(state.action.choice==='left'||state.action.choice==='right')?state.action.choice:null;
+    const teammateMotion=side=>{
+      if(receiver===side){
+        if(actionRaw<.37)return {kind:'ready',raw:0};
+        return {kind:'shoot',raw:clamp((actionRaw-.37)/.53)};
+      }
+      return {kind:'ready',raw:0};
+    };
+    if(leftVisible){const motion=teammateMotion('left');animatedTeammate(left.x,left.y,'7',leftAngle,1,motion.kind,motion.raw);}
+    if(rightVisible){const motion=teammateMotion('right');animatedTeammate(right.x,right.y,'9',rightAngle,1,motion.kind,motion.raw);}
     defenders.forEach((d,i)=>{if(i!==movingOpponentIndex)player(d.x,d.y,'white',String(i+2),0,.95);});
     if(movingOpponent)player(movingOpponent.position.x,movingOpponent.position.y,'white',movingOpponent.label,movingOpponent.angle,.95);
-    player(carrier.x,carrier.y,'orange','10',carrierAngle,carrierScale,1-carrierFallen);
+    animatedPlayer(carrier.x,carrier.y,carrierAngle,carrierScale,state.action,actionRaw,phase,celebrationProgress,1-carrierFallen);
     fallenPlayer(carrier.x,carrier.y,fallenAngle,1,carrierFallen);
     if(movingPuck) drawPuckMotion(movingPuck,previousPuck,puckOpacity);
-    else drawPuckMotion(playerPuckPosition(puck,0));
+    else drawPuckMotion(carrierPuckPosition(puck,0));
     if(impact)drawImpact(impact,impactProgress);
     if(looseStick)drawLooseStick(looseStick.position,looseStick.angle,looseStick.opacity);
     if(saveFlash)drawSaveFlash(saveFlash,saveProgress);
