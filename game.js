@@ -310,13 +310,13 @@
   }
 
   const intermissions = [
-    { id:'open-net-rookie', type:'open-net', afterLevel:3, title:'Open Net Rush!', short:'Find the gap', difficulty:'Beginner', rounds:6, time:1.8, cue:'Read the goalie and tap the open part of the net.' },
+    { id:'open-net-rookie', type:'open-net', afterLevel:3, title:'Open Net Rush!', short:'Flick into the gap', difficulty:'Beginner', rounds:6, time:2.75, cue:'Start on the puck and flick it into the glowing opening before time runs out.' },
     { id:'deflection-rookie', type:'deflection', afterLevel:6, title:'Deflection Perfection!', short:'Tip it past the goalie', difficulty:'Beginner', rounds:6, time:1.65, cue:'Drag your blade in front of the puck and redirect it into the net.' },
     { id:'rebound-rookie', type:'rebound', afterLevel:9, title:'Rebound Rush!', short:'Tap the rebound', difficulty:'Beginner', rounds:6, time:1.25, cue:'Track the wobbling rebound and tap it before it slides off the ice.' },
-    { id:'open-net-advanced', type:'open-net', afterLevel:12, title:'Open Net Rush!', short:'Smaller openings', difficulty:'Advanced', rounds:8, time:1.15, cue:'The opening is smaller now. Find it before the goalie recovers.' },
+    { id:'open-net-advanced', type:'open-net', afterLevel:12, title:'Open Net Rush!', short:'Smaller openings', difficulty:'Advanced', rounds:8, time:2.15, cue:'Flick the puck from the ice into the smaller glowing opening.' },
     { id:'deflection-advanced', type:'deflection', afterLevel:15, title:'Deflection Perfection!', short:'Faster tips', difficulty:'Advanced', rounds:8, time:1.05, cue:'Track the faster puck and meet it cleanly with your blade.' },
     { id:'rebound-advanced', type:'rebound', afterLevel:18, title:'Rebound Rush!', short:'Faster rebounds', difficulty:'Advanced', rounds:8, time:.8, cue:'Track the wobbling rebound and tap it before it slides off the ice.' },
-    { id:'open-net-expert', type:'open-net', afterLevel:21, title:'Open Net Rush!', short:'Expert openings', difficulty:'Expert', rounds:9, time:1.05, cue:'Spot the open net quickly while the goalie stretches to make the save.' },
+    { id:'open-net-expert', type:'open-net', afterLevel:21, title:'Open Net Rush!', short:'Expert openings', difficulty:'Expert', rounds:9, time:1.85, cue:'Flick quickly from the puck into the narrow opening before the goalie recovers.' },
     { id:'deflection-expert', type:'deflection', afterLevel:24, title:'Deflection Perfection!', short:'Expert deflections', difficulty:'Expert', rounds:9, time:.95, cue:'Move your blade into the glowing outline before the puck arrives.' },
     { id:'rebound-expert', type:'rebound', afterLevel:27, title:'Rebound Rush!', short:'Expert rebounds', difficulty:'Expert', rounds:9, time:.8, cue:'Track the bouncing puck and tap the rebound before it gets away.' }
   ];
@@ -327,7 +327,7 @@
     animStart:performance.now(), reveal:null, action:null, deck:[], paused:false, pausedAt:0, lastTickAt:0,
     mode:'level', bonusIndex:null, bonusAnswer:null, bonusChoice:null, bonusResult:null, bonusPhase:null,
     bonusDropAt:0, bonusReactionAt:0, bonusLastAnswer:null, bonusFromProgression:false,
-    bonusPuck:null, bonusStick:null, bonusStickTarget:null, bonusGoalTarget:null, bonusSaveType:'pad', bonusGoalieFrom:0, bonusGoalieTo:0, bonusGoalieMoveAt:0
+    bonusPuck:null, bonusStick:null, bonusStickTarget:null, bonusFlick:null, bonusAimMiss:false, bonusWide:false, bonusGoalTarget:null, bonusSaveType:'pad', bonusGoalieFrom:0, bonusGoalieTo:0, bonusGoalieMoveAt:0
   };
   let raf;
   let bonusTimers=[],bonusRunToken=0;
@@ -1306,6 +1306,16 @@
     return {left,top,width,height,targets};
   }
 
+  function openNetFlickResult(start,end,m,difficulty){
+    const puck={x:m.cx,y:m.h*.92};
+    if(Math.hypot(start.x-puck.x,start.y-puck.y)>m.w*.115||start.y-end.y<m.h*.18)return null;
+    const targets=openNetLayout(m).targets,distances=targets.map(point=>Math.hypot(point.x-end.x,point.y-end.y));
+    const choice=distances.indexOf(Math.min(...distances));
+    const layout=openNetLayout(m),miss=distances[choice]>m.w*(difficulty==='Beginner'?.115:.09);
+    const wide=end.x<layout.left-m.w*.025||end.x>layout.left+layout.width+m.w*.025||end.y<layout.top-m.h*.035||end.y>layout.top+layout.height+m.h*.025;
+    return {choice,miss,wide:miss&&wide};
+  }
+
   function drawBonusArena(m){
     ctx.clearRect(0,0,m.w,m.h);
     const stands=ctx.createLinearGradient(0,0,0,m.h*.3);stands.addColorStop(0,'#061522');stands.addColorStop(.58,'#123d55');stands.addColorStop(1,'#78adbc');ctx.fillStyle=stands;ctx.fillRect(0,0,m.w,m.h*.3);
@@ -1370,13 +1380,20 @@
     drawBonusArena(m);const layout=openNetLayout(m),n=drawPremiumNet(m),pulse=.55+.45*Math.sin(t/115),advanced=currentIntermission().difficulty!=='Beginner';
     const answer=Number.isInteger(state.bonusAnswer)?state.bonusAnswer:0,target=layout.targets[answer],goaliePose=state.action?(state.action.good?'miss':'save'):'ready';drawPremiumGoalie(m,t,goaliePose);
     const r=Math.max(15,m.w*(advanced?.025:.031));if(!state.locked){ctx.save();ctx.globalAlpha=.75+.25*pulse;ctx.strokeStyle='#63e6ed';ctx.lineWidth=4;ctx.shadowColor='#63e6ed';ctx.shadowBlur=20;ctx.fillStyle='rgba(99,230,237,.14)';ctx.beginPath();ctx.arc(target.x,target.y,r*(1+.08*pulse),0,Math.PI*2);ctx.fill();ctx.stroke();ctx.restore();}
-    const puckStart={x:m.cx,y:m.h*.92};drawPuckMotion(puckStart);
+    const puckStart={x:m.cx,y:m.h*.92};
+    if(!state.locked){
+      ctx.save();ctx.strokeStyle='rgba(99,230,237,.75)';ctx.lineWidth=3;ctx.shadowColor='#63e6ed';ctx.shadowBlur=17;ctx.beginPath();ctx.arc(puckStart.x,puckStart.y,m.w*.055+3*pulse,0,Math.PI*2);ctx.stroke();
+      if(state.bonusFlick){const aim=state.bonusFlick.current;line(puckStart.x,puckStart.y,aim.x,aim.y,'rgba(99,230,237,.9)',3,[8,6]);ctx.beginPath();ctx.arc(aim.x,aim.y,Math.max(8,m.w*.014),0,Math.PI*2);ctx.stroke();}
+      ctx.restore();
+    }
+    if(!state.action)drawPuckMotion(puckStart);
     if(state.action){
       const raw=clamp((t-state.action.start)/state.action.duration),chosen=layout.targets[Number.isInteger(state.bonusChoice)?state.bonusChoice:answer];
       if(state.action.good){const p=easeInOut(raw),puck=pointLerp(puckStart,chosen,p),previous=pointLerp(puckStart,chosen,Math.max(0,p-.08));drawPuckMotion(puck,previous);if(raw>.7)drawGoalFlash(chosen,segment(raw,.7,1));}
+      else if(state.bonusWide){const miss=state.bonusMissPoint||{x:m.cx,y:m.h*.16},p=easeInOut(raw),puck=pointLerp(puckStart,miss,p);drawPuckMotion(puck,pointLerp(puckStart,miss,Math.max(0,p-.08)));}
       else {const contact=pointLerp(puckStart,chosen,.82),flight=easeInOut(segment(raw,0,.68)),saved=pointLerp(puckStart,contact,flight),rebound=segment(raw,.68,1),puck={x:lerp(saved.x,m.cx+(contact.x-m.cx)*.9,rebound),y:saved.y+m.h*.045*rebound},previous=pointLerp(puckStart,contact,Math.max(0,flight-.08));drawPuckMotion(puck,previous);if(raw>.62)drawSaveFlash(contact,segment(raw,.62,1));}
     }
-    if(!state.locked)drawIceInstruction(m,'TAP THE OPEN SPACE');
+    if(!state.locked)drawIceInstruction(m,'FLICK THE PUCK INTO THE GAP');
   }
 
   function deflectionPuckPosition(m,t){
@@ -2108,7 +2125,7 @@
   function setBonusControls(bonus){
     ui.standardControls.hidden=true;ui.bonusControls.hidden=false;
     ui.bonusControls.className='bonus-controls ice-direct';
-    const instruction=bonus.type==='open-net'?'Tap the glowing opening':bonus.type==='deflection'?'Drag your blade in front of the puck':'Tap the rebound before it escapes';
+    const instruction=bonus.type==='open-net'?'Flick the puck into the glowing opening':bonus.type==='deflection'?'Drag your blade in front of the puck':'Tap the rebound before it escapes';
     ui.bonusControls.innerHTML=`<div class="ice-instruction"><span class="instruction-mark" aria-hidden="true">★</span><span class="instruction-copy"><small>ON-ICE CHALLENGE</small><strong>${instruction}</strong></span><span class="instruction-speed">REACT FAST</span></div>`;
     canvas.className=`bonus-interactive${bonus.type==='deflection'?' deflection':''}`;
   }
@@ -2123,9 +2140,9 @@
 
   function startIntermission(index,fromProgression=false){
     loadIntermissionAssets();clearBonusTimers();stopArenaMusic();const bonus=intermissions[index];setBonusPanel(index);
-    state={...state,mode:'bonus',bonusIndex:index,bonusFromProgression:fromProgression,active:false,locked:true,round:0,total:bonus.rounds,score:0,streak:0,correct:0,elapsedTotal:0,action:null,bonusAnswer:null,bonusChoice:null,bonusResult:null,bonusPhase:'intro',bonusPuck:null,bonusStick:null,bonusStickTarget:null,bonusGoalTarget:null,bonusTapPoint:null,bonusReboundStage:null,bonusReboundTier:null,bonusReactionAt:0,bonusDropAt:0,bonusGoalieFrom:0,bonusGoalieTo:0,bonusGoalieMoveAt:performance.now(),paused:false,pausedAt:0};
+    state={...state,mode:'bonus',bonusIndex:index,bonusFromProgression:fromProgression,active:false,locked:true,round:0,total:bonus.rounds,score:0,streak:0,correct:0,elapsedTotal:0,action:null,bonusAnswer:null,bonusChoice:null,bonusResult:null,bonusPhase:'intro',bonusPuck:null,bonusStick:null,bonusStickTarget:null,bonusFlick:null,bonusAimMiss:false,bonusWide:false,bonusMissPoint:null,bonusGoalTarget:null,bonusTapPoint:null,bonusReboundStage:null,bonusReboundTier:null,bonusReactionAt:0,bonusDropAt:0,bonusGoalieFrom:0,bonusGoalieTo:0,bonusGoalieMoveAt:performance.now(),paused:false,pausedAt:0};
     canvas.setAttribute('aria-label',`${bonus.title} intermission reaction game`);ui.startOverlay.classList.add('hidden');ui.standardControls.hidden=true;ui.bonusControls.hidden=true;ui.feedback.className='feedback';ui.powerUpIndicator.hidden=true;ui.lockerButton.disabled=true;updateUI();
-    ui.bonusBannerTitle.textContent=bonus.title;ui.bonusBannerCopy.textContent=bonus.type==='open-net'?'Find the opening. Fire fast.':bonus.type==='deflection'?'Track it. Tip it. Score.':'Watch the save. Attack the rebound.';
+    ui.bonusBannerTitle.textContent=bonus.title;ui.bonusBannerCopy.textContent=bonus.type==='open-net'?'Start on the puck. Flick into the gap.':bonus.type==='deflection'?'Track it. Tip it. Score.':'Watch the save. Attack the rebound.';
     ui.bonusBanner.hidden=false;requestAnimationFrame(()=>ui.bonusBanner.classList.add('show'));playBonusIntroSound();
     scheduleBonus(()=>{ui.bonusBanner.classList.remove('show');scheduleBonus(()=>{ui.bonusBanner.hidden=true;beginIntermission();},340);},2200);
   }
@@ -2141,11 +2158,11 @@
 
   function beginBonusRound(){
     if(state.round>=state.total){finishBonus();return;}
-    const bonus=currentIntermission(),now=performance.now();state.locked=false;state.action=null;state.bonusChoice=null;state.bonusResult=null;state.startedAt=now;state.lastTickAt=now;
+    const bonus=currentIntermission(),now=performance.now();state.locked=false;state.action=null;state.bonusChoice=null;state.bonusResult=null;state.bonusFlick=null;state.bonusAimMiss=false;state.bonusWide=false;state.bonusMissPoint=null;state.startedAt=now;state.lastTickAt=now;
     const m=rinkMetrics(),side=Math.random()<.5?-1:1;state.bonusGoalTarget={x:m.cx+side*m.w*(.245+Math.random()*.045),y:m.h*(.205+Math.random()*.115)};
     state.bonusGoalieFrom=0;state.bonusGoalieTo=0;state.bonusGoalieMoveAt=now;
     if(bonus.type==='open-net'){
-      state.bonusAnswer=chooseDifferentAnswer([0,2,3,5]);state.bonusPhase='live';state.duration=bonus.time;state.timeLeft=bonus.time;ui.timer.textContent=state.timeLeft.toFixed(1);ui.skillLabel.textContent='Find the open space';
+      state.bonusAnswer=chooseDifferentAnswer([0,2,3,5]);state.bonusPhase='live';state.duration=bonus.time;state.timeLeft=bonus.time;ui.timer.textContent=state.timeLeft.toFixed(1);ui.skillLabel.textContent='Flick from the puck';
     } else if(bonus.type==='deflection'){
       const shotSide=chooseDifferentAnswer([-1,1]),contact={x:m.cx+shotSide*m.w*(.18+Math.random()*.045),y:m.h*(.39+Math.random()*.07)},hit={x:m.cx+shotSide*m.w*.035,y:m.h*.47};state.bonusGoalTarget={x:m.cx-shotSide*m.w*(.265+Math.random()*.025),y:m.h*(.205+Math.random()*.08)};state.bonusAnswer='deflect';state.bonusPhase='aim';state.duration=bonus.time;state.timeLeft=bonus.time;state.bonusDropAt=now+720;state.bonusReactionAt=0;state.bonusStickTarget=contact;state.bonusStick={x:m.w*.19,y:m.h*.78};state.bonusPuck={start:{x:m.cx+shotSide*m.w*(.025+Math.random()*.035),y:m.h*.91},end:contact,hit,previous:null};ui.timer.textContent='READY';ui.skillLabel.textContent='Find the glowing blade';
     } else {
@@ -2159,12 +2176,12 @@
     if(bonus.type==='rebound'&&choice!=='timeout'){const motion=reboundPuckPosition(rinkMetrics(),now);if(!motion.tappable)return;state.bonusReboundTier=motion.tier;state.bonusTapPoint={x:motion.x,y:motion.y};state.timeLeft=Math.max(.001,motion.windowRemaining/1000);}
     if(bonus.type==='deflection'&&choice!=='timeout'&&!deflectionStickOnTarget(rinkMetrics()))return;
     if((bonus.type==='rebound'&&state.bonusPhase==='shot')||(bonus.type==='deflection'&&state.bonusPhase==='aim'))return;
-    good=choice===state.bonusAnswer&&state.timeLeft>0;result=good?'good':'miss';
-    state.locked=true;state.bonusChoice=choice==='timeout'?state.bonusAnswer:choice;state.bonusResult=result;state.action=choice==='timeout'&&(bonus.type==='open-net'||bonus.type==='rebound')?null:{choice:state.bonusChoice,good,start:now,duration:900};
+    good=choice===state.bonusAnswer&&state.timeLeft>0&&!state.bonusAimMiss;result=good?'good':'miss';
+    state.locked=true;state.bonusFlick=null;state.bonusChoice=choice==='timeout'?state.bonusAnswer:choice;state.bonusResult=result;state.action=choice==='timeout'&&(bonus.type==='open-net'||bonus.type==='rebound')?null:{choice:state.bonusChoice,good,start:now,duration:900};
     state.elapsedTotal+=state.bonusReactionAt?Math.max(0,(now-state.bonusReactionAt)/1000):Math.max(0,(now-state.startedAt)/1000);
     let cheeseEarned=0,pointsEarned=0;if(good){state.correct++;state.streak++;const speed=Math.round(state.timeLeft*100),base=bonus.type==='rebound'?(state.bonusReboundTier==='max'?400:175):150+speed;pointsEarned=base+Math.min(180,state.streak*25);state.score+=pointsEarned;cheeseEarned=awardCheese(5+(state.streak%3===0?5:0));playPuckKnock();setTimeout(playBonusDing,90);setTimeout(playCheer,190);}else{state.streak=0;playBonusBuzzer();}
     state.round++;state.bonusPhase='result';
-    const missText=bonus.type==='open-net'?'NO GOAL — goalie save':bonus.type==='deflection'?'NO GOAL — no deflection':'NO GOAL — puck escaped';
+    const missText=bonus.type==='open-net'?(state.bonusWide?'NO GOAL — shot wide':'NO GOAL — goalie save'):bonus.type==='deflection'?'NO GOAL — no deflection':'NO GOAL — puck escaped';
     const reboundResult=state.bonusReboundTier==='max'?'MAX REACTION':'QUICK FINISH';ui.feedback.textContent=good?(bonus.type==='rebound'?`GOAL! ${reboundResult} · +${pointsEarned} points`:`GOAL! +${cheeseEarned} Cheese Points`):choice==='timeout'?(bonus.type==='rebound'?'NO GOAL — puck escaped':'NO GOAL — time expired'):missText;ui.feedback.className=`feedback show ${good?'good':'bad'}`;updateUI();
     scheduleBonus(()=>{ui.feedback.className='feedback';beginBonusRound();},1100);
   }
@@ -2361,7 +2378,9 @@
     if(state.mode!=='bonus'||!state.active||state.locked)return;
     const rect=canvas.getBoundingClientRect(),x=event.clientX-rect.left,y=event.clientY-rect.top,m=rinkMetrics(),bonus=currentIntermission();
     if(bonus.type==='open-net'){
-      const layout=openNetLayout(m),distances=layout.targets.map(point=>Math.hypot(point.x-x,point.y-y)),choice=distances.indexOf(Math.min(...distances));if(distances[choice]<m.w*.1)handleBonusChoice(choice);
+      if(Math.hypot(x-m.cx,y-m.h*.92)<=m.w*.115){
+        canvas.setPointerCapture?.(event.pointerId);state.bonusFlick={pointerId:event.pointerId,start:{x,y},current:{x,y}};
+      }
     } else if(bonus.type==='deflection'){
       canvas.setPointerCapture?.(event.pointerId);state.bonusStick={x,y};if(state.bonusPhase==='live'&&deflectionStickOnTarget(m))handleBonusChoice('deflect');
     } else if(state.bonusPhase==='rebound'){
@@ -2369,10 +2388,21 @@
     }
   });
   canvas.addEventListener('pointermove',event=>{
-    if(state.mode!=='bonus'||!state.active||state.locked||currentIntermission().type!=='deflection')return;
+    if(state.mode!=='bonus'||!state.active||state.locked)return;
+    if(currentIntermission().type==='open-net'){
+      if(state.bonusFlick?.pointerId===event.pointerId){const rect=canvas.getBoundingClientRect();state.bonusFlick.current={x:event.clientX-rect.left,y:event.clientY-rect.top};}return;
+    }
+    if(currentIntermission().type!=='deflection')return;
     const rect=canvas.getBoundingClientRect(),m=rinkMetrics(),x=clamp(event.clientX-rect.left,20,m.w-20),y=clamp(event.clientY-rect.top,m.h*.32,m.h*.9);state.bonusStick={x,y};
     if(state.bonusPhase==='live'&&deflectionStickOnTarget(m))handleBonusChoice('deflect');
   });
+  canvas.addEventListener('pointerup',event=>{
+    if(state.mode!=='bonus'||!state.active||state.locked||currentIntermission().type!=='open-net'||state.bonusFlick?.pointerId!==event.pointerId)return;
+    const rect=canvas.getBoundingClientRect(),m=rinkMetrics(),end={x:event.clientX-rect.left,y:event.clientY-rect.top};
+    const result=openNetFlickResult(state.bonusFlick.start,end,m,currentIntermission().difficulty);state.bonusFlick=null;
+    if(result){state.bonusAimMiss=result.miss;state.bonusWide=result.wide;state.bonusMissPoint=end;handleBonusChoice(result.choice);}
+  });
+  canvas.addEventListener('pointercancel',event=>{if(state.bonusFlick?.pointerId===event.pointerId)state.bonusFlick=null;});
   ui.soundButton.addEventListener('click',()=>{
     state.sound=!state.sound;
     if(state.sound&&audioCtx?.state==='suspended')audioCtx.resume();
