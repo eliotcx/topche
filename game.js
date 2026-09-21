@@ -258,14 +258,14 @@
 
   const levels = [
     { id:'rookie', title:'Rookie Reads', short:'Pass or shoot', mission:'Learn to spot the open pass and the perfect shot.', focus:'See the simple play', rounds:6, time:10, minTime:10, unlock:4, scenarios:[0,2,4,5,1,3] },
-    { id:'open-ice', title:'Open Ice', short:'Add the Rush', mission:'Read covered teammates and attack a wide-open skating lane.', focus:'Find open ice', rounds:8, time:3.8, minTime:3.25, unlock:6, scenarios:[0,2,4,5,6,7,8,1] },
-    { id:'pressure', title:'Pressure Test', short:'Add Regroup', mission:'Protect the puck when every forward option has disappeared.', focus:'Manage pressure', rounds:10, time:3.4, minTime:2.8, unlock:7, scenarios:[0,1,2,3,4,5,6,7,9,10] },
-    { id:'super', title:'Super Lab', short:'All core skills', mission:'Use every core hockey read at game speed and master the full challenge.', focus:'Game-speed decisions', rounds:12, time:3, minTime:2.35, unlock:9, scenarios:[0,1,2,3,4,5,6,7,8,9,10,11] },
-    { id:'odd-man', title:'Odd-Man Rush', short:'2-on-1s · backdoor plays', mission:'Read whether the defender gives you the pass, shot, or open ice.', focus:'Odd-man decisions', rounds:8, time:2.9, minTime:2.35, unlock:6, scenarios:[12,13,14,15,16,17,6,8] },
-    { id:'net-front', title:'Net-Front Chaos', short:'Rebounds · low-cycle reads', mission:'React to rebounds, backdoor openings, and pressure below the circles.', focus:'Net-front instincts', rounds:10, time:2.7, minTime:2.15, unlock:7, scenarios:[14,15,18,19,20,23,9,10,12,13] },
-    { id:'power-play', title:'Power-Play Brain', short:'Seams · lanes · traps', mission:'Move defenders, recognize clean lanes, and reset against layered pressure.', focus:'Power-play vision', rounds:12, time:2.5, minTime:2, unlock:9, scenarios:[18,19,20,21,22,23,12,13,14,15,16,17] },
-    { id:'championship', title:'Championship Qualifier', short:'Every core situation', mission:'Handle every core situation quickly enough to enter the elite levels.', focus:'Championship reads', rounds:16, time:2.3, minTime:1.8, unlock:12, scenarios:[12,13,14,15,16,17,18,19,20,21,22,23,6,8,9,11] },
-    { id:'transition', title:'Transition Reads', short:'Counters · weak-side plays', mission:'Recognize counterattacks and weak-side openings without lane guides.', focus:'Transition scanning', rounds:14, time:2.2, minTime:1.7, unlock:11, scenarios:[24,25,26,27,28,29,30,31,32,33,34,35,36,39] },
+    { id:'open-ice', title:'Open Ice', short:'Add the Rush', mission:'Read covered teammates and attack a wide-open skating lane.', focus:'Find open ice', rounds:8, time:4.8, minTime:4.1, unlock:6, scenarios:[0,2,4,5,6,7,8,1] },
+    { id:'pressure', title:'Pressure Test', short:'Add Regroup', mission:'Protect the puck when every forward option has disappeared.', focus:'Manage pressure', rounds:10, time:4.4, minTime:3.7, unlock:7, scenarios:[0,1,2,3,4,5,6,7,9,10] },
+    { id:'super', title:'Super Lab', short:'All core skills', mission:'Use every core hockey read at game speed and master the full challenge.', focus:'Game-speed decisions', rounds:12, time:4, minTime:3.35, unlock:9, scenarios:[0,1,2,3,4,5,6,7,8,9,10,11] },
+    { id:'odd-man', title:'Odd-Man Rush', short:'2-on-1s · backdoor plays', mission:'Read whether the defender gives you the pass, shot, or open ice.', focus:'Odd-man decisions', rounds:8, time:3.9, minTime:3.35, unlock:6, scenarios:[12,13,14,15,16,17,6,8] },
+    { id:'net-front', title:'Net-Front Chaos', short:'Rebounds · low-cycle reads', mission:'React to rebounds, backdoor openings, and pressure below the circles.', focus:'Net-front instincts', rounds:10, time:3.7, minTime:3.15, unlock:7, scenarios:[14,15,18,19,20,23,9,10,12,13] },
+    { id:'power-play', title:'Power-Play Brain', short:'Seams · lanes · traps', mission:'Move defenders, recognize clean lanes, and reset against layered pressure.', focus:'Power-play vision', rounds:12, time:3.5, minTime:3, unlock:9, scenarios:[18,19,20,21,22,23,12,13,14,15,16,17] },
+    { id:'championship', title:'Championship Qualifier', short:'Every core situation', mission:'Handle every core situation quickly enough to enter the elite levels.', focus:'Championship reads', rounds:16, time:3.3, minTime:2.8, unlock:12, scenarios:[12,13,14,15,16,17,18,19,20,21,22,23,6,8,9,11] },
+    { id:'transition', title:'Transition Reads', short:'Counters · weak-side plays', mission:'Recognize counterattacks and weak-side openings without lane guides.', focus:'Transition scanning', rounds:14, time:3.2, minTime:2.7, unlock:11, scenarios:[24,25,26,27,28,29,30,31,32,33,34,35,36,39] },
     { id:'cycle', title:'Cycle Control', short:'Rotations · wall escapes', mission:'Read rotations, escapes, and possession choices as coverage shifts.', focus:'Cycle awareness', rounds:14, time:2.1, minTime:1.58, unlock:11, scenarios:[28,29,30,31,32,33,37,38,39,40,41,42,44,45] },
     { id:'special-teams', title:'Special Teams', short:'Power play · penalty kill', mission:'Find the single best play inside compact special-teams formations.', focus:'Special-teams vision', rounds:14, time:2, minTime:1.48, unlock:12, scenarios:[18,19,24,25,34,36,39,40,41,44,45,46,47,31] },
     { id:'east-west', title:'East-West Elite', short:'Seams · backdoor disguises', mission:'See through layered traffic to find late east-west openings.', focus:'Deception and seams', rounds:15, time:1.9, minTime:1.38, unlock:13, scenarios:[14,18,20,24,25,32,33,39,40,43,44,45,46,47,30] },
@@ -1206,6 +1206,30 @@
     return best;
   }
 
+  function scenarioDefenders(s,m){
+    const defenders=s.defenders?s.defenders.map(([x,y])=>({x:m.w*x,y:m.h*y})):[];
+    if(!s.defenders&&(s.cover==='left'||s.cover==='both'))defenders.push({x:m.w*.34,y:m.h*.48});
+    if(!s.defenders&&(s.cover==='right'||s.cover==='both'))defenders.push({x:m.w*.66,y:m.h*.48});
+    if(!s.defenders&&s.shot)defenders.push({x:m.cx,y:m.h*.34});
+    return defenders;
+  }
+
+  // Look along the actual shot to the centre of the net. An opponent out on
+  // a wing cannot intercept a puck travelling through the slot.
+  function shotLaneBlocker(defenders,start,net){
+    const dx=net.x-start.x,dy=net.y-start.y,lengthSquared=dx*dx+dy*dy;
+    if(!lengthSquared)return null;
+    let first=null;
+    defenders.forEach((defender,index)=>{
+      const along=((defender.x-start.x)*dx+(defender.y-start.y)*dy)/lengthSquared;
+      if(along<=.06||along>=.94)return;
+      const hit={x:start.x+dx*along,y:start.y+dy*along};
+      if(Math.hypot(defender.x-hit.x,defender.y-hit.y)>34)return;
+      if(!first||along<first.along)first={index,hit,along};
+    });
+    return first;
+  }
+
   function drawImpact(position,progress) {
     if(!position||progress<=0||progress>=1) return;
     ctx.save();ctx.translate(position.x,position.y);ctx.globalAlpha=1-progress;
@@ -1550,7 +1574,7 @@
     return Math.max(0,Math.min(1,(phase-begin)/(end-begin)));
   }
 
-  function drawDevelopingRoutes(s,left,right,defenders,phase,m){
+  function drawDevelopingRoutes(s,left,right,defenders,phase,m,showGuide=true){
     if(!s.routes)return;
     for(const route of s.routes){
       const [team,who,px,py]=route,progress=routeFraction(s,route,phase);
@@ -1559,13 +1583,27 @@
       const start={x:skater.x,y:skater.y},end={x:px*m.w,y:py*m.h};
       const dx=end.x-start.x,dy=end.y-start.y,length=Math.hypot(dx,dy);
       if(length<8)continue;
-      ctx.save();ctx.globalAlpha=.48;ctx.strokeStyle=team==='blue'?'#267dda':'#ce6060';
-      ctx.lineWidth=2.5;ctx.setLineDash([4,6]);ctx.beginPath();ctx.moveTo(start.x,start.y);ctx.lineTo(end.x,end.y);ctx.stroke();
-      ctx.setLineDash([]);ctx.fillStyle=ctx.strokeStyle;ctx.beginPath();
-      ctx.moveTo(end.x,end.y);ctx.lineTo(end.x-dx/length*10-dy/length*5,end.y-dy/length*10+dx/length*5);
-      ctx.lineTo(end.x-dx/length*10+dy/length*5,end.y-dy/length*10-dx/length*5);ctx.fill();ctx.restore();
+      if(showGuide){
+        ctx.save();ctx.globalAlpha=.48;ctx.strokeStyle=team==='blue'?'#267dda':'#ce6060';
+        ctx.lineWidth=2.5;ctx.setLineDash([4,6]);ctx.beginPath();ctx.moveTo(start.x,start.y);ctx.lineTo(end.x,end.y);ctx.stroke();
+        ctx.setLineDash([]);ctx.fillStyle=ctx.strokeStyle;ctx.beginPath();
+        ctx.moveTo(end.x,end.y);ctx.lineTo(end.x-dx/length*10-dy/length*5,end.y-dy/length*10+dx/length*5);
+        ctx.lineTo(end.x-dx/length*10+dy/length*5,end.y-dy/length*10-dx/length*5);ctx.fill();ctx.restore();
+      }
       skater.x+=dx*progress;skater.y+=dy*progress;
     }
+  }
+
+  function shotBlockerAtDecision(s,m,routePhase){
+    const defenders=scenarioDefenders(s,m);
+    const leftSpot=s.teammates?.[0]||[s.answer==='left'?.17:.22,.45];
+    const rightSpot=s.teammates?.[1]||[s.answer==='right'?.83:.78,.45];
+    const left={x:m.w*leftSpot[0],y:m.h*leftSpot[1]};
+    const right={x:m.w*rightSpot[0],y:m.h*rightSpot[1]};
+    drawDevelopingRoutes(s,left,right,defenders,routePhase,m,false);
+    const carrier=s.carrier||[.5,.76];
+    const start=playerPuckPosition({x:m.w*carrier[0],y:m.h*carrier[1]},0);
+    return shotLaneBlocker(defenders,start,{x:m.cx+8,y:m.h*.095+16});
   }
 
   function drawGame(t) {
@@ -1578,7 +1616,6 @@
     const m=rinkMetrics(); drawRink(m); drawNet(m);
     const gameTime=state.paused&&state.pausedAt?state.pausedAt:t;
     const phase=((gameTime-state.animStart)%2200)/2200;
-    const sway=Math.sin(phase*Math.PI*2);
     const s=state.scenario || scenarios[0];
     const carrierPuckPosition=playerPuckPosition;
     const carrierSpot=s.carrier||[.5,.76];
@@ -1590,10 +1627,7 @@
     const left={x:m.w*leftSpot[0],y:m.h*leftSpot[1]};
     const right={x:m.w*rightSpot[0],y:m.h*rightSpot[1]};
     const goalY=m.h*.095;
-    const defenders=s.defenders ? s.defenders.map(([x,y])=>({x:m.w*x,y:m.h*y})) : [];
-    if(!s.defenders&&(s.cover==='left'||s.cover==='both')) defenders.push({x:m.w*.34,y:m.h*.48});
-    if(!s.defenders&&(s.cover==='right'||s.cover==='both')) defenders.push({x:m.w*.66,y:m.h*.48});
-    if(!s.defenders&&s.shot) defenders.push({x:m.cx+sway*5,y:m.h*.34});
+    const defenders=scenarioDefenders(s,m);
     const routePhase=s.timedRoutes
       ?(state.action?.routeProgress??(state.active?1-state.timeLeft/state.duration:0))
       :(((state.action?.start??gameTime)-state.animStart)%2200)/2200;
@@ -1705,16 +1739,18 @@
         movingPuck=carrierPuckPosition(carrier,carrierAngle);
       } else if(outcome==='shot-blocked') {
         const start=carrierPuckPosition(puck,0);
-        const index=closestDefender(defenders,{x:m.cx,y:m.h*.31});
-        const blocker=index>=0?defenders[index]:{x:m.cx,y:m.h*.36};
-        const receive={x:blocker.x,y:blocker.y+18};
+        const index=state.action.shotBlockerIndex;
+        const blocker=defenders[index];
+        const receive=state.action.shotBlockerHit;
         movingOpponentIndex=index;
-        if(raw<.38){
-          const p=segment(raw,0,.38);movingPuck=pointLerp(start,receive,p);
+        if(raw<.16){
+          movingPuck=start;
+        } else if(raw<.46){
+          const p=segment(raw,.16,.46);movingPuck=pointLerp(start,receive,p);
           previousPuck=pointLerp(start,receive,Math.max(0,p-.1));
           movingOpponent={position:blocker,angle:0,label:'4'};
         } else {
-          const p=segment(raw,.38,1),side=blocker.x<m.cx?-1:1;
+          const p=segment(raw,.46,1),side=blocker.x<m.cx?-1:1;
           const exit={x:m.cx-side*m.w*.2,y:m.h*1.08};
           const control={x:blocker.x+side*m.w*.18,y:m.h*.72};
           const position=quadraticPoint(blocker,control,exit,p);
@@ -1726,9 +1762,9 @@
         const start=carrierPuckPosition(puck,0),shuffle=segment(raw,0,.55);
         goalieOffset=lerp(s.goalie*m.w*.09,0,shuffle);goalieScale=1+Math.sin(Math.min(1,raw/.7)*Math.PI)*.06;
         const save={x:m.cx+goalieOffset+8,y:goalY+16};
-        const p=segment(raw,0,.62);movingPuck=pointLerp(start,save,p);
-        previousPuck=pointLerp(start,save,Math.max(0,p-.1));
-        if(raw>.58){movingPuck=save;saveFlash=save;saveProgress=segment(raw,.58,1);}
+        const p=segment(raw,.16,.72);movingPuck=pointLerp(start,save,p);
+        previousPuck=raw<.16?null:pointLerp(start,save,Math.max(0,p-.1));
+        if(raw>.72){movingPuck=save;saveFlash=save;saveProgress=segment(raw,.72,1);}
       } else if(outcome==='empty-pass') {
         const start=carrierPuckPosition(puck,0),side=choice==='left'?-1:1;
         const corner={x:side<0?m.pad+m.w*.035:m.w-m.pad-m.w*.035,y:m.h*.12};
@@ -2038,7 +2074,7 @@
   function playDecisionSounds(choice,good,outcome,actionDuration,scenario) {
     if(!state.sound||choice==='timeout') return;
     if(choice==='left'||choice==='right')playPassSound();
-    if(choice==='shoot'&&!good)playPuckKnock();
+    if(choice==='shoot'&&!good)setTimeout(playPuckKnock,Math.round(actionDuration*.16));
     if(choice==='left'||choice==='right')setTimeout(playReceiveSound,Math.round(actionDuration*.54));
     if(good&&choice==='shoot')setTimeout(playPuckKnock,Math.round(actionDuration*.22));
     if(good&&choice==='rush')setTimeout(playPuckKnock,Math.round(actionDuration*(scenario.rush==='centre'?.82:.79)));
@@ -2202,8 +2238,12 @@
     let cheeseEarned=0;
     if(good) { const speed=Math.round(state.timeLeft*80);state.streak++;state.correct++;state.score+=100+speed+Math.min(200,state.streak*20);cheeseEarned=awardCheese(10+(state.streak%3===0?5:0)); }
     else state.streak=0;
+    const actionStartedAt=performance.now();
+    const routeProgress=state.scenario.timedRoutes?Math.max(0,Math.min(1,1-state.timeLeft/state.duration)):null;
+    const routePhase=routeProgress??(((actionStartedAt-state.animStart)%2200)/2200);
+    const shotBlocker=!good&&choice==='shoot'?shotBlockerAtDecision(state.scenario,rinkMetrics(),routePhase):null;
     let outcome='success';
-    if(!good&&choice==='shoot')outcome=state.scenario.shot===false?'goalie-easy-save':'shot-blocked';
+    if(!good&&choice==='shoot')outcome=shotBlocker?'shot-blocked':'goalie-easy-save';
     else if(!good&&(choice==='left'||choice==='right'))outcome=soloScenario(state.scenario)||state.scenario.rush===choice?'empty-pass':'pass-intercepted';
     else if(!good&&choice==='rush')outcome=state.scenario.answer==='shoot'?'rush-goalie-recovery':'rush-bodycheck';
     const outcomeDurations={
@@ -2215,8 +2255,8 @@
     const correctPass=good&&(choice==='left'||choice==='right');
     const correctShoot=good&&choice==='shoot';
     const actionDuration=choice==='timeout'?700:outcomeDurations[outcome]||(choice==='regroup'?1500:correctCentreRush||correctSideRush?2900:choice==='rush'?1200:correctPass?2400:correctShoot?2200:760);
-    state.action=choice==='timeout'?null:{choice,outcome,good,start:performance.now(),duration:actionDuration,
-      routeProgress:state.scenario.timedRoutes?Math.max(0,Math.min(1,1-state.timeLeft/state.duration)):null};
+    state.action=choice==='timeout'?null:{choice,outcome,good,start:actionStartedAt,duration:actionDuration,
+      routeProgress,shotBlockerIndex:shotBlocker?.index,shotBlockerHit:shotBlocker?.hit};
     state.round++;state.reveal=null;playDecisionSounds(choice,good,outcome,actionDuration,state.scenario);
     const outcomeText={
       'shot-blocked':'Shot blocked — turnover','goalie-easy-save':'Goalie square — easy save',
