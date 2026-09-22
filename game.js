@@ -1359,17 +1359,22 @@
     return {x:m.cx+shift*maxShift+ambient,y:n.bottom+m.h*.065,shift,p};
   }
 
-  function drawPremiumGoalie(m,t,pose='ready'){
+  function drawPremiumGoalie(m,t,pose='ready',forcedSavePose=null){
     const n=premiumNetLayout(m),g=goaliePosition(m,t);
-    const actionProgress=state.action?easeInOut(clamp((t-state.action.start)/Math.max(1,state.action.duration))):0;
-    const choicePoint=Number.isInteger(state.bonusChoice)?openNetLayout(m).targets[state.bonusChoice]:state.bonusPuck?.end||state.bonusGoalTarget||{x:m.cx,y:n.top+n.height*.55};
+    const reboundSaving=currentIntermission().type==='rebound'&&pose==='save';
+    let actionProgress=state.action?easeInOut(clamp((t-state.action.start)/Math.max(1,state.action.duration))):0;
+    if(reboundSaving&&!state.action){
+      actionProgress=state.bonusPhase==='shot'?easeInOut(clamp((t-state.startedAt)/520)):1-easeInOut(clamp((t-(state.bonusReactionAt||t))/420));
+    }
+    const reboundSavePoint=currentIntermission().type==='rebound'?state.bonusPuck?.save:null;
+    const choicePoint=Number.isInteger(state.bonusChoice)?openNetLayout(m).targets[state.bonusChoice]:reboundSavePoint||state.bonusPuck?.end||state.bonusGoalTarget||{x:m.cx,y:n.top+n.height*.55};
     const direction=Math.sign(choicePoint.x-m.cx)||1,goalieW=n.width*.84,goalieH=n.height*1.04;
     const maximumCentreShift=Math.max(0,n.width*.5-goalieW*.5-n.width*.012),reaction=pose==='save'?1:pose==='miss'?.05:0;
     const saveReach=easeInOut(clamp(actionProgress/.72)),activeShift=direction*maximumCentreShift*reaction*saveReach,blend=pose==='ready'?0:saveReach,targetHigh=choicePoint.y<n.top+n.height*.36;
     const deflectionReach=currentIntermission().type==='deflection'&&pose!=='ready';
-    const savePose=deflectionReach?(direction<0?'blocker':'trapper'):(targetHigh?(direction<0?'blocker':'trapper'):'pad');
-    const drawPose=(image,alpha)=>{if(!image?.complete||!image.naturalWidth)return false;ctx.save();ctx.globalAlpha=alpha;ctx.translate(g.x+activeShift,g.y);ctx.shadowColor='rgba(0,0,0,.58)';ctx.shadowBlur=18;ctx.shadowOffsetY=10;ctx.drawImage(image,-goalieW/2,-goalieH,goalieW,goalieH);ctx.restore();return true;};
-    if(goaliePoseImagesReady===goaliePoseFiles.length){drawPose(goaliePoseImages.ready,1-blend);if(blend)drawPose(goaliePoseImages[savePose],blend);}
+    const savePose=forcedSavePose||(deflectionReach?(direction<0?'blocker':'trapper'):(targetHigh?(direction<0?'blocker':'trapper'):'pad'));
+    const drawPose=(image,alpha,yOffset=0)=>{if(!image?.complete||!image.naturalWidth)return false;ctx.save();ctx.globalAlpha=alpha;ctx.translate(g.x+activeShift,g.y+yOffset);ctx.shadowColor='rgba(0,0,0,.58)';ctx.shadowBlur=18;ctx.shadowOffsetY=10;ctx.drawImage(image,-goalieW/2,-goalieH,goalieW,goalieH);ctx.restore();return true;};
+    if(goaliePoseImagesReady===goaliePoseFiles.length){drawPose(goaliePoseImages.ready,1-blend);if(blend)drawPose(goaliePoseImages[savePose],blend,savePose==='pad'?m.h*.035*blend:0);}
     else {ctx.save();ctx.translate(g.x+activeShift,g.y);if(intermissionGoalieReady)ctx.drawImage(intermissionGoalie,-goalieW/2,-goalieH,goalieW,goalieH);else goalie(0,-goalieH*.3,0,0,1.8);ctx.restore();}
     return {x:g.x+activeShift,y:g.y,w:goalieW,h:goalieH,pose:savePose};
   }
@@ -1451,7 +1456,8 @@
   }
 
   function drawReboundBonus(m,t){
-    drawBonusArena(m);drawPremiumNet(m);drawPremiumGoalie(m,t,state.bonusPhase==='shot'?'save':'ready');const motion=reboundPuckPosition(m,t),puck={x:motion.x,y:motion.y};
+    const goalieStillRecovering=state.bonusPhase==='rebound'&&t-(state.bonusReactionAt||0)<420;
+    drawBonusArena(m);drawPremiumNet(m);drawPremiumGoalie(m,t,state.bonusPhase==='shot'||goalieStillRecovering?'save':'ready',state.bonusSavePose||'pad');const motion=reboundPuckPosition(m,t),puck={x:motion.x,y:motion.y};
     if(state.action?.good){const raw=clamp((t-state.action.start)/state.action.duration),target=state.bonusGoalTarget||{x:m.w*.72,y:m.h*.22};drawUserStick(pointLerp({x:m.cx-m.w*.24,y:m.h*.82},puck,easeInOut(segment(raw,0,.35))),-.58);if(raw>.32){const shot=pointLerp(puck,target,easeInOut(segment(raw,.32,1)));drawPuckMotion(shot);if(raw>.78)drawGoalFlash(target,segment(raw,.78,1));}}
     else drawReboundPuck(motion,t);
     if(motion.tappable&&!state.locked){const pulse=.5+.5*Math.sin(t/55);ctx.save();ctx.strokeStyle=motion.tier==='max'?'#ffcf54':'#63e6ed';ctx.lineWidth=4;ctx.shadowColor=ctx.strokeStyle;ctx.shadowBlur=20;ctx.beginPath();ctx.arc(puck.x,puck.y,18+7*pulse,0,Math.PI*2);ctx.stroke();ctx.restore();}
@@ -2166,7 +2172,7 @@
     } else if(bonus.type==='deflection'){
       const shotSide=chooseDifferentAnswer([-1,1]),contact={x:m.cx+shotSide*m.w*(.18+Math.random()*.045),y:m.h*(.39+Math.random()*.07)},hit={x:m.cx+shotSide*m.w*.035,y:m.h*.47};state.bonusGoalTarget={x:m.cx-shotSide*m.w*(.265+Math.random()*.025),y:m.h*(.205+Math.random()*.08)};state.bonusAnswer='deflect';state.bonusPhase='aim';state.duration=bonus.time;state.timeLeft=bonus.time;state.bonusDropAt=now+720;state.bonusReactionAt=0;state.bonusStickTarget=contact;state.bonusStick={x:m.w*.19,y:m.h*.78};state.bonusPuck={start:{x:m.cx+shotSide*m.w*(.025+Math.random()*.035),y:m.h*.91},end:contact,hit,previous:null};ui.timer.textContent='READY';ui.skillLabel.textContent='Find the glowing blade';
     } else {
-      const exitDirection=chooseDifferentAnswer(['left','right','bottom']),lateral=exitDirection==='left'?-1:exitDirection==='right'?1:side,bounce={x:m.cx+lateral*m.w*(.12+Math.random()*.1),y:m.h*(.68+Math.random()*.045)},apex={x:bounce.x+lateral*m.w*(.045+Math.random()*.035),y:bounce.y+m.h*.025},land={x:bounce.x+lateral*m.w*(.1+Math.random()*.055),y:m.h*(.76+Math.random()*.055)},exit=exitDirection==='bottom'?{x:clamp(land.x+lateral*m.w*(.06+Math.random()*.08),m.w*.08,m.w*.92),y:m.h*1.08}:{x:exitDirection==='left'?-m.w*.1:m.w*1.1,y:clamp(land.y+m.h*(Math.random()*.08-.025),m.h*.72,m.h*.9)};state.bonusAnswer='rebound';state.bonusPhase='shot';state.duration=reboundTotalTime/1000;state.timeLeft=0;state.bonusReactionAt=0;state.bonusReboundStage='shot';state.bonusReboundTier=null;state.bonusTapPoint=null;state.bonusPuck={start:{x:m.cx,y:m.h*.91},save:{x:m.cx+side*m.w*.045,y:m.h*.47},bounce,apex,land,exit,end:bounce};ui.timer.textContent='WATCH';ui.skillLabel.textContent='Watch the save';
+      const saveOptions=['pad','blocker','trapper'].filter(pose=>pose!==state.bonusLastSavePose),savePose=saveOptions[Math.floor(Math.random()*saveOptions.length)],saveSide=savePose==='blocker'?-1:savePose==='trapper'?1:side,save={x:m.cx+saveSide*m.w*(savePose==='pad'?.045:.075),y:m.h*(savePose==='pad'?.47:.385+Math.random()*.045)},exitDirection=chooseDifferentAnswer(['left','right','bottom']),lateral=exitDirection==='left'?-1:exitDirection==='right'?1:side,bounce={x:m.cx+lateral*m.w*(.12+Math.random()*.1),y:m.h*(.68+Math.random()*.045)},apex={x:bounce.x+lateral*m.w*(.045+Math.random()*.035),y:bounce.y+m.h*.025},land={x:bounce.x+lateral*m.w*(.1+Math.random()*.055),y:m.h*(.76+Math.random()*.055)},exit=exitDirection==='bottom'?{x:clamp(land.x+lateral*m.w*(.06+Math.random()*.08),m.w*.08,m.w*.92),y:m.h*1.08}:{x:exitDirection==='left'?-m.w*.1:m.w*1.1,y:clamp(land.y+m.h*(Math.random()*.08-.025),m.h*.72,m.h*.9)};state.bonusSavePose=savePose;state.bonusLastSavePose=savePose;state.bonusAnswer='rebound';state.bonusPhase='shot';state.duration=reboundTotalTime/1000;state.timeLeft=0;state.bonusReactionAt=0;state.bonusReboundStage='shot';state.bonusReboundTier=null;state.bonusTapPoint=null;state.bonusPuck={start:{x:m.cx,y:m.h*.91},save,bounce,apex,land,exit,end:bounce};ui.timer.textContent='WATCH';ui.skillLabel.textContent='Watch the save';
     }
   }
 
