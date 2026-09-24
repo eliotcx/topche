@@ -345,7 +345,10 @@
       {id:'gold-black',name:'Gold & Black',cost:180,color:'#e7b52c',accent:'#16191e',detail:'#ffffff'},
       {id:'aurora-green',name:'Aurora Green',cost:220,unlockLevel:3,color:'#087f66',accent:'#8ef5d0',detail:'#052f32'},
       {id:'solar-orange',name:'Solar Orange',cost:340,unlockLevel:9,color:'#ef6d1f',accent:'#ffe26b',detail:'#681f18'},
-      {id:'cosmic-violet',name:'Cosmic Violet',cost:520,unlockLevel:16,color:'#592f99',accent:'#5ce6ef',detail:'#1a123d'}
+      {id:'cosmic-violet',name:'Cosmic Violet',cost:520,unlockLevel:16,color:'#592f99',accent:'#5ce6ef',detail:'#1a123d'},
+      {id:'crimson-crest',name:'Crimson Crest',cost:690,unlockLevel:21,color:'#861d35',accent:'#f4d28a',detail:'#241324'},
+      {id:'glacier-mint',name:'Glacier Mint',cost:860,unlockLevel:25,color:'#8debd5',accent:'#132e3a',detail:'#f7ffff'},
+      {id:'midnight-copper',name:'Midnight Copper',cost:1125,unlockLevel:29,color:'#10151d',accent:'#c8753d',detail:'#f0d1a4'}
     ],
     logo:[
       {id:'cheese',name:'Cheese Wedge',cost:0,symbol:'🧀',color:'#132b3e',accent:'#ffcf54'},
@@ -356,7 +359,10 @@
       {id:'star',name:'Rink Star',cost:160,symbol:'★',color:'#123150',accent:'#ffffff'},
       {id:'comet',name:'Ice Comet',cost:210,unlockLevel:4,symbol:'☄',color:'#123150',accent:'#8deeff'},
       {id:'mountain',name:'North Peak',cost:350,unlockLevel:11,symbol:'▲',color:'#173c55',accent:'#f4fbff'},
-      {id:'diamond',name:'Championship Diamond',cost:540,unlockLevel:18,symbol:'◆',color:'#25205c',accent:'#ffd85d'}
+      {id:'diamond',name:'Championship Diamond',cost:540,unlockLevel:18,symbol:'◆',color:'#25205c',accent:'#ffd85d'},
+      {id:'meteor',name:'Meteor Mark',cost:675,unlockLevel:22,symbol:'✹',color:'#4b1738',accent:'#ffad54'},
+      {id:'snow-owl',name:'Snow Owl',cost:850,unlockLevel:26,symbol:'◉',color:'#e8f0f1',accent:'#263746'},
+      {id:'legacy-eight',name:'Legacy Eight',cost:1100,unlockLevel:30,symbol:'8',color:'#141820',accent:'#e3b84d'}
     ],
     helmet:[
       {id:'classic-navy',name:'Classic Pro',cost:0,color:'#071b2b',accent:'#2b6384',detail:'#b8d1dc',design:'classic'},
@@ -366,7 +372,10 @@
       {id:'gold-stripe',name:'Forest Camo',cost:125,color:'#284f35',accent:'#8aa35a',detail:'#14291e',design:'forest'},
       {id:'galaxy-dome',name:'Galaxy Dome',cost:190,unlockLevel:2,color:'#21154f',accent:'#81e8ff',detail:'#ffdc6b',design:'galaxy'},
       {id:'shark-attack',name:'Shark Attack',cost:315,unlockLevel:8,color:'#166b8a',accent:'#dff9ff',detail:'#082d45',design:'shark'},
-      {id:'checker-pro',name:'Checker Pro',cost:470,unlockLevel:15,color:'#f0f5f7',accent:'#142331',detail:'#ffca45',design:'checker'}
+      {id:'checker-pro',name:'Checker Pro',cost:470,unlockLevel:15,color:'#f0f5f7',accent:'#142331',detail:'#ffca45',design:'checker'},
+      {id:'ember-cage',name:'Ember Cage',cost:640,unlockLevel:21,color:'#3b1018',accent:'#ff7a32',detail:'#f8c755',design:'flame'},
+      {id:'northern-lights',name:'Northern Lights',cost:820,unlockLevel:25,color:'#122338',accent:'#4ee4b2',detail:'#c377ff',design:'galaxy'},
+      {id:'gold-standard',name:'Gold Standard',cost:1080,unlockLevel:29,color:'#17191d',accent:'#d9b54c',detail:'#f5eee0',design:'checker'}
     ],
     tape:[
       {id:'white-tape',name:'Traditional Full Wrap',cost:0,color:'#f5f7f7',accent:'#bac8cc',design:'full'},
@@ -377,7 +386,10 @@
       {id:'pink-tape',name:'Split Pink & White',cost:60,color:'#ff4f9b',accent:'#ffffff',design:'split'},
       {id:'zebra-wrap',name:'Zebra Wave',cost:120,unlockLevel:3,color:'#f7f7f2',accent:'#111418',design:'zebra'},
       {id:'heel-lock',name:'Heel Lock',cost:225,unlockLevel:10,color:'#ffcc3d',accent:'#131820',design:'heel'},
-      {id:'target-rings',name:'Target Rings',cost:390,unlockLevel:17,color:'#ea324d',accent:'#ffffff',design:'rings'}
+      {id:'target-rings',name:'Target Rings',cost:390,unlockLevel:17,color:'#ea324d',accent:'#ffffff',design:'rings'},
+      {id:'copper-zebra',name:'Copper Zebra',cost:565,unlockLevel:22,color:'#b86836',accent:'#151515',design:'zebra'},
+      {id:'mint-split',name:'Mint Split',cost:735,unlockLevel:26,color:'#55e2b2',accent:'#241b38',design:'split'},
+      {id:'championship-wrap',name:'Championship Wrap',cost:965,unlockLevel:30,color:'#d7aa3d',accent:'#fff4cf',design:'rings'}
     ],
     shaft:[
       {id:'midnight',name:'Carbon Weave',cost:0,color:'#111820',accent:'#d3a62c',detail:'#2e3942',design:'carbon'},
@@ -386,19 +398,27 @@
       {id:'ice-blue',name:'Frost Fracture',cost:130,color:'#24b8ee',accent:'#ffffff',detail:'#75e8ff',design:'frost'},
       {id:'digital-grid',name:'Digital Grid',cost:240,unlockLevel:5,color:'#15567d',accent:'#9dffdc',detail:'#2b98bb',design:'matrix'},
       {id:'sunset-burst',name:'Sunset Burst',cost:370,unlockLevel:12,color:'#ef4e29',accent:'#ffd84b',detail:'#64196f',design:'sunset'},
-      {id:'power-circuit',name:'Power Circuit',cost:560,unlockLevel:19,color:'#3154c8',accent:'#8df4ff',detail:'#c14dff',design:'circuit'}
+      {id:'power-circuit',name:'Power Circuit',cost:560,unlockLevel:19,color:'#3154c8',accent:'#8df4ff',detail:'#c14dff',design:'circuit'},
+      {id:'graphite-gold',name:'Graphite Gold',cost:720,unlockLevel:23,color:'#171a1f',accent:'#d7ad42',detail:'#454b52',design:'carbon'},
+      {id:'aurora-circuit',name:'Aurora Circuit',cost:905,unlockLevel:27,color:'#143d37',accent:'#64f1c6',detail:'#a652dc',design:'circuit'},
+      {id:'heritage-wood',name:'Heritage Wood',cost:1160,unlockLevel:30,color:'#6d351d',accent:'#e7c292',detail:'#2a1710',design:'woodgrain'}
     ],
     socks:[
       {id:'home-ice',name:'Home Ice Bands',cost:0,color:'#1769ff',accent:'#ffffff',detail:'#071b2b',design:'classic'},
       {id:'maple-pulse',name:'Maple Pulse',cost:70,color:'#d81f35',accent:'#ffffff',detail:'#9b1222',design:'pulse'},
-      {id:'nordic-crown',name:'Nordic Crown',cost:90,color:'#1f63b7',accent:'#ffda45',detail:'#ffffff',design:'chevron'},
-      {id:'candy-clash',name:'Candy Cane Clash',cost:105,color:'#e1273e',accent:'#ffffff',detail:'#17498f',design:'barber'},
+      {id:'nordic-crown',name:'Nordic Crown',cost:90,color:'#48236d',accent:'#ffda45',detail:'#fff1cf',design:'chevron'},
+      {id:'candy-clash',name:'Candy Cane Clash',cost:105,color:'#e1273e',accent:'#ffffff',detail:'#ff8dab',design:'barber'},
       {id:'coastal-current',name:'Coastal Current',cost:125,color:'#0098a6',accent:'#eefcff',detail:'#062f3a',design:'wave'},
       {id:'neon-static',name:'Neon Static',cost:195,unlockLevel:4,color:'#9cff38',accent:'#ff4fa3',detail:'#332080',design:'static'},
       {id:'solar-flame',name:'Solar Flame',cost:275,unlockLevel:7,color:'#ef6d1f',accent:'#ffe26b',detail:'#a61e31',design:'flame'},
       {id:'gold-checker',name:'Gold Checker',cost:365,unlockLevel:11,color:'#e7b52c',accent:'#16191e',detail:'#ffffff',design:'checker'},
       {id:'cosmic-orbit',name:'Cosmic Orbit',cost:475,unlockLevel:16,color:'#592f99',accent:'#5ce6ef',detail:'#ffcf54',design:'orbit'},
-      {id:'arctic-shatter',name:'Arctic Shatter',cost:590,unlockLevel:20,color:'#eefcff',accent:'#55d9ff',detail:'#17498f',design:'shatter'}
+      {id:'arctic-shatter',name:'Arctic Shatter',cost:590,unlockLevel:20,color:'#f4f7f4',accent:'#a8b0b7',detail:'#1f252b',design:'shatter'},
+      {id:'copper-crosscut',name:'Copper Crosscut',cost:680,unlockLevel:22,color:'#9a4e2d',accent:'#f0c486',detail:'#2c1813',design:'crosscut'},
+      {id:'orchid-strike',name:'Orchid Strike',cost:790,unlockLevel:24,color:'#8b3eb8',accent:'#ffd456',detail:'#f7dff2',design:'diagonal'},
+      {id:'forest-frost',name:'Forest Frost',cost:900,unlockLevel:26,color:'#174b35',accent:'#b5e36e',detail:'#f1eed4',design:'bands'},
+      {id:'midnight-confetti',name:'Midnight Confetti',cost:1025,unlockLevel:28,color:'#171525',accent:'#ff6f91',detail:'#f4c84f',design:'confetti'},
+      {id:'champion-cream',name:'Champion Cream',cost:1200,unlockLevel:30,color:'#f2e3bd',accent:'#7e2131',detail:'#16191d',design:'crown'}
     ],
     gloves:[
       {id:'navy-gloves',name:'Navy Gloves',cost:0,color:'#071b2b',accent:'#2d6590'},
@@ -408,7 +428,10 @@
       {id:'teal-white',name:'Teal & White',cost:120,color:'#078995',accent:'#ffffff'},
       {id:'arctic-gloves',name:'Arctic Flash',cost:205,unlockLevel:4,color:'#eaf8fb',accent:'#209bd1'},
       {id:'voltage-gloves',name:'Voltage',cost:320,unlockLevel:9,color:'#20242b',accent:'#b8f241'},
-      {id:'royal-gloves',name:'Royal Elite',cost:455,unlockLevel:14,color:'#4b237d',accent:'#f0c95c'}
+      {id:'royal-gloves',name:'Royal Elite',cost:455,unlockLevel:14,color:'#4b237d',accent:'#f0c95c'},
+      {id:'ember-gloves',name:'Ember Grip',cost:625,unlockLevel:21,color:'#6b1e29',accent:'#ff9a3c'},
+      {id:'mint-gloves',name:'Mint Freeze',cost:795,unlockLevel:25,color:'#dffaf1',accent:'#14705f'},
+      {id:'copper-gloves',name:'Copper Pro',cost:1030,unlockLevel:29,color:'#171a1e',accent:'#c56d3d'}
     ],
     skates:[
       {id:'classic-black',name:'Classic Black',cost:0,color:'#111419',accent:'#d9e4e8'},
@@ -417,13 +440,19 @@
       {id:'blue-runner',name:'Blue Runner',cost:125,color:'#111821',accent:'#2499db'},
       {id:'frost-blade',name:'Frost Blade',cost:250,unlockLevel:6,color:'#e5f8ff',accent:'#36b8e8'},
       {id:'gold-pulse',name:'Gold Pulse',cost:390,unlockLevel:13,color:'#15191e',accent:'#f0bd35'},
-      {id:'whiteout-skates',name:'Whiteout Pro',cost:590,unlockLevel:20,color:'#eef5f7',accent:'#333d48'}
+      {id:'whiteout-skates',name:'Whiteout Pro',cost:590,unlockLevel:20,color:'#eef5f7',accent:'#333d48'},
+      {id:'copper-runner',name:'Copper Runner',cost:675,unlockLevel:22,color:'#1b1c20',accent:'#bd6b3d'},
+      {id:'aurora-blade',name:'Aurora Blade',cost:850,unlockLevel:26,color:'#14262d',accent:'#5be6bd'},
+      {id:'champion-edge',name:'Champion Edge',cost:1120,unlockLevel:30,color:'#f1eadb',accent:'#b58b2d'}
     ],
     number:[
       ...[10,8,9,19,29,71,87,97,99].map((number,index)=>({id:String(number),name:`Number ${number}`,symbol:String(number),cost:index?45+index*10:0,color:'#12344a',accent:'#ffffff'})),
       {id:'11',name:'Number 11',symbol:'11',cost:140,unlockLevel:2,color:'#12344a',accent:'#ffffff'},
       {id:'16',name:'Number 16',symbol:'16',cost:245,unlockLevel:7,color:'#12344a',accent:'#ffffff'},
-      {id:'21',name:'Number 21',symbol:'21',cost:430,unlockLevel:15,color:'#12344a',accent:'#ffffff'}
+      {id:'21',name:'Number 21',symbol:'21',cost:430,unlockLevel:15,color:'#12344a',accent:'#ffffff'},
+      {id:'24',name:'Number 24',symbol:'24',cost:585,unlockLevel:22,color:'#12344a',accent:'#ffffff'},
+      {id:'44',name:'Number 44',symbol:'44',cost:760,unlockLevel:26,color:'#12344a',accent:'#ffffff'},
+      {id:'88',name:'Number 88',symbol:'88',cost:990,unlockLevel:30,color:'#12344a',accent:'#ffffff'}
     ],
     cardstyle:[
       {id:'arena-poster',name:'Arena Poster',cost:0,design:'anton',color:'#ef3b31',accent:'#101d34',detail:'#f8d64d'},
@@ -759,6 +788,11 @@
     if(item.design==='checker')return (Math.floor(x/16)+Math.floor(y/16))%2?item.color:item.accent;
     if(item.design==='orbit'){const ring=Math.floor(Math.hypot((x%68)-34,(y%78)-39)/8)%4;return ring===0?item.accent:ring===1?item.detail:item.color;}
     if(item.design==='shatter'){const crack=Math.abs(Math.sin(x*.21)+Math.cos(y*.17));return crack<.22?item.detail:crack>.95?item.accent:item.color;}
+    if(item.design==='crosscut'){const slash=Math.floor((x*1.15+y)/13)%6;return slash===0?item.accent:slash===1?item.detail:item.color;}
+    if(item.design==='diagonal'){const slash=Math.floor((x+y*1.7)/20)%5;return slash===0?item.accent:slash===1?item.detail:item.color;}
+    if(item.design==='bands'){const band=Math.floor(y/12)%7;return band===1||band===2?item.accent:band===4?item.detail:item.color;}
+    if(item.design==='confetti'){const cell=(Math.floor(x/9)*13+Math.floor(y/8)*17)%19;return cell<2?item.accent:cell===5||cell===11?item.detail:item.color;}
+    if(item.design==='crown'){const peak=Math.floor((y+Math.abs((x%54)-27)*.8)/12)%7;return peak===0?item.accent:peak===1?item.detail:item.color;}
     return item.color;
   }
 
@@ -821,7 +855,7 @@
       const whiteUniformPixel=brightness>.5&&Math.max(r,g,b)-Math.min(r,g,b)<42;
       // Socks begin below the jersey hem. Keeping this as a distinct lower-leg
       // mask prevents patterned socks from recolouring the overlapping torso.
-      const sockMask=yr>=418&&(insideEllipse(xr,yr,350,430,30,48)||insideEllipse(xr,yr,408,486,31,62))&&!skin&&(bluePixel||whiteUniformPixel);
+      const sockMask=yr>=408&&yr<545&&(insideEllipse(xr,yr,350,438,42,65)||insideEllipse(xr,yr,408,486,43,76))&&!skin&&(bluePixel||whiteUniformPixel);
       const tapeMask=xr>180&&xr<288&&yr>23&&yr<76;
       const shaftMask=segmentDistance(xr,yr,245,53,352,181)<12;
       const jerseyMask=bluePixel&&xr>230&&xr<525&&yr>162&&yr<420;
@@ -889,7 +923,7 @@
       const skateMask=insideEllipse(x,y,63,438,48,43)||insideEllipse(x,y,449,438,48,43);
       const bluePixel=b>55&&b>r*1.28&&b>g*1.02;
       const whiteUniformPixel=brightness>.5&&Math.max(r,g,b)-Math.min(r,g,b)<42;
-      const sockMask=y>331&&y<436&&(x<207||x>305)&&!skin&&(bluePixel||whiteUniformPixel);
+      const sockMask=y>318&&y<447&&(x<220||x>292)&&!skin&&(bluePixel||whiteUniformPixel);
       const jerseyMask=bluePixel&&y<331;
       const uniformStripe=brightness>.5&&!skin&&x>175&&x<337&&y>220&&y<270;
       if(helmetMask)tintPixel(data,i,helmet.color,brightness);
