@@ -118,8 +118,11 @@ h1 { margin: 10px 0 10px; font-size: clamp(1.8rem, 3vw, 3rem); line-height: .98;
 .start-overlay.finish-mode { padding: 14px; background: radial-gradient(circle at 72% 35%, rgba(22,88,109,.48), transparent 38%), linear-gradient(145deg, rgba(4,15,25,.96), rgba(7,33,49,.96)); }
 .finish-layout { position: relative; z-index: 1; width: min(570px,100%); display: grid; grid-template-columns: minmax(0,1fr) 154px; gap: 12px 16px; align-items: center; text-align: left; }
 .finish-layout.no-card { grid-template-columns: 1fr; text-align: center; }
-.finish-result { min-width: 0; }
-.finish-result .unlock-banner { display: inline-block; margin-bottom: 9px; }
+.finish-result { position: relative; min-width: 0; }
+.finish-unlock-status { position: relative; display: grid; gap: 2px; margin: 0 0 11px; padding: 1px 0 7px 15px; color: #ffdc6b; border-left: 3px solid #ffcf54; border-bottom: 1px solid rgba(255,207,84,.25); }
+.finish-unlock-status::before { content: ""; position: absolute; left: -6px; top: 8px; width: 9px; height: 9px; background: #ffcf54; transform: rotate(45deg); box-shadow: 0 0 12px rgba(255,207,84,.42); }
+.finish-unlock-status span { color: #87b7c5; font-size: .49rem; font-weight: 900; letter-spacing: .17em; }
+.finish-unlock-status strong { color: #ffdc6b; font-size: .78rem; line-height: 1.15; letter-spacing: .02em; text-transform: uppercase; }
 .finish-kicker { margin: 0 0 3px; color: var(--cyan); font-size: .64rem; font-weight: 950; letter-spacing: .19em; }
 .start-overlay .finish-title { margin: 0 0 11px; color: #fff; font-size: clamp(2.1rem,5vw,3.15rem); line-height: .88; letter-spacing: -.055em; text-shadow: 0 0 24px rgba(99,230,237,.28); }
 .finish-title span { display: block; color: #ffda62; font-size: .48em; letter-spacing: .09em; text-shadow: 0 0 18px rgba(255,207,84,.28); }
@@ -308,6 +311,19 @@ dialog li strong { color: var(--white); }
   .skill-card { grid-column: 2; grid-row: 1 / 4; align-self: stretch; }
   .progress-block { grid-column: 3; grid-row: 1 / 3; margin: 0; }
   .coaching-card { display: none; }
+  .start-overlay.finish-mode { justify-content: flex-start; padding: clamp(11px,2vh,20px); }
+  .finish-layout { width: 100%; height: 100%; min-height: 100%; grid-template-columns: minmax(0,1fr) clamp(175px,31vw,245px); grid-template-rows: minmax(0,1fr) auto auto; gap: 12px clamp(12px,2.5vw,22px); align-content: stretch; }
+  .finish-result { align-self: stretch; display: flex; flex-direction: column; justify-content: center; padding: clamp(14px,2.4vw,24px); overflow: hidden; border-left: 3px solid rgba(99,230,237,.64); background: linear-gradient(110deg,rgba(7,31,47,.72),rgba(11,49,67,.3) 78%,transparent); clip-path: polygon(0 0,96% 0,100% 8%,100% 92%,96% 100%,0 100%); }
+  .finish-result::after { content: ""; position: absolute; right: -68px; bottom: -94px; width: 190px; height: 190px; border: 18px solid rgba(99,230,237,.07); border-radius: 50%; pointer-events: none; }
+  .finish-card-reveal { align-self: stretch; justify-content: center; padding: 12px 11px 13px; }
+  .finish-card-canvas { width: clamp(118px,19vw,165px); }
+  .finish-card-label { position: absolute; left: 11px; right: 11px; top: 10px; width: auto; }
+  .finish-card-reveal h3 { margin-top: 9px; font-size: .92rem; }
+  .finish-card-reveal p { font-size: .66rem; }
+  .finish-locker-button { margin-top: 4px; padding: 10px 6px; font-size: .72rem; }
+  .finish-actions { align-self: end; width: 100%; }
+  .finish-actions .primary-button,.finish-actions .secondary-button { padding: 14px 16px; }
+  .finish-best { align-self: start; margin-top: -8px; }
 }
 
 @media (max-width: 700px) {
@@ -340,26 +356,31 @@ dialog li strong { color: var(--white); }
   .cheese-hero-logo { width: 66px; height: 52px; margin-bottom: 7px; }
   .score-logo { width: 58px; height: 58px; margin-bottom: 14px; }
   .start-overlay { padding: 12px; justify-content: flex-start; }
-  .start-overlay.finish-mode { justify-content: flex-start; padding: 9px; }
-  .finish-layout { min-height: 100%; grid-template-columns: minmax(0,1fr) 132px; grid-template-rows: auto auto auto; align-content: space-evenly; gap: 0 10px; }
-  .finish-result .unlock-banner { margin-bottom: 6px; padding: 5px 8px; font-size: .58rem; }
-  .finish-kicker { font-size: .52rem; margin-bottom: 2px; }
-  .start-overlay .finish-title { margin-bottom: 9px; font-size: clamp(1.9rem,9vw,2.55rem); }
-  .finish-score { gap: 7px; margin-bottom: 6px; padding: 6px 7px; }
-  .finish-score strong { font-size: 1.2rem; }
-  .finish-score span { font-size: .59rem; }
-  .start-overlay .finish-copy { font-size: .62rem; line-height: 1.3; }
-  .finish-card-reveal { padding: 8px 7px 9px; }
-  .finish-card-label span,.finish-card-label strong { font-size: .46rem; }
+  .start-overlay.finish-mode { padding: 7px; }
+  .finish-layout { grid-template-columns: minmax(0,1fr) 140px; grid-template-rows: minmax(0,1fr) auto auto; gap: 8px 8px; align-content: stretch; }
+  .finish-result { padding: 11px 10px 11px 12px; }
+  .finish-unlock-status { gap: 1px; margin-bottom: 9px; padding: 1px 0 5px 11px; border-left-width: 2px; }
+  .finish-unlock-status::before { left: -5px; top: 7px; width: 7px; height: 7px; }
+  .finish-unlock-status span { font-size: .42rem; }
+  .finish-unlock-status strong { font-size: .64rem; }
+  .finish-kicker { font-size: .54rem; margin-bottom: 3px; }
+  .start-overlay .finish-title { margin-bottom: 10px; font-size: clamp(2.05rem,10vw,2.7rem); }
+  .finish-score { gap: 8px; margin-bottom: 8px; padding: 8px; }
+  .finish-score strong { font-size: 1.35rem; }
+  .finish-score span { font-size: .62rem; }
+  .start-overlay .finish-copy { font-size: .66rem; line-height: 1.34; }
+  .finish-card-reveal { padding: 9px 7px 10px; }
+  .finish-card-label { left: 7px; right: 7px; top: 7px; }
+  .finish-card-label span,.finish-card-label strong { font-size: .45rem; }
   .finish-card-tilt { margin: 7px 0 10px; transform: rotate(-5deg); }
-  .finish-card-canvas { width: 82px; }
-  .finish-card-reveal h3 { margin-top: 4px; font-size: .72rem; }
-  .finish-card-reveal p { margin-bottom: 4px; font-size: .48rem; }
-  .finish-locker-button { padding: 6px 3px; font-size: .56rem; }
-  .finish-actions { align-self: center; flex-wrap: nowrap; gap: 6px; }
-  .finish-actions .primary-button,.finish-actions .secondary-button { flex: 1 1 0; padding: 8px 7px; font-size: .66rem; }
+  .finish-card-canvas { width: clamp(86px,25vw,102px); }
+  .finish-card-reveal h3 { margin-top: 5px; font-size: .76rem; }
+  .finish-card-reveal p { margin-bottom: 5px; font-size: .51rem; }
+  .finish-locker-button { margin-top: 2px; padding: 8px 3px; font-size: .59rem; }
+  .finish-actions { align-self: end; flex-wrap: nowrap; gap: 6px; }
+  .finish-actions .primary-button,.finish-actions .secondary-button { flex: 1 1 0; padding: 10px 7px; font-size: .69rem; }
   .finish-actions .primary-button span { margin-left: 4px; }
-  .finish-best { align-self: start; margin-top: -7px; font-size: .5rem; }
+  .finish-best { align-self: start; margin-top: -5px; font-size: .51rem; }
   .level-grid { gap: 6px; }
   .start-overlay > .level-grid + p.bonus-heading { margin-top: 52px; }
   .level-card { min-height: 74px; padding: 9px; }

@@ -1067,7 +1067,15 @@
   function drawCardBrand(target,style,width,height,compact=false){
     const logoSize=compact?Math.max(48,width*.22):190;
     const corners={classic:'tl',burst:'tr',vintage:'tr',aurora:'tl',foil:'tr',diamond:'tl',anton:'tr',bungee:'tl',blackops:'bl',graduate:'tr',alfa:'bl',russo:'tr',monoton:'tl'};
-    const corner=style.logoCorner||corners[style.design]||'tl',right=corner[1]==='r',bottom=corner[0]==='b';
+    let corner=style.logoCorner||corners[style.design]||'tl';
+    if(style.design==='collection'&&!compact){
+      const horizontal=corner[1]||'l';
+      if(style.layout==='topbar')corner=`b${horizontal}`;
+      else if(['bottom','diagonalUp','diagonalDown','split'].includes(style.layout))corner=`t${horizontal}`;
+      else if(style.layout==='leftside'&&horizontal==='l')corner=`${corner[0]||'t'}r`;
+      else if(style.layout==='rightside'&&horizontal==='r')corner=`${corner[0]||'t'}l`;
+    }
+    const right=corner[1]==='r',bottom=corner[0]==='b';
     const margin=compact?8:44,logoX=right?width-logoSize-margin:margin,logoY=bottom?height-logoSize*1.03-margin:margin;
     if(cheeseLogo.complete&&cheeseLogo.naturalWidth){target.save();target.shadowColor='rgba(0,0,0,.3)';target.shadowBlur=compact?3:14;target.drawImage(cheeseLogo,logoX,logoY,logoSize,logoSize*1.03);target.restore();}
   }
@@ -2689,10 +2697,11 @@
     const hasIntermission=intermissionIndex>=0,primaryLabel=hasIntermission?'Play bonus game':passed&&nextLevel?'Play next level':'Try again';
     const celebration=passed?`<div class="finish-confetti" aria-hidden="true">${Array.from({length:30},(_,i)=>`<i style="--x:${(i*37)%100}%;--delay:${(i%10)*.08}s;--spin:${(i%2?1:-1)*(180+i*19)}deg;--colour:${['#ffcf54','#63e6ed','#ff6b35','#87efaf','#ffffff'][i%5]}"></i>`).join('')}</div>`:'';
     if(passed){
-      const unlockBanner=hasIntermission?'Intermission bonus unlocked':unlockedNew?`${nextLevel.title} unlocked`:state.levelIndex===levels.length-1?'New heights reached':'Challenge cleared';
+      const unlockLabel=hasIntermission?'INTERMISSION BONUS':unlockedNew?'NEXT CHALLENGE':state.levelIndex===levels.length-1?'MILESTONE':'LEVEL STATUS';
+      const unlockTitle=hasIntermission?`${intermissions[intermissionIndex].title} unlocked`:unlockedNew?`${nextLevel.title} unlocked`:state.levelIndex===levels.length-1?'New heights reached':'Challenge cleared';
       const cardMarkup=unlockedCard?`<section class="finish-card-reveal" aria-label="New card revealed: ${unlockedCard.name}"><div class="finish-card-label"><span>NEW CARD</span><strong>REVEALED</strong></div><div class="finish-card-tilt"><canvas id="unlockedCardPreview" class="finish-card-canvas" width="360" height="504" aria-label="Preview of ${unlockedCard.name}"></canvas></div><h3>${unlockedCard.name}</h3><p>Level ${state.levelIndex+1} reward</p><button class="finish-locker-button" id="unlockedCardLockerButton">View in Locker <span>→</span></button></section>`:'';
       ui.startOverlay.classList.add('finish-mode');
-      ui.startOverlay.innerHTML=`${celebration}<div class="finish-layout ${unlockedCard?'has-card':'no-card'}"><section class="finish-result"><div class="unlock-banner">${unlockBanner}</div><p class="finish-kicker">CHALLENGE CLEARED</p><h2 class="finish-title"><span>LEVEL ${state.levelIndex+1}</span> COMPLETE</h2><div class="finish-score"><strong>${Math.round(state.correct/state.total*100)}%</strong><span>${state.correct}/${state.total} best reads<br>${state.score} points</span></div><p class="finish-copy">${message}</p></section>${cardMarkup}<div class="overlay-actions finish-actions"><button class="primary-button" id="nextButton">${primaryLabel} <span>→</span></button><button class="secondary-button" id="levelsButton">Choose a level</button></div><small class="finish-best">${state.score>oldBest?'NEW PERSONAL BEST':'BEST SCORE '+Math.max(oldBest,state.score)}</small></div>`;
+      ui.startOverlay.innerHTML=`${celebration}<div class="finish-layout ${unlockedCard?'has-card':'no-card'}"><section class="finish-result"><div class="finish-unlock-status"><span>${unlockLabel}</span><strong>${unlockTitle}</strong></div><p class="finish-kicker">CHALLENGE CLEARED</p><h2 class="finish-title"><span>LEVEL ${state.levelIndex+1}</span> COMPLETE</h2><div class="finish-score"><strong>${Math.round(state.correct/state.total*100)}%</strong><span>${state.correct}/${state.total} best reads<br>${state.score} points</span></div><p class="finish-copy">${message}</p></section>${cardMarkup}<div class="overlay-actions finish-actions"><button class="primary-button" id="nextButton">${primaryLabel} <span>→</span></button><button class="secondary-button" id="levelsButton">Choose a level</button></div><small class="finish-best">${state.score>oldBest?'NEW PERSONAL BEST':'BEST SCORE '+Math.max(oldBest,state.score)}</small></div>`;
       if(unlockedCard){
         requestAnimationFrame(()=>renderUnlockedCardPreview(document.getElementById('unlockedCardPreview'),unlockedCard));
         document.getElementById('unlockedCardLockerButton').addEventListener('click',()=>{lockerCategory='cardstyle';openLocker();});
