@@ -424,6 +424,39 @@
       {id:'11',name:'Number 11',symbol:'11',cost:140,unlockLevel:2,color:'#12344a',accent:'#ffffff'},
       {id:'16',name:'Number 16',symbol:'16',cost:245,unlockLevel:7,color:'#12344a',accent:'#ffffff'},
       {id:'21',name:'Number 21',symbol:'21',cost:430,unlockLevel:15,color:'#12344a',accent:'#ffffff'}
+    ],
+    cardstyle:[
+      {id:'arena-poster',name:'Arena Poster',cost:0,design:'anton',color:'#ef3b31',accent:'#101d34',detail:'#f8d64d'},
+      {id:'ice-rookie',name:'Ice Rookie',cost:90,unlockLevel:1,design:'collection',motif:'frost',layout:'topbar',badge:'puck',font:'Anton',logoCorner:'br',color:'#e9fbff',accent:'#1b9ec3',detail:'#073c63',ink:'#062b44'},
+      {id:'heritage-portrait',name:'Heritage Portrait',cost:125,unlockLevel:2,design:'collection',motif:'paper',layout:'bottom',badge:'stamp',font:'Graduate',logoCorner:'tr',color:'#ead8ab',accent:'#a62b31',detail:'#183f57',ink:'#183f57'},
+      {id:'pop-art-check',name:'Pop Art Check',cost:165,unlockLevel:3,design:'collection',motif:'pop',layout:'diagonalUp',badge:'burst',font:'Bungee',logoCorner:'bl',color:'#ffdf3f',accent:'#f13b67',detail:'#19b9d0',ink:'#10152b'},
+      {id:'bungee-breakout',name:'Bungee Breakout',cost:275,unlockLevel:4,design:'bungee',color:'#f5cf3f',accent:'#5126a8',detail:'#31d8e8'},
+      {id:'rink-blueprint',name:'Rink Blueprint',cost:315,unlockLevel:5,design:'collection',motif:'blueprint',layout:'rightside',badge:'hex',font:'Russo One',logoCorner:'bl',color:'#0b3b68',accent:'#70dff2',detail:'#ffffff',ink:'#ffffff'},
+      {id:'admit-one',name:'Admit One',cost:355,unlockLevel:6,design:'collection',motif:'ticket',layout:'leftside',badge:'ticket',font:'Black Ops One',logoCorner:'tr',color:'#f0c65c',accent:'#762338',detail:'#142d47',ink:'#142d47'},
+      {id:'black-ops-ice',name:'Black Ops Ice',cost:390,unlockLevel:7,design:'blackops',color:'#07120f',accent:'#94ef3b',detail:'#dce8dd'},
+      {id:'stick-shop',name:'Stick Shop',cost:430,unlockLevel:8,design:'collection',motif:'wood',layout:'bottom',badge:'plaque',font:'Alfa Slab One',logoCorner:'tl',color:'#9b5e2e',accent:'#f0d097',detail:'#293b47',ink:'#fff4da'},
+      {id:'daily-cheddar',name:'Daily Cheddar',cost:470,unlockLevel:9,design:'collection',motif:'newsprint',layout:'topbar',badge:'seal',font:'Graduate',logoCorner:'br',color:'#e9e5d8',accent:'#252525',detail:'#c74336',ink:'#1c1c1c'},
+      {id:'eight-bit-ice',name:'8-Bit Ice',cost:515,unlockLevel:10,design:'collection',motif:'arcade',layout:'bottom',badge:'pixel',font:'Russo One',logoCorner:'tl',color:'#12072f',accent:'#5ef5df',detail:'#ff4ccf',ink:'#ffffff'},
+      {id:'varsity-heritage',name:'Varsity Heritage',cost:490,unlockLevel:11,design:'graduate',color:'#efe0b3',accent:'#7e1828',detail:'#153f68'},
+      {id:'street-rink',name:'Street Rink',cost:590,unlockLevel:12,design:'collection',motif:'graffiti',layout:'diagonalDown',badge:'spray',font:'Anton',logoCorner:'br',color:'#32243f',accent:'#ff7a29',detail:'#6bf0d2',ink:'#ffffff'},
+      {id:'nordic-shift',name:'Nordic Shift',cost:635,unlockLevel:13,design:'collection',motif:'knit',layout:'rightside',badge:'patch',font:'Graduate',logoCorner:'tr',color:'#17344c',accent:'#e54e4e',detail:'#f5efe0',ink:'#ffffff'},
+      {id:'captains-banner',name:"Captain's Banner",cost:685,unlockLevel:14,design:'collection',motif:'banner',layout:'split',badge:'shield',font:'Alfa Slab One',logoCorner:'tl',color:'#102945',accent:'#c42836',detail:'#f1cb57',ink:'#ffffff'},
+      {id:'silver-etch',name:'Silver Etch',cost:740,unlockLevel:15,design:'collection',motif:'etched',layout:'topbar',badge:'coin',font:'Black Ops One',logoCorner:'br',color:'#dfe5e8',accent:'#53636c',detail:'#111a22',ink:'#111a22'},
+      {id:'hall-of-fame',name:'Hall of Fame',cost:650,unlockLevel:16,design:'alfa',color:'#28140b',accent:'#d5ad58',detail:'#f6ead0'},
+      {id:'lava-lamp',name:'Lava Lamp',cost:850,unlockLevel:17,design:'collection',motif:'lava',layout:'diagonalUp',badge:'flame',font:'Bungee',logoCorner:'tr',color:'#19080c',accent:'#ff4b21',detail:'#ffbd35',ink:'#ffffff'},
+      {id:'frozen-glass',name:'Frozen Glass',cost:915,unlockLevel:18,design:'collection',motif:'shards',layout:'leftside',badge:'crystal',font:'Anton',logoCorner:'bl',color:'#dff9ff',accent:'#5acde3',detail:'#375ea9',ink:'#092a52'},
+      {id:'metro-rush',name:'Metro Rush',cost:980,unlockLevel:19,design:'collection',motif:'metro',layout:'bottom',badge:'roundel',font:'Russo One',logoCorner:'br',color:'#f4f0dd',accent:'#e53b36',detail:'#1686a7',ink:'#142335'},
+      {id:'comic-issue',name:'Comic Issue',cost:1050,unlockLevel:20,design:'collection',motif:'comic',layout:'topbar',badge:'burst',font:'Bungee',logoCorner:'tl',color:'#2b69db',accent:'#ffde34',detail:'#ef3751',ink:'#11172a'},
+      {id:'future-star',name:'Future Star',cost:825,unlockLevel:21,design:'russo',color:'#071739',accent:'#ff455d',detail:'#59e5f3'},
+      {id:'sunset-chrome',name:'Sunset Chrome',cost:1210,unlockLevel:22,design:'collection',motif:'sunset',layout:'diagonalDown',badge:'sun',font:'Monoton',logoCorner:'tr',color:'#2a1748',accent:'#ff5b67',detail:'#ffcc55',ink:'#ffffff'},
+      {id:'carbon-pro',name:'Carbon Pro',cost:1300,unlockLevel:23,design:'collection',motif:'carbon',layout:'rightside',badge:'hex',font:'Russo One',logoCorner:'bl',color:'#111820',accent:'#5fd4dc',detail:'#e6f0f2',ink:'#ffffff'},
+      {id:'royal-crest',name:'Royal Crest',cost:1400,unlockLevel:24,design:'collection',motif:'royal',layout:'topbar',badge:'crown',font:'Alfa Slab One',logoCorner:'br',color:'#311657',accent:'#d5ad58',detail:'#f4e7c6',ink:'#ffffff'},
+      {id:'polar-prism',name:'Polar Prism',cost:1500,unlockLevel:25,design:'collection',motif:'prism',layout:'diagonalUp',badge:'crystal',font:'Graduate',logoCorner:'tl',color:'#eefcff',accent:'#86d9ee',detail:'#bd79e8',ink:'#173851'},
+      {id:'laser-grid',name:'Laser Grid',cost:1625,unlockLevel:26,design:'collection',motif:'laser',layout:'leftside',badge:'target',font:'Monoton',logoCorner:'tr',color:'#050819',accent:'#36f2db',detail:'#ff3cac',ink:'#ffffff'},
+      {id:'neon-nights',name:'Neon Nights',cost:1050,unlockLevel:27,design:'monoton',color:'#08031b',accent:'#ff4fd8',detail:'#4ff5ef'},
+      {id:'record-breaker',name:'Record Breaker',cost:1900,unlockLevel:28,design:'collection',motif:'record',layout:'topbar',badge:'stopwatch',font:'Anton',logoCorner:'br',color:'#f04a2e',accent:'#ffd456',detail:'#172b46',ink:'#172b46'},
+      {id:'platinum-wave',name:'Platinum Wave',cost:2150,unlockLevel:29,design:'collection',motif:'wave',layout:'bottom',badge:'coin',font:'Alfa Slab One',logoCorner:'tl',color:'#d9dce8',accent:'#7554be',detail:'#242b43',ink:'#20263b'},
+      {id:'masterpiece',name:'Masterpiece',cost:2500,unlockLevel:30,design:'collection',motif:'masterpiece',layout:'split',badge:'frame',font:'Alfa Slab One',logoCorner:'tr',color:'#071b2b',accent:'#d8b456',detail:'#f5ead0',ink:'#ffffff'}
     ]
   };
   const powerUpCatalog=[
@@ -433,13 +466,16 @@
     {id:'power-skating',name:'Power Skating',cost:5000,slowdown:.25,durationMs:15*60*1000,icon:'assets/powerup-power-skating.png'}
   ];
   const lockerCategories=[...Object.keys(gearCatalog),'powerup'];
-  const gearLabels={jersey:'Jerseys',logo:'Logos',helmet:'Helmets',tape:'Tape',shaft:'Sticks',socks:'Socks',gloves:'Gloves',skates:'Skates',number:'Numbers',powerup:'Power Ups'};
-  const gearSingular={jersey:'Jersey',logo:'Logo',helmet:'Helmet',tape:'Tape',shaft:'Stick',socks:'Sock design',gloves:'Gloves',skates:'Skates',number:'Number'};
-  const defaultLoadout={jersey:'home-navy',logo:'cheese',helmet:'classic-navy',tape:'white-tape',shaft:'midnight',socks:'home-ice',gloves:'navy-gloves',skates:'classic-black',number:'10'};
+  const gearLabels={jersey:'Jerseys',logo:'Logos',helmet:'Helmets',tape:'Tape',shaft:'Sticks',socks:'Socks',gloves:'Gloves',skates:'Skates',number:'Numbers',cardstyle:'Card Style',powerup:'Power Ups'};
+  const gearSingular={jersey:'Jersey',logo:'Logo',helmet:'Helmet',tape:'Tape',shaft:'Stick',socks:'Sock design',gloves:'Gloves',skates:'Skates',number:'Number',cardstyle:'Card style'};
+  const defaultLoadout={jersey:'home-navy',logo:'cheese',helmet:'classic-navy',tape:'white-tape',shaft:'midnight',socks:'home-ice',gloves:'navy-gloves',skates:'classic-black',number:'10',cardstyle:'arena-poster'};
   let lockerCategory='jersey';
   let lockerPreviewFrame=0;
   let cheesePoints=Number(localStorage.getItem('superHockeyCheesePoints')||0);
   let ownedGear=safeStoredObject('superHockeyOwned',{});
+  const storedLifetimeCheeseValue=localStorage.getItem('superHockeyLifetimeCheesePoints'),storedLifetimeCheese=storedLifetimeCheeseValue===null?NaN:Number(storedLifetimeCheeseValue);
+  const estimatedEarnedCheese=cheesePoints+Object.keys(ownedGear).reduce((total,key)=>{const [category,id]=key.split(':');const item=gearCatalog[category]?.find(entry=>entry.id===id);return total+(item?.cost||0);},0);
+  let lifetimeCheesePoints=Number.isFinite(storedLifetimeCheese)&&storedLifetimeCheese>=0?storedLifetimeCheese:Math.max(0,estimatedEarnedCheese);
   let loadout={...defaultLoadout,...safeStoredObject('superHockeyLoadout',{})};
   let activePowerUp=safeStoredObject('superHockeyActivePowerUp',null);
   const hockeySprites = new Image();
@@ -453,6 +489,12 @@
   cheeseLogo.onload = () => { markBootAssetReady();if(ui.playerShowcase&&!ui.playerShowcase.hidden)renderPlayerShowcase(); };
   cheeseLogo.onerror = markBootAssetReady;
   cheeseLogo.src = 'assets/top-ches-logo-v44.png';
+  if(document.fonts?.load)Promise.all([
+    document.fonts.load('900 24px "Card Block"'),document.fonts.load('900 24px "Card Mono"'),
+    document.fonts.load('italic 900 24px "Card Slant"'),document.fonts.load('900 24px "Card Serif"'),
+    document.fonts.load('400 24px "Anton"'),document.fonts.load('400 24px "Bungee"'),document.fonts.load('400 24px "Black Ops One"'),
+    document.fonts.load('400 24px "Graduate"'),document.fonts.load('400 24px "Alfa Slab One"'),document.fonts.load('400 24px "Russo One"'),document.fonts.load('400 24px "Monoton"')
+  ]).then(()=>{if(ui.lockerDialog?.open){if(ui.playerShowcase.hidden)scheduleGearPreviews();else renderPlayerShowcase();}}).catch(()=>{});
   const fallenPlayerSprite = new Image();
   let fallenPlayerReady = false;
   fallenPlayerSprite.onload = () => { fallenPlayerReady = true;refreshCustomPlayer();markBootAssetReady(); };
@@ -524,9 +566,9 @@
     const description=`${item.name} active — ${Math.round(item.slowdown*100)}% slower timer — about ${formatPowerUpTime(remaining)} remaining`;
     ui.powerUpIndicator.setAttribute('aria-label',description);ui.powerUpIndicator.title=description;
   }
-  function saveLocker(){localStorage.setItem('superHockeyCheesePoints',String(cheesePoints));localStorage.setItem('superHockeyOwned',JSON.stringify(ownedGear));localStorage.setItem('superHockeyLoadout',JSON.stringify(loadout));updateCheeseUI();}
+  function saveLocker(){localStorage.setItem('superHockeyCheesePoints',String(cheesePoints));localStorage.setItem('superHockeyLifetimeCheesePoints',String(lifetimeCheesePoints));localStorage.setItem('superHockeyOwned',JSON.stringify(ownedGear));localStorage.setItem('superHockeyLoadout',JSON.stringify(loadout));updateCheeseUI();}
   function updateCheeseUI(){if(ui.cheesePoints)ui.cheesePoints.textContent=cheesePoints;if(ui.lockerPoints)ui.lockerPoints.textContent=cheesePoints;}
-  function awardCheese(amount){cheesePoints+=amount;saveLocker();return amount;}
+  function awardCheese(amount){cheesePoints+=amount;lifetimeCheesePoints+=amount;saveLocker();return amount;}
   function renderLocker() {
     ui.lockerTabs.innerHTML=lockerCategories.map(category=>`<button class="locker-tab ${category===lockerCategory?'active':''}" role="tab" aria-selected="${category===lockerCategory}" data-locker-category="${category}">${gearLabels[category]}</button>`).join('');
     ui.lockerTabs.querySelectorAll('[data-locker-category]').forEach(button=>button.addEventListener('click',()=>{lockerCategory=button.dataset.lockerCategory;ui.lockerStatus.textContent='';renderLocker();}));
@@ -866,6 +908,310 @@
     if(fallenPlayerReady&&key!==customFallenKey){customFallenSprite=createCustomizedFallen();customFallenKey=key;}
   }
 
+  function collectionFrame(target,style,width,height,double=false){
+    target.strokeStyle=style.accent;target.lineWidth=Math.max(6,width*.018);target.strokeRect(width*.032,height*.023,width*.936,height*.954);
+    if(double){target.strokeStyle=style.detail;target.lineWidth=Math.max(2,width*.006);target.strokeRect(width*.057,height*.042,width*.886,height*.916);}
+  }
+
+  function collectionDots(target,width,height,color,spacing=42){
+    target.fillStyle=color;for(let y=spacing/2;y<height;y+=spacing)for(let x=spacing/2;x<width;x+=spacing){target.beginPath();target.arc(x,y,Math.max(2,spacing*.1),0,Math.PI*2);target.fill();}
+  }
+
+  function drawCollectionBackground(target,style,width,height){
+    target.fillStyle=style.color;target.fillRect(0,0,width,height);
+    switch(style.motif){
+      case 'frost':{
+        const g=target.createLinearGradient(0,0,width,height);g.addColorStop(0,'#ffffff');g.addColorStop(.48,style.color);g.addColorStop(1,'#9edeea');target.fillStyle=g;target.fillRect(0,0,width,height);
+        target.strokeStyle='rgba(27,158,195,.24)';target.lineWidth=5;for(let i=0;i<18;i++){const x=(i*113%997)/997*width,y=(i*197%991)/991*height;target.beginPath();target.moveTo(x-45,y);target.lineTo(x+45,y);target.moveTo(x,y-45);target.lineTo(x,y+45);target.stroke();}collectionFrame(target,style,width,height,true);break;
+      }
+      case 'paper':
+        target.fillStyle='#ead8ab';target.fillRect(0,0,width,height);target.strokeStyle='rgba(83,57,31,.09)';target.lineWidth=2;for(let y=0;y<height;y+=17){target.beginPath();target.moveTo(0,y);target.lineTo(width,y+9);target.stroke();}target.fillStyle=style.accent;target.fillRect(0,0,width*.075,height);target.fillRect(width*.925,0,width*.075,height);collectionFrame(target,style,width,height,true);break;
+      case 'pop':
+        target.fillStyle=style.color;target.fillRect(0,0,width,height);collectionDots(target,width*.48,height,'rgba(241,59,103,.3)',34);target.fillStyle=style.detail;target.beginPath();target.moveTo(width*.54,0);target.lineTo(width,0);target.lineTo(width,height*.7);target.lineTo(width*.72,height);target.lineTo(width*.43,height*.58);target.closePath();target.fill();target.strokeStyle=style.ink;target.lineWidth=12;target.stroke();collectionFrame(target,style,width,height,false);break;
+      case 'blueprint':
+        target.fillStyle=style.color;target.fillRect(0,0,width,height);target.strokeStyle='rgba(112,223,242,.22)';target.lineWidth=2;for(let x=0;x<width;x+=54){target.beginPath();target.moveTo(x,0);target.lineTo(x,height);target.stroke();}for(let y=0;y<height;y+=54){target.beginPath();target.moveTo(0,y);target.lineTo(width,y);target.stroke();}target.strokeStyle='rgba(255,255,255,.5)';target.lineWidth=5;target.beginPath();target.arc(width*.48,height*.48,width*.27,0,Math.PI*2);target.stroke();collectionFrame(target,style,width,height,true);break;
+      case 'ticket':
+        target.fillStyle=style.color;target.fillRect(0,0,width,height);target.strokeStyle=style.accent;target.lineWidth=7;target.setLineDash([18,14]);target.strokeRect(width*.07,height*.05,width*.86,height*.9);target.setLineDash([]);target.fillStyle=style.accent;target.fillRect(0,height*.18,width,height*.085);target.fillRect(0,height*.76,width,height*.085);for(let y=height*.1;y<height;y+=height*.15){target.fillStyle='#f8e0a1';target.beginPath();target.arc(0,y,22,0,Math.PI*2);target.arc(width,y,22,0,Math.PI*2);target.fill();}break;
+      case 'wood':
+        target.fillStyle=style.color;target.fillRect(0,0,width,height);target.strokeStyle='rgba(57,28,9,.35)';for(let y=30;y<height;y+=62){target.lineWidth=9;target.beginPath();target.moveTo(0,y);target.bezierCurveTo(width*.25,y-22,width*.7,y+25,width,y-6);target.stroke();}target.fillStyle='rgba(240,208,151,.15)';target.fillRect(width*.1,0,width*.13,height);collectionFrame(target,style,width,height,true);break;
+      case 'newsprint':
+        target.fillStyle=style.color;target.fillRect(0,0,width,height);target.fillStyle='rgba(0,0,0,.07)';for(let y=120;y<height;y+=38)target.fillRect(60,y,width-120,3);target.strokeStyle=style.accent;target.lineWidth=10;target.strokeRect(28,28,width-56,height-56);target.fillStyle=style.detail;target.fillRect(0,height*.45,width,height*.025);collectionFrame(target,style,width,height,false);break;
+      case 'arcade':
+        target.fillStyle=style.color;target.fillRect(0,0,width,height);target.strokeStyle='rgba(94,245,223,.16)';target.lineWidth=3;for(let x=0;x<width;x+=52){target.beginPath();target.moveTo(x,0);target.lineTo(x,height);target.stroke();}for(let y=0;y<height;y+=52){target.beginPath();target.moveTo(0,y);target.lineTo(width,y);target.stroke();}target.fillStyle=style.detail;for(let i=0;i<22;i++)target.fillRect((i*83%width),((i*151)%height),18,18);collectionFrame(target,style,width,height,true);break;
+      case 'graffiti':
+        target.fillStyle=style.color;target.fillRect(0,0,width,height);target.lineCap='round';for(let i=0;i<12;i++){target.strokeStyle=i%2?style.accent:style.detail;target.globalAlpha=.28;target.lineWidth=22+(i%3)*11;target.beginPath();target.moveTo(-80,height*(i/12));target.bezierCurveTo(width*.25,height*((i+4)%12/12),width*.7,height*((i+8)%12/12),width+80,height*((i+2)%12/12));target.stroke();}target.globalAlpha=1;collectionDots(target,width,height,'rgba(255,255,255,.1)',48);collectionFrame(target,style,width,height,false);break;
+      case 'knit':
+        target.fillStyle=style.color;target.fillRect(0,0,width,height);target.strokeStyle=style.detail;target.lineWidth=6;for(let y=70;y<height;y+=105){for(let x=-40;x<width+40;x+=80){target.beginPath();target.moveTo(x,y);target.lineTo(x+24,y+24);target.lineTo(x+48,y);target.stroke();}}target.fillStyle=style.accent;target.fillRect(0,height*.18,width,height*.06);target.fillRect(0,height*.78,width,height*.06);collectionFrame(target,style,width,height,true);break;
+      case 'banner':
+        target.fillStyle=style.color;target.fillRect(0,0,width,height);target.fillStyle=style.accent;target.beginPath();target.moveTo(0,0);target.lineTo(width*.34,0);target.lineTo(width*.2,height);target.lineTo(0,height);target.closePath();target.fill();target.fillStyle='rgba(241,203,87,.17)';target.beginPath();target.moveTo(width*.8,0);target.lineTo(width,height);target.lineTo(width*.58,height);target.closePath();target.fill();collectionFrame(target,style,width,height,true);break;
+      case 'etched':
+        {const g=target.createLinearGradient(0,0,width,0);g.addColorStop(0,'#8f9ba2');g.addColorStop(.3,'#f6f8f8');g.addColorStop(.58,'#a4afb5');g.addColorStop(.8,'#edf1f2');g.addColorStop(1,'#6b7a83');target.fillStyle=g;target.fillRect(0,0,width,height);}target.strokeStyle='rgba(17,26,34,.22)';target.lineWidth=2;for(let x=-height;x<width+height;x+=36){target.beginPath();target.moveTo(x,0);target.lineTo(x+height,height);target.stroke();}collectionFrame(target,style,width,height,true);break;
+      case 'lava':
+        target.fillStyle=style.color;target.fillRect(0,0,width,height);for(let i=0;i<13;i++){const x=(i*137%997)/997*width,y=(i*223%991)/991*height,r=45+(i%4)*31;const g=target.createRadialGradient(x,y,4,x,y,r);g.addColorStop(0,style.detail);g.addColorStop(.45,style.accent);g.addColorStop(1,'rgba(255,75,33,0)');target.fillStyle=g;target.beginPath();target.arc(x,y,r,0,Math.PI*2);target.fill();}collectionFrame(target,style,width,height,true);break;
+      case 'shards':
+        target.fillStyle=style.color;target.fillRect(0,0,width,height);target.globalAlpha=.35;for(let i=0;i<18;i++){target.fillStyle=i%2?style.accent:style.detail;target.beginPath();target.moveTo((i*97%1000)/1000*width,0);target.lineTo((i*61%1000)/1000*width,height);target.lineTo(((i*61+180)%1000)/1000*width,height);target.closePath();target.fill();}target.globalAlpha=1;collectionFrame(target,style,width,height,true);break;
+      case 'metro':
+        target.fillStyle=style.color;target.fillRect(0,0,width,height);for(let i=0;i<6;i++){target.strokeStyle=i%2?style.accent:style.detail;target.lineWidth=13;target.beginPath();target.moveTo(-40,height*(.15+i*.12));target.lineTo(width*(.28+i*.06),height*(.42+i*.04));target.lineTo(width+40,height*(.22+i*.11));target.stroke();}collectionFrame(target,style,width,height,false);break;
+      case 'comic':
+        target.fillStyle=style.color;target.fillRect(0,0,width,height);collectionDots(target,width,height,'rgba(255,222,52,.4)',30);target.fillStyle=style.detail;target.beginPath();target.moveTo(width*.52,0);target.lineTo(width,0);target.lineTo(width,height);target.lineTo(width*.75,height*.72);target.closePath();target.fill();target.strokeStyle=style.ink;target.lineWidth=13;target.stroke();collectionFrame(target,style,width,height,true);break;
+      case 'sunset':
+        {const g=target.createLinearGradient(0,0,0,height);g.addColorStop(0,'#2a1748');g.addColorStop(.48,style.accent);g.addColorStop(1,style.detail);target.fillStyle=g;target.fillRect(0,0,width,height);}target.fillStyle='rgba(255,235,166,.55)';target.beginPath();target.arc(width*.58,height*.38,width*.28,0,Math.PI*2);target.fill();target.fillStyle=style.color;for(let y=height*.27;y<height*.5;y+=22)target.fillRect(width*.28,y,width*.6,10);collectionFrame(target,style,width,height,true);break;
+      case 'carbon':
+        target.fillStyle=style.color;target.fillRect(0,0,width,height);for(let y=0;y<height;y+=36)for(let x=-36;x<width;x+=72){target.fillStyle=((x+y)/36)%2?'#1c2730':'#0a1016';target.beginPath();target.moveTo(x,y);target.lineTo(x+36,y);target.lineTo(x+72,y+36);target.lineTo(x+36,y+36);target.closePath();target.fill();}target.globalAlpha=1;collectionFrame(target,style,width,height,true);break;
+      case 'royal':
+        target.fillStyle=style.color;target.fillRect(0,0,width,height);target.strokeStyle='rgba(213,173,88,.24)';target.lineWidth=6;for(let r=.12;r<.8;r+=.12){target.beginPath();target.arc(width*.5,height*.46,width*r,0,Math.PI*2);target.stroke();}target.fillStyle='rgba(244,231,198,.1)';target.beginPath();target.moveTo(0,height*.25);target.lineTo(width,height*.08);target.lineTo(width,height*.3);target.lineTo(0,height*.47);target.closePath();target.fill();collectionFrame(target,style,width,height,true);break;
+      case 'prism':
+        target.fillStyle=style.color;target.fillRect(0,0,width,height);for(let i=0;i<17;i++){target.globalAlpha=.22;target.fillStyle=i%3===0?style.accent:i%3===1?style.detail:'#ffe781';target.beginPath();target.moveTo((i*71%1000)/1000*width,0);target.lineTo(((i*71+350)%1000)/1000*width,height);target.lineTo(((i*71+520)%1000)/1000*width,height);target.closePath();target.fill();}target.globalAlpha=1;collectionFrame(target,style,width,height,true);break;
+      case 'laser':
+        target.fillStyle=style.color;target.fillRect(0,0,width,height);target.lineWidth=5;for(let i=0;i<12;i++){target.shadowColor=i%2?style.accent:style.detail;target.shadowBlur=16;target.strokeStyle=i%2?style.accent:style.detail;target.beginPath();target.moveTo(width*.5,height*.38);target.lineTo((i/11)*width,height);target.stroke();}target.shadowBlur=0;target.strokeStyle='rgba(54,242,219,.35)';for(let y=height*.45;y<height;y+=54){target.beginPath();target.moveTo(0,y);target.lineTo(width,y);target.stroke();}collectionFrame(target,style,width,height,true);break;
+      case 'record':
+        target.fillStyle=style.color;target.fillRect(0,0,width,height);target.fillStyle=style.accent;target.beginPath();target.arc(width*.58,height*.43,width*.34,0,Math.PI*2);target.fill();target.strokeStyle=style.detail;target.lineWidth=18;target.beginPath();target.arc(width*.58,height*.43,width*.25,-Math.PI*.4,Math.PI*1.3);target.stroke();target.lineWidth=8;for(let i=0;i<8;i++){const a=i*Math.PI/4;target.beginPath();target.moveTo(width*.58,height*.43);target.lineTo(width*.58+Math.cos(a)*width*.31,height*.43+Math.sin(a)*width*.31);target.stroke();}collectionFrame(target,style,width,height,false);break;
+      case 'wave':
+        {const g=target.createLinearGradient(0,0,width,height);g.addColorStop(0,'#f8f9ff');g.addColorStop(.35,style.color);g.addColorStop(.62,'#ab9ad8');g.addColorStop(1,'#eef4f8');target.fillStyle=g;target.fillRect(0,0,width,height);}for(let i=0;i<8;i++){target.strokeStyle=i%2?style.accent:'rgba(255,255,255,.75)';target.lineWidth=16-i;target.beginPath();target.moveTo(-100,height*(.2+i*.1));target.bezierCurveTo(width*.26,height*(.02+i*.1),width*.68,height*(.42+i*.06),width+100,height*(.12+i*.11));target.stroke();}collectionFrame(target,style,width,height,true);break;
+      case 'masterpiece':
+        target.fillStyle=style.color;target.fillRect(0,0,width,height);target.fillStyle='#f5ead0';target.fillRect(width*.09,height*.07,width*.82,height*.86);target.fillStyle='#071b2b';target.fillRect(width*.14,height*.11,width*.72,height*.78);target.strokeStyle=style.accent;target.lineWidth=18;target.strokeRect(width*.115,height*.088,width*.77,height*.824);target.strokeStyle='#f5ead0';target.lineWidth=4;target.strokeRect(width*.145,height*.112,width*.71,height*.776);break;
+    }
+  }
+
+  function drawCardStyleBackground(target,style,width,height){
+    target.save();target.fillStyle=style.color;target.fillRect(0,0,width,height);
+    if(style.design==='classic'){
+      const ice=target.createLinearGradient(0,0,0,height);ice.addColorStop(0,'#f9feff');ice.addColorStop(.56,'#d7f0f4');ice.addColorStop(1,'#7aabb8');target.fillStyle=ice;target.fillRect(0,0,width,height);
+      target.fillStyle='#08283b';target.fillRect(0,0,width,height*.105);target.fillStyle='#f3c64d';target.fillRect(0,height*.105,width,height*.016);
+      target.strokeStyle='rgba(35,125,153,.2)';target.lineWidth=Math.max(2,width*.006);target.beginPath();target.arc(width*.5,height*.51,width*.28,0,Math.PI*2);target.stroke();
+      target.strokeStyle='rgba(203,45,53,.22)';target.beginPath();target.moveTo(width*.08,height*.58);target.lineTo(width*.92,height*.58);target.stroke();
+    }else if(style.design==='burst'){
+      const bg=target.createRadialGradient(width*.48,height*.44,width*.04,width*.48,height*.44,width*.82);bg.addColorStop(0,'#fff27a');bg.addColorStop(.28,'#35e1e7');bg.addColorStop(.72,'#08739c');bg.addColorStop(1,'#061d36');target.fillStyle=bg;target.fillRect(0,0,width,height);
+      target.translate(width*.5,height*.47);for(let i=0;i<28;i++){target.rotate(Math.PI/14);target.fillStyle=i%2?'rgba(255,255,255,.24)':'rgba(255,211,66,.28)';target.beginPath();target.moveTo(0,0);target.lineTo(width*.035,-height);target.lineTo(-width*.035,-height);target.closePath();target.fill();}target.setTransform(1,0,0,1,0,0);
+      target.strokeStyle='#ffe35d';target.lineWidth=Math.max(5,width*.024);target.beginPath();target.moveTo(0,height*.16);target.lineTo(width*.18,height*.08);target.lineTo(width*.82,height*.08);target.lineTo(width,height*.16);target.lineTo(width,height*.84);target.lineTo(width*.82,height*.92);target.lineTo(width*.18,height*.92);target.lineTo(0,height*.84);target.closePath();target.stroke();
+      target.save();target.translate(width*.07,height*.72);target.rotate(-Math.PI/2);target.fillStyle='rgba(255,255,255,.35)';target.font=`900 ${Math.max(18,width*.085)}px Arial, sans-serif`;target.letterSpacing=`${Math.max(1,width*.008)}px`;target.fillText('ROOKIE',0,0);target.restore();
+    }else if(style.design==='vintage'){
+      target.fillStyle='#efe5c5';target.fillRect(0,0,width,height);for(let y=0;y<height;y+=Math.max(8,height*.018)){target.fillStyle=y%(Math.max(16,height*.036))?'rgba(91,63,31,.025)':'rgba(255,255,255,.06)';target.fillRect(0,y,width,Math.max(1,height*.006));}
+      target.fillStyle='#a62c33';target.fillRect(0,0,width*.055,height);target.fillRect(width*.945,0,width*.055,height);target.fillStyle='#173d59';target.fillRect(width*.065,0,width*.027,height);target.fillRect(width*.908,0,width*.027,height);
+      target.fillStyle='#f7f0d9';target.beginPath();target.moveTo(width*.13,height*.13);target.quadraticCurveTo(width*.5,height*.015,width*.87,height*.13);target.lineTo(width*.87,height*.78);target.quadraticCurveTo(width*.5,height*.9,width*.13,height*.78);target.closePath();target.fill();target.strokeStyle='#a62c33';target.lineWidth=Math.max(3,width*.012);target.stroke();
+    }else if(style.design==='aurora'){
+      const night=target.createLinearGradient(0,0,0,height);night.addColorStop(0,'#030b24');night.addColorStop(.55,'#132d58');night.addColorStop(1,'#07101f');target.fillStyle=night;target.fillRect(0,0,width,height);
+      for(let i=0;i<74;i++){const x=(i*97%997)/997*width,y=(i*193%991)/991*height*.72,r=Math.max(1,width*(i%7===0?.005:.002));target.fillStyle=i%6===0?'rgba(255,255,255,.9)':'rgba(160,227,255,.55)';target.beginPath();target.arc(x,y,r,0,Math.PI*2);target.fill();}
+      [['rgba(75,255,203,.62)',.24],['rgba(79,167,255,.55)',.42],['rgba(196,82,255,.46)',.58]].forEach(([color,offset],i)=>{target.strokeStyle=color;target.lineWidth=height*(.08-i*.012);target.beginPath();target.moveTo(-width*.15,height*offset);target.bezierCurveTo(width*.2,height*(offset-.2),width*.58,height*(offset+.22),width*1.15,height*(offset-.08));target.stroke();});
+      target.strokeStyle='rgba(126,255,225,.72)';target.lineWidth=Math.max(3,width*.009);target.beginPath();target.moveTo(width*.07,height*.93);target.lineTo(width*.28,height*.12);target.lineTo(width*.93,height*.12);target.stroke();
+    }else if(style.design==='foil'){
+      const foil=target.createLinearGradient(0,0,width,height);foil.addColorStop(0,'#ffffff');foil.addColorStop(.18,'#8ff4f0');foil.addColorStop(.37,'#fff2a1');foil.addColorStop(.58,'#efa6ff');foil.addColorStop(.77,'#9fe7ff');foil.addColorStop(1,'#eefcff');target.fillStyle=foil;target.fillRect(0,0,width,height);
+      target.fillStyle='rgba(255,255,255,.57)';target.beginPath();target.moveTo(width*.12,height*.06);target.lineTo(width*.9,height*.12);target.lineTo(width*.79,height*.88);target.lineTo(width*.18,height*.94);target.lineTo(width*.06,height*.52);target.closePath();target.fill();
+      target.strokeStyle='#c39b2d';target.lineWidth=Math.max(5,width*.021);target.stroke();target.strokeStyle='rgba(255,255,255,.9)';target.lineWidth=Math.max(2,width*.007);target.stroke();
+      target.strokeStyle='rgba(34,134,175,.26)';target.lineWidth=Math.max(1,width*.004);for(let x=-height;x<width+height;x+=width*.13){target.beginPath();target.moveTo(x,0);target.lineTo(x+height,height);target.stroke();}
+    }else if(style.design==='anton'){
+      const paper=target.createLinearGradient(0,0,width,height);paper.addColorStop(0,'#f7df9d');paper.addColorStop(.5,'#f16a42');paper.addColorStop(1,'#b3192d');target.fillStyle=paper;target.fillRect(0,0,width,height);
+      target.fillStyle='#101d34';target.beginPath();target.moveTo(0,height*.19);target.lineTo(width,height*.05);target.lineTo(width,height*.26);target.lineTo(0,height*.38);target.closePath();target.fill();
+      target.fillStyle='rgba(248,214,77,.82)';target.beginPath();target.arc(width*.12,height*.58,width*.42,0,Math.PI*2);target.fill();target.strokeStyle='rgba(16,29,52,.18)';target.lineWidth=Math.max(2,width*.006);for(let y=height*.34;y<height*.9;y+=height*.028){target.beginPath();target.moveTo(0,y);target.lineTo(width,y-height*.12);target.stroke();}
+      target.strokeStyle='#f8e6ba';target.lineWidth=Math.max(6,width*.018);target.strokeRect(width*.025,height*.018,width*.95,height*.964);target.strokeStyle='#101d34';target.lineWidth=Math.max(2,width*.007);target.strokeRect(width*.045,height*.032,width*.91,height*.936);
+    }else if(style.design==='bungee'){
+      target.fillStyle='#5126a8';target.fillRect(0,0,width,height);target.fillStyle='#31d8e8';target.beginPath();target.moveTo(0,height*.13);target.lineTo(width*.73,0);target.lineTo(width,height*.28);target.lineTo(width*.18,height*.47);target.closePath();target.fill();target.fillStyle='#f5cf3f';target.beginPath();target.moveTo(width*.62,0);target.lineTo(width,height*.03);target.lineTo(width,height*.7);target.lineTo(width*.83,height*.78);target.closePath();target.fill();
+      target.fillStyle='rgba(255,255,255,.2)';for(let i=0;i<42;i++){const x=(i*137%997)/997*width,y=(i*211%991)/991*height,r=4+(i%4)*3;target.beginPath();target.arc(x,y,r,0,Math.PI*2);target.fill();}
+      target.strokeStyle='#10152b';target.lineWidth=Math.max(8,width*.025);target.strokeRect(width*.035,height*.025,width*.93,height*.95);target.strokeStyle='#fff';target.lineWidth=Math.max(2,width*.008);target.strokeRect(width*.055,height*.04,width*.89,height*.92);
+    }else if(style.design==='blackops'){
+      const tactical=target.createLinearGradient(0,0,width,height);tactical.addColorStop(0,'#101a15');tactical.addColorStop(.48,'#07120f');tactical.addColorStop(1,'#17251b');target.fillStyle=tactical;target.fillRect(0,0,width,height);
+      target.strokeStyle='rgba(148,239,59,.13)';target.lineWidth=Math.max(1,width*.004);for(let x=-height;x<width+height;x+=width*.08){target.beginPath();target.moveTo(x,0);target.lineTo(x-height*.35,height);target.stroke();}
+      target.fillStyle='#94ef3b';target.fillRect(width*.86,0,width*.14,height);target.fillStyle='#07120f';for(let y=-width;y<height+width;y+=width*.13){target.beginPath();target.moveTo(width*.86,y);target.lineTo(width,y+width*.12);target.lineTo(width,y+width*.2);target.lineTo(width*.86,y+width*.08);target.closePath();target.fill();}
+      target.strokeStyle='#94ef3b';target.lineWidth=Math.max(4,width*.014);target.strokeRect(width*.03,height*.022,width*.94,height*.956);target.strokeStyle='rgba(220,232,221,.36)';target.lineWidth=Math.max(1,width*.004);target.strokeRect(width*.055,height*.04,width*.89,height*.92);
+    }else if(style.design==='graduate'){
+      target.fillStyle='#efe0b3';target.fillRect(0,0,width,height);target.fillStyle='#7e1828';target.fillRect(0,0,width,height*.09);target.fillRect(0,height*.91,width,height*.09);target.fillStyle='#153f68';target.fillRect(0,height*.09,width,height*.025);target.fillRect(0,height*.885,width,height*.025);
+      target.strokeStyle='rgba(21,63,104,.12)';target.lineWidth=Math.max(1,width*.004);for(let x=0;x<width;x+=width*.055){target.beginPath();target.moveTo(x,0);target.lineTo(x+height*.12,height);target.stroke();}
+      target.strokeStyle='#7e1828';target.lineWidth=Math.max(7,width*.02);target.beginPath();target.moveTo(width*.08,height*.17);target.quadraticCurveTo(width*.5,height*.08,width*.92,height*.17);target.lineTo(width*.92,height*.82);target.quadraticCurveTo(width*.5,height*.9,width*.08,height*.82);target.closePath();target.stroke();
+    }else if(style.design==='alfa'){
+      const luxe=target.createRadialGradient(width*.5,height*.38,width*.05,width*.5,height*.45,width*.75);luxe.addColorStop(0,'#5b3920');luxe.addColorStop(.48,'#28140b');luxe.addColorStop(1,'#0d0805');target.fillStyle=luxe;target.fillRect(0,0,width,height);
+      target.strokeStyle='rgba(213,173,88,.34)';target.lineWidth=Math.max(2,width*.006);for(let r=.13;r<.72;r+=.1){target.beginPath();target.arc(width*.5,height*.42,width*r,Math.PI,Math.PI*2);target.stroke();}
+      target.strokeStyle='#d5ad58';target.lineWidth=Math.max(7,width*.02);target.strokeRect(width*.035,height*.025,width*.93,height*.95);target.strokeStyle='#f6ead0';target.lineWidth=Math.max(2,width*.006);target.strokeRect(width*.06,height*.043,width*.88,height*.914);
+      target.fillStyle='rgba(213,173,88,.12)';target.beginPath();target.moveTo(0,height*.62);target.lineTo(width,height*.42);target.lineTo(width,height*.66);target.lineTo(0,height*.84);target.closePath();target.fill();
+    }else if(style.design==='russo'){
+      const future=target.createLinearGradient(0,0,width,height);future.addColorStop(0,'#071739');future.addColorStop(.55,'#152a68');future.addColorStop(1,'#070a22');target.fillStyle=future;target.fillRect(0,0,width,height);
+      target.fillStyle='#ff455d';target.beginPath();target.moveTo(0,0);target.lineTo(width*.34,0);target.lineTo(width*.16,height);target.lineTo(0,height);target.closePath();target.fill();target.fillStyle='rgba(89,229,243,.24)';target.beginPath();target.moveTo(width*.19,0);target.lineTo(width*.62,0);target.lineTo(width*.86,height);target.lineTo(width*.43,height);target.closePath();target.fill();
+      target.strokeStyle='#59e5f3';target.lineWidth=Math.max(4,width*.014);target.beginPath();target.moveTo(width*.035,height*.95);target.lineTo(width*.23,height*.04);target.lineTo(width*.94,height*.04);target.lineTo(width*.97,height*.76);target.stroke();
+      target.strokeStyle='rgba(255,255,255,.22)';target.lineWidth=Math.max(1,width*.004);for(let y=height*.15;y<height*.88;y+=height*.06){target.beginPath();target.moveTo(width*.14,y);target.lineTo(width*.92,y-height*.08);target.stroke();}
+    }else if(style.design==='monoton'){
+      const neon=target.createRadialGradient(width*.5,height*.38,0,width*.5,height*.45,width*.8);neon.addColorStop(0,'#25115a');neon.addColorStop(.55,'#08031b');neon.addColorStop(1,'#020008');target.fillStyle=neon;target.fillRect(0,0,width,height);
+      target.strokeStyle='rgba(79,245,239,.28)';target.lineWidth=Math.max(1,width*.004);for(let i=0;i<12;i++){const y=height*(.48+i*.055);target.beginPath();target.moveTo(width*.04,y);target.lineTo(width*.96,y);target.stroke();}for(let i=-4;i<11;i++){target.beginPath();target.moveTo(width*.5,height*.42);target.lineTo(width*(i*.16),height);target.stroke();}
+      target.shadowColor='#ff4fd8';target.shadowBlur=24;target.strokeStyle='#ff4fd8';target.lineWidth=Math.max(5,width*.016);target.strokeRect(width*.035,height*.025,width*.93,height*.95);target.shadowColor='#4ff5ef';target.strokeStyle='#4ff5ef';target.lineWidth=Math.max(2,width*.007);target.strokeRect(width*.06,height*.043,width*.88,height*.914);target.shadowBlur=0;
+      target.strokeStyle='rgba(255,79,216,.44)';target.lineWidth=Math.max(3,width*.01);for(let r=.16;r<.72;r+=.13){target.beginPath();target.ellipse(width*.53,height*.38,width*r,height*r*.55,-.18,0,Math.PI*2);target.stroke();}
+    }else if(style.design==='collection'){
+      drawCollectionBackground(target,style,width,height);
+    }else if(style.design==='anton'){
+      target.fillStyle='#101d34';target.strokeStyle='#f8d64d';target.lineWidth=9;target.beginPath();target.moveTo(cx-size*.58,cy-size*.38);target.lineTo(cx+size*.45,cy-size*.48);target.lineTo(cx+size*.58,cy+size*.3);target.lineTo(cx-size*.46,cy+size*.48);target.closePath();target.fill();target.stroke();
+      target.fillStyle='#fff0bd';target.font=`400 ${size*.5}px "Anton", sans-serif`;
+    }else if(style.design==='bungee'){
+      target.save();target.translate(cx+8,cy+8);target.rotate(-.11);target.fillStyle='#10152b';target.fillRect(-size*.52,-size*.43,size*1.04,size*.86);target.restore();target.save();target.translate(cx,cy);target.rotate(-.11);target.fillStyle='#f5cf3f';target.strokeStyle='#fff';target.lineWidth=8;target.fillRect(-size*.52,-size*.43,size*1.04,size*.86);target.strokeRect(-size*.52,-size*.43,size*1.04,size*.86);target.restore();
+      target.fillStyle='#5126a8';target.font=`400 ${size*.4}px "Bungee", sans-serif`;
+    }else if(style.design==='blackops'){
+      target.fillStyle='#07120f';target.strokeStyle='#94ef3b';target.lineWidth=8;target.beginPath();target.moveTo(cx-size*.48,cy-size*.5);target.lineTo(cx+size*.48,cy-size*.5);target.lineTo(cx+size*.58,cy);target.lineTo(cx+size*.38,cy+size*.48);target.lineTo(cx-size*.38,cy+size*.48);target.lineTo(cx-size*.58,cy);target.closePath();target.fill();target.stroke();
+      target.fillStyle='#94ef3b';target.font=`400 ${size*.42}px "Black Ops One", sans-serif`;
+    }else if(style.design==='graduate'){
+      target.fillStyle='#efe0b3';target.strokeStyle='#7e1828';target.lineWidth=11;target.beginPath();target.arc(cx,cy,size*.55,0,Math.PI*2);target.fill();target.stroke();target.strokeStyle='#153f68';target.lineWidth=4;target.setLineDash([12,8]);target.beginPath();target.arc(cx,cy,size*.43,0,Math.PI*2);target.stroke();target.setLineDash([]);
+      target.fillStyle='#7e1828';target.font=`400 ${size*.42}px "Graduate", serif`;
+    }else if(style.design==='alfa'){
+      const seal=target.createRadialGradient(cx-size*.12,cy-size*.15,4,cx,cy,size*.62);seal.addColorStop(0,'#fff1ae');seal.addColorStop(.48,'#d5ad58');seal.addColorStop(1,'#6e4619');target.fillStyle=seal;target.strokeStyle='#f6ead0';target.lineWidth=6;target.beginPath();for(let i=0;i<20;i++){const a=-Math.PI/2+i*Math.PI/10,r=i%2?size*.53:size*.61;target.lineTo(cx+Math.cos(a)*r,cy+Math.sin(a)*r);}target.closePath();target.fill();target.stroke();
+      target.fillStyle='#28140b';target.font=`400 ${size*.36}px "Alfa Slab One", serif`;
+    }else if(style.design==='russo'){
+      target.fillStyle='#071739';target.strokeStyle='#59e5f3';target.lineWidth=8;target.beginPath();target.moveTo(cx-size*.5,cy-size*.35);target.lineTo(cx-size*.22,cy-size*.56);target.lineTo(cx+size*.45,cy-size*.45);target.lineTo(cx+size*.58,cy);target.lineTo(cx+size*.25,cy+size*.5);target.lineTo(cx-size*.44,cy+size*.42);target.lineTo(cx-size*.58,cy);target.closePath();target.fill();target.stroke();target.strokeStyle='#ff455d';target.lineWidth=4;target.stroke();
+      target.fillStyle='#fff';target.font=`400 ${size*.38}px "Russo One", sans-serif`;
+    }else if(style.design==='monoton'){
+      target.shadowColor='#ff4fd8';target.shadowBlur=24;target.fillStyle='rgba(8,3,27,.88)';target.strokeStyle='#ff4fd8';target.lineWidth=9;target.beginPath();target.arc(cx,cy,size*.56,0,Math.PI*2);target.fill();target.stroke();target.shadowColor='#4ff5ef';target.strokeStyle='#4ff5ef';target.lineWidth=4;target.beginPath();target.arc(cx,cy,size*.43,0,Math.PI*2);target.stroke();target.shadowBlur=0;
+      target.fillStyle='#fff';target.font=`400 ${size*.34}px "Monoton", sans-serif`;
+    }else{
+      const space=target.createRadialGradient(width*.68,height*.35,width*.04,width*.52,height*.48,width*.82);space.addColorStop(0,'#31556c');space.addColorStop(.32,'#0d1b2b');space.addColorStop(1,'#02050a');target.fillStyle=space;target.fillRect(0,0,width,height);
+      target.strokeStyle='rgba(87,236,246,.38)';target.lineWidth=Math.max(1,width*.006);for(let r=.14;r<.72;r+=.11){target.beginPath();target.ellipse(width*.56,height*.45,width*r,height*r*.56,-.35,0,Math.PI*2);target.stroke();}
+      target.fillStyle='rgba(213,171,62,.23)';target.beginPath();target.moveTo(0,height*.1);target.lineTo(width*.48,0);target.lineTo(width*.92,height*.18);target.lineTo(width,height*.72);target.lineTo(width*.64,height);target.lineTo(width*.13,height*.9);target.closePath();target.fill();
+      target.strokeStyle='#d5ab3e';target.lineWidth=Math.max(4,width*.017);target.stroke();target.strokeStyle='#67e5ed';target.lineWidth=Math.max(2,width*.007);target.beginPath();target.moveTo(width*.05,height*.33);target.lineTo(width*.22,height*.08);target.lineTo(width*.88,height*.14);target.lineTo(width*.95,height*.69);target.lineTo(width*.71,height*.91);target.stroke();
+    }
+    target.restore();
+  }
+
+  function drawCardBrand(target,style,width,height,compact=false){
+    const logoSize=compact?Math.max(48,width*.22):190;
+    const corners={classic:'tl',burst:'tr',vintage:'tr',aurora:'tl',foil:'tr',diamond:'tl',anton:'tr',bungee:'tl',blackops:'bl',graduate:'tr',alfa:'bl',russo:'tr',monoton:'tl'};
+    const corner=style.logoCorner||corners[style.design]||'tl',right=corner[1]==='r',bottom=corner[0]==='b';
+    const margin=compact?8:44,logoX=right?width-logoSize-margin:margin,logoY=bottom?height-logoSize*1.03-margin:margin;
+    if(cheeseLogo.complete&&cheeseLogo.naturalWidth){target.save();target.shadowColor='rgba(0,0,0,.3)';target.shadowBlur=compact?3:14;target.drawImage(cheeseLogo,logoX,logoY,logoSize,logoSize*1.03);target.restore();}
+  }
+
+  function cardPlayerPlacement(style){
+    if(style.design==='collection'){
+      if(style.layout==='topbar')return {x:120,y:270,w:840,h:1002};
+      if(style.layout==='leftside')return {x:205,y:150,w:820,h:978};
+      if(style.layout==='rightside')return {x:55,y:150,w:820,h:978};
+      if(style.layout==='split')return {x:120,y:205,w:840,h:1002};
+      return {x:90,y:145,w:900,h:1074};
+    }
+    if(style.design==='vintage')return {x:155,y:205,w:770,h:918};
+    if(style.design==='aurora')return {x:58,y:150,w:930,h:1109};
+    if(style.design==='foil')return {x:132,y:182,w:815,h:972};
+    if(style.design==='diamond')return {x:70,y:152,w:930,h:1109};
+    if(style.design==='burst')return {x:60,y:135,w:960,h:1145};
+    if(style.design==='anton')return {x:115,y:255,w:850,h:1014};
+    if(style.design==='bungee')return {x:55,y:135,w:970,h:1157};
+    if(style.design==='blackops')return {x:75,y:165,w:845,h:1008};
+    if(style.design==='graduate')return {x:125,y:180,w:825,h:984};
+    if(style.design==='alfa')return {x:115,y:260,w:850,h:1014};
+    if(style.design==='russo')return {x:150,y:150,w:850,h:1014};
+    if(style.design==='monoton')return {x:60,y:130,w:960,h:1145};
+    return {x:110,y:210,w:860,h:1025};
+  }
+
+  function drawCollectionBadge(target,style,cx,cy,size){
+    const fill=style.detail,stroke=style.accent,shape=style.badge;target.fillStyle=fill;target.strokeStyle=stroke;target.lineWidth=Math.max(6,size*.055);target.beginPath();
+    if(['puck','coin','seal','roundel','sun','target','stopwatch'].includes(shape)){
+      target.arc(cx,cy,size*.53,0,Math.PI*2);target.fill();target.stroke();
+      if(shape==='target'||shape==='roundel'){target.lineWidth=Math.max(3,size*.025);target.beginPath();target.arc(cx,cy,size*.38,0,Math.PI*2);target.stroke();}
+      if(shape==='stopwatch'){target.fillRect(cx-size*.13,cy-size*.69,size*.26,size*.18);target.beginPath();target.moveTo(cx+size*.39,cy-size*.42);target.lineTo(cx+size*.53,cy-size*.57);target.stroke();}
+    }else if(['hex','patch','crystal'].includes(shape)){
+      const sides=shape==='crystal'?4:6,turn=shape==='crystal'?Math.PI/4:-Math.PI/2;for(let i=0;i<sides;i++){const a=turn+i*Math.PI*2/sides;target.lineTo(cx+Math.cos(a)*size*.56,cy+Math.sin(a)*size*.56);}target.closePath();target.fill();target.stroke();
+    }else if(shape==='burst'||shape==='flame'||shape==='spray'){
+      const points=shape==='burst'?14:10;for(let i=0;i<points;i++){const a=-Math.PI/2+i*Math.PI*2/points,r=i%2?size*.4:size*.62;target.lineTo(cx+Math.cos(a)*r,cy+Math.sin(a)*r);}target.closePath();target.fill();target.stroke();
+    }else if(shape==='shield'){
+      target.moveTo(cx-size*.5,cy-size*.48);target.lineTo(cx+size*.5,cy-size*.48);target.lineTo(cx+size*.42,cy+size*.25);target.lineTo(cx,cy+size*.6);target.lineTo(cx-size*.42,cy+size*.25);target.closePath();target.fill();target.stroke();
+    }else if(shape==='crown'){
+      target.moveTo(cx-size*.55,cy+size*.4);target.lineTo(cx-size*.48,cy-size*.42);target.lineTo(cx-size*.15,cy-size*.12);target.lineTo(cx,cy-size*.58);target.lineTo(cx+size*.18,cy-size*.12);target.lineTo(cx+size*.5,cy-size*.42);target.lineTo(cx+size*.55,cy+size*.4);target.closePath();target.fill();target.stroke();
+    }else{
+      target.moveTo(cx-size*.56,cy-size*.42);target.lineTo(cx+size*.56,cy-size*.42);target.lineTo(cx+size*.48,cy+size*.42);target.lineTo(cx-size*.48,cy+size*.42);target.closePath();target.fill();target.stroke();
+    }
+    target.fillStyle=cardContrast(fill);target.font=`400 ${size*(shape==='pixel'?.36:.42)}px "${style.font}", sans-serif`;
+  }
+
+  function cardContrast(color){
+    const value=String(color||'#000').replace('#',''),hex=value.length===3?value.split('').map(char=>char+char).join(''):value;
+    if(!/^[0-9a-f]{6}$/i.test(hex))return '#fff';const r=parseInt(hex.slice(0,2),16),g=parseInt(hex.slice(2,4),16),b=parseInt(hex.slice(4,6),16);
+    return (r*.299+g*.587+b*.114)>154?'#102033':'#ffffff';
+  }
+
+  function drawCardNumberEmblem(target,style,cx,cy,size){
+    const number=`#${loadout.number}`;target.save();target.textAlign='center';target.textBaseline='middle';target.lineJoin='round';
+    if(style.design==='collection'){
+      drawCollectionBadge(target,style,cx,cy,size);
+    }else if(style.design==='classic'){
+      target.fillStyle='#071f32';target.strokeStyle='#f3c64d';target.lineWidth=10;target.beginPath();target.moveTo(cx-size*.52,cy-size*.45);target.lineTo(cx+size*.52,cy-size*.45);target.lineTo(cx+size*.43,cy+size*.28);target.lineTo(cx,cy+size*.57);target.lineTo(cx-size*.43,cy+size*.28);target.closePath();target.fill();target.stroke();
+      target.fillStyle='#fff';target.font=`900 ${size*.48}px "Card Block", sans-serif`;
+    }else if(style.design==='burst'){
+      target.translate(cx,cy);target.fillStyle='#ffe35d';target.strokeStyle='#061d36';target.lineWidth=9;target.beginPath();for(let i=0;i<12;i++){const a=-Math.PI/2+i*Math.PI/6,r=i%2?size*.46:size*.62;target.lineTo(Math.cos(a)*r,Math.sin(a)*r);}target.closePath();target.fill();target.stroke();target.setTransform(1,0,0,1,0,0);
+      target.fillStyle='#061d36';target.font=`italic 900 ${size*.52}px "Card Slant", monospace`;
+    }else if(style.design==='vintage'){
+      target.fillStyle='#f7f0d9';target.strokeStyle='#a62c33';target.lineWidth=11;target.beginPath();target.arc(cx,cy,size*.54,0,Math.PI*2);target.fill();target.stroke();target.strokeStyle='#173d59';target.lineWidth=4;target.beginPath();target.arc(cx,cy,size*.43,0,Math.PI*2);target.stroke();
+      target.fillStyle='#a62c33';target.font=`900 ${size*.48}px "Card Serif", serif`;
+    }else if(style.design==='aurora'){
+      target.shadowColor='#52efd2';target.shadowBlur=28;target.fillStyle='rgba(3,12,39,.94)';target.strokeStyle='#52efd2';target.lineWidth=9;target.beginPath();target.arc(cx,cy,size*.54,0,Math.PI*2);target.fill();target.stroke();target.shadowBlur=0;
+      target.fillStyle='#fff';target.font=`900 ${size*.48}px "Card Mono", monospace`;
+    }else if(style.design==='foil'){
+      const medal=target.createRadialGradient(cx-size*.15,cy-size*.18,4,cx,cy,size*.65);medal.addColorStop(0,'#fff8bd');medal.addColorStop(.55,'#e7bd43');medal.addColorStop(1,'#9b6c13');target.fillStyle=medal;target.strokeStyle='#fff';target.lineWidth=7;target.beginPath();for(let i=0;i<8;i++){const a=-Math.PI/2+i*Math.PI/4;target.lineTo(cx+Math.cos(a)*size*.57,cy+Math.sin(a)*size*.57);}target.closePath();target.fill();target.stroke();
+      target.fillStyle='#153c59';target.font=`900 ${size*.46}px "Card Serif", serif`;
+    }else{
+      target.translate(cx,cy);target.rotate(Math.PI/4);target.fillStyle='#02070d';target.strokeStyle='#d5ab3e';target.lineWidth=10;target.fillRect(-size*.42,-size*.42,size*.84,size*.84);target.strokeRect(-size*.42,-size*.42,size*.84,size*.84);target.strokeStyle='#67e5ed';target.lineWidth=4;target.strokeRect(-size*.32,-size*.32,size*.64,size*.64);target.rotate(-Math.PI/4);target.translate(-cx,-cy);
+      target.fillStyle='#fff';target.font=`italic 900 ${size*.5}px "Card Slant", monospace`;
+    }
+    target.fillText(number,cx,cy+size*.015,size*1.02);target.restore();
+  }
+
+  function drawCollectionStats(target,style,width,height,levelNumber,points){
+    const font=`"${style.font}", sans-serif`,leftLogo=style.logoCorner?.[1]==='l',bottomLogo=style.logoCorner?.[0]==='b',panelInk=cardContrast(style.detail);
+    target.textBaseline='alphabetic';target.lineJoin='round';
+    if(style.layout==='topbar'){
+      target.fillStyle=style.detail;target.globalAlpha=.96;target.beginPath();target.moveTo(0,0);target.lineTo(width,0);target.lineTo(width*.92,245);target.lineTo(width*.08,270);target.closePath();target.fill();target.globalAlpha=1;
+      const badgeX=leftLogo?width-155:155,textX=leftLogo?270:300;drawCardNumberEmblem(target,style,badgeX,145,150);target.textAlign='left';target.fillStyle=panelInk;target.font=`400 25px ${font}`;target.fillText('LEVEL REACHED',textX,92,520);target.font=`400 92px ${font}`;target.fillText(levelNumber,textX,188,270);target.font=`400 19px ${font}`;target.fillText(points,textX,228,600);
+    }else if(style.layout==='bottom'){
+      target.fillStyle=style.detail;target.globalAlpha=.96;target.fillRect(0,height-240,width,240);target.globalAlpha=1;target.fillStyle=style.accent;target.fillRect(0,height-240,width,13);const badgeX=bottomLogo&&style.logoCorner==='br'?150:175;drawCardNumberEmblem(target,style,badgeX,height-125,150);target.textAlign='left';target.fillStyle=panelInk;target.font=`400 66px ${font}`;target.fillText(`LEVEL ${levelNumber}`,310,height-128,580);target.font=`400 20px ${font}`;target.fillText(points,312,height-78,600);
+    }else if(style.layout==='leftside'||style.layout==='rightside'){
+      const right=style.layout==='rightside',x=right?width-185:0;target.fillStyle=style.detail;target.globalAlpha=.96;target.fillRect(x,0,185,height);target.globalAlpha=1;target.fillStyle=style.accent;target.fillRect(right?x:x+171,0,14,height);drawCardNumberEmblem(target,style,x+92,bottomLogo?height*.68:height-150,138);
+      target.save();target.translate(x+98,height*.59);target.rotate(-Math.PI/2);target.textAlign='left';target.fillStyle=panelInk;target.font=`400 23px ${font}`;target.fillText('LEVEL',0,0);target.font=`400 88px ${font}`;target.fillText(levelNumber,105,0,230);target.font=`400 18px ${font}`;target.fillText(points,290,0,590);target.restore();
+    }else if(style.layout==='diagonalUp'||style.layout==='diagonalDown'){
+      const angle=(style.layout==='diagonalUp'?-13:13)*Math.PI/180;target.save();target.translate(width*.5,height-145);target.rotate(angle);target.fillStyle=style.detail;target.globalAlpha=.96;target.fillRect(-width*.62,-112,width*1.24,224);target.globalAlpha=1;target.strokeStyle=style.accent;target.lineWidth=12;target.strokeRect(-width*.62,-112,width*1.24,224);const badgeX=bottomLogo&&leftLogo?width*.35:-width*.36;drawCardNumberEmblem(target,style,badgeX,0,145);const tx=badgeX>0?-width*.46:-width*.19;target.textAlign='left';target.fillStyle=panelInk;target.font=`400 62px ${font}`;target.fillText(`LEVEL ${levelNumber}`,tx,-3,570);target.font=`400 18px ${font}`;target.fillText(points,tx,43,580);target.restore();
+    }else{
+      target.fillStyle=style.detail;target.globalAlpha=.95;target.beginPath();target.moveTo(0,height-245);target.lineTo(width*.72,height-285);target.lineTo(width,height-205);target.lineTo(width,height);target.lineTo(0,height);target.closePath();target.fill();target.globalAlpha=1;drawCardNumberEmblem(target,style,170,height-140,150);target.textAlign='left';target.fillStyle=panelInk;target.font=`400 68px ${font}`;target.fillText(`LEVEL ${levelNumber}`,315,height-135,590);target.font=`400 20px ${font}`;target.fillText(points,318,height-82,590);
+    }
+  }
+
+  function drawCardFooter(target,style,width,height){
+    const levelNumber=String(unlockedCount()),points=`${lifetimeCheesePoints.toLocaleString()} CHEESE POINTS EARNED`;
+    target.save();target.textBaseline='alphabetic';
+    if(style.design==='collection'){
+      drawCollectionStats(target,style,width,height,levelNumber,points);
+    }else if(style.design==='anton'){
+      target.fillStyle='rgba(16,29,52,.96)';target.beginPath();target.moveTo(0,0);target.lineTo(width*.79,0);target.lineTo(width*.72,245);target.lineTo(0,285);target.closePath();target.fill();target.strokeStyle='#f8d64d';target.lineWidth=10;target.beginPath();target.moveTo(0,282);target.lineTo(width*.73,242);target.stroke();
+      drawCardNumberEmblem(target,style,158,153,168);target.textAlign='left';target.fillStyle='#f8d64d';target.font='400 29px "Anton", sans-serif';target.fillText('LEVEL REACHED',305,98);target.fillStyle='#fff0bd';target.font='400 104px "Anton", sans-serif';target.fillText(levelNumber,300,197,240);target.fillStyle='#f8d64d';target.font='400 23px "Anton", sans-serif';target.fillText(points,300,238,470);
+    }else if(style.design==='bungee'){
+      target.save();target.translate(width*.5,height-154);target.rotate(12*Math.PI/180);target.fillStyle='#10152b';target.fillRect(-width*.58,-116,width*1.16,232);target.strokeStyle='#f5cf3f';target.lineWidth=14;target.strokeRect(-width*.58,-116,width*1.16,232);target.fillStyle='#31d8e8';target.fillRect(-width*.58,-116,38,232);drawCardNumberEmblem(target,style,-width*.36,0,162);target.textAlign='left';target.fillStyle='#fff';target.font='400 58px "Bungee", sans-serif';target.fillText(`LEVEL ${levelNumber}`,-width*.18,-8,630);target.fillStyle='#31d8e8';target.font='400 20px "Bungee", sans-serif';target.fillText(points,-width*.18,46,650);target.restore();
+    }else if(style.design==='blackops'){
+      target.fillStyle='rgba(7,18,15,.96)';target.fillRect(width-190,0,190,height);target.fillStyle='#94ef3b';target.fillRect(width-190,0,13,height);drawCardNumberEmblem(target,style,width-95,height-164,142);
+      target.save();target.translate(width-72,height*.62);target.rotate(-Math.PI/2);target.textAlign='left';target.fillStyle='#94ef3b';target.font='400 26px "Black Ops One", sans-serif';target.fillText('LEVEL',0,0);target.fillStyle='#dce8dd';target.font='400 92px "Black Ops One", sans-serif';target.fillText(levelNumber,118,0,220);target.fillStyle='#94ef3b';target.font='400 19px "Black Ops One", sans-serif';target.fillText(points,310,0,620);target.restore();
+    }else if(style.design==='graduate'){
+      target.save();target.translate(width*.5,height-150);target.rotate(-12*Math.PI/180);target.fillStyle='#efe0b3';target.fillRect(-width*.57,-108,width*1.14,216);target.strokeStyle='#7e1828';target.lineWidth=15;target.strokeRect(-width*.57,-108,width*1.14,216);target.strokeStyle='#153f68';target.lineWidth=5;target.strokeRect(-width*.54,-89,width*1.08,178);drawCardNumberEmblem(target,style,-width*.35,0,150);target.textAlign='left';target.fillStyle='#7e1828';target.font='400 64px "Graduate", serif';target.fillText(`LEVEL ${levelNumber}`,-width*.18,-2,610);target.fillStyle='#153f68';target.font='400 21px "Graduate", serif';target.fillText(points,-width*.18,43,650);target.restore();
+    }else if(style.design==='alfa'){
+      target.fillStyle='rgba(20,10,5,.95)';target.beginPath();target.moveTo(width*.08,0);target.lineTo(width*.92,0);target.lineTo(width*.84,240);target.quadraticCurveTo(width*.5,292,width*.16,240);target.closePath();target.fill();target.strokeStyle='#d5ad58';target.lineWidth=9;target.stroke();drawCardNumberEmblem(target,style,188,145,165);
+      target.textAlign='left';target.fillStyle='#d5ad58';target.font='400 25px "Alfa Slab One", serif';target.fillText('HALL OF FAME LEVEL',340,98);target.fillStyle='#f6ead0';target.font='400 88px "Alfa Slab One", serif';target.fillText(levelNumber,336,188,250);target.fillStyle='#d5ad58';target.font='400 19px "Alfa Slab One", serif';target.fillText(points,340,226,580);
+    }else if(style.design==='russo'){
+      target.fillStyle='rgba(7,23,57,.97)';target.beginPath();target.moveTo(0,0);target.lineTo(185,0);target.lineTo(150,height);target.lineTo(0,height);target.closePath();target.fill();target.fillStyle='#ff455d';target.beginPath();target.moveTo(173,0);target.lineTo(195,0);target.lineTo(158,height);target.lineTo(136,height);target.closePath();target.fill();drawCardNumberEmblem(target,style,93,height-155,140);
+      target.save();target.translate(90,height*.69);target.rotate(-Math.PI/2);target.textAlign='left';target.fillStyle='#59e5f3';target.font='400 25px "Russo One", sans-serif';target.fillText('LEVEL',0,0);target.fillStyle='#fff';target.font='400 94px "Russo One", sans-serif';target.fillText(levelNumber,106,0,220);target.fillStyle='#59e5f3';target.font='400 19px "Russo One", sans-serif';target.fillText(points,300,0,610);target.restore();
+    }else if(style.design==='monoton'){
+      target.save();target.translate(width*.5,height-156);target.rotate(18*Math.PI/180);target.fillStyle='rgba(8,3,27,.94)';target.fillRect(-width*.62,-118,width*1.24,236);target.shadowColor='#ff4fd8';target.shadowBlur=22;target.strokeStyle='#ff4fd8';target.lineWidth=10;target.strokeRect(-width*.62,-118,width*1.24,236);target.shadowColor='#4ff5ef';target.strokeStyle='#4ff5ef';target.lineWidth=4;target.strokeRect(-width*.59,-95,width*1.18,190);target.shadowBlur=0;drawCardNumberEmblem(target,style,-width*.36,0,160);target.textAlign='left';target.fillStyle='#fff';target.font='400 64px "Monoton", sans-serif';target.fillText(`LEVEL ${levelNumber}`,-width*.18,-3,620);target.fillStyle='#4ff5ef';target.font='400 20px "Russo One", sans-serif';target.fillText(points,-width*.18,47,650);target.restore();
+    }else if(style.design==='vintage'){
+      target.fillStyle='#173d59';target.fillRect(76,height-280,width-152,190);target.fillStyle='#a62c33';target.fillRect(76,height-280,18,190);drawCardNumberEmblem(target,style,190,height-183,154);
+      target.textAlign='left';target.fillStyle='#f1d163';target.font='900 25px "Card Serif", serif';target.fillText('LEVEL',330,height-212);target.fillStyle='#f7f0d9';target.font='900 88px "Card Serif", serif';target.fillText(levelNumber,326,height-126,250);target.fillStyle='#f1d163';target.font='900 22px "Card Block", sans-serif';target.fillText(points,330,height-96,640);
+      target.strokeStyle='#f1d163';target.lineWidth=3;target.beginPath();target.moveTo(326,height-202);target.lineTo(width-116,height-202);target.stroke();
+    }else if(style.design==='burst'){
+      target.fillStyle='#061d36';target.beginPath();target.moveTo(0,height-285);target.lineTo(width,height-220);target.lineTo(width,height);target.lineTo(0,height);target.closePath();target.fill();target.strokeStyle='#ffe35d';target.lineWidth=14;target.stroke();
+      drawCardNumberEmblem(target,style,160,height-153,160);target.save();target.translate(294,height-145);target.rotate(-.055);target.textAlign='left';target.lineJoin='round';target.font='italic 900 74px "Card Slant", monospace';target.lineWidth=10;target.strokeStyle='#087a9b';target.strokeText(`LEVEL ${levelNumber}`,0,0,650);target.fillStyle='#fff';target.fillText(`LEVEL ${levelNumber}`,0,0,650);target.restore();
+      target.textAlign='left';target.fillStyle='#63f1f1';target.font='900 23px "Card Mono", monospace';target.fillText(points,294,height-78,700);
+    }else if(style.design==='aurora'){
+      target.fillStyle='rgba(2,7,25,.91)';target.beginPath();target.moveTo(0,height-250);target.bezierCurveTo(width*.23,height-330,width*.65,height-170,width,height-265);target.lineTo(width,height);target.lineTo(0,height);target.closePath();target.fill();target.strokeStyle='#52efd2';target.lineWidth=9;target.stroke();
+      drawCardNumberEmblem(target,style,184,height-157,150);target.textAlign='left';target.fillStyle='#52efd2';target.font='900 27px "Card Mono", monospace';target.fillText('LVL //',330,height-194);target.shadowColor='#52efd2';target.shadowBlur=18;target.fillStyle='#fff';target.font='900 94px "Card Mono", monospace';target.fillText(levelNumber,326,height-110,250);target.shadowBlur=0;target.fillStyle='#52efd2';target.font='900 21px "Card Mono", monospace';target.fillText(points,330,height-76,650);
+    }else if(style.design==='foil'){
+      target.fillStyle='rgba(255,255,255,.92)';target.beginPath();target.moveTo(48,height-270);target.lineTo(width*.22,height-310);target.lineTo(width-48,height-238);target.lineTo(width-48,height-52);target.lineTo(48,height-52);target.closePath();target.fill();target.strokeStyle='#c39b2d';target.lineWidth=11;target.stroke();
+      drawCardNumberEmblem(target,style,195,height-163,158);target.textAlign='left';target.fillStyle='#9b6c13';target.font='900 24px "Card Block", sans-serif';target.fillText('CHAMPIONSHIP LEVEL',344,height-196,610);target.fillStyle='#153c59';target.font='900 94px "Card Serif", serif';target.fillText(levelNumber,338,height-108,260);target.fillStyle='#27718e';target.font='900 22px "Card Block", sans-serif';target.fillText(points,344,height-75,630);
+    }else if(style.design==='diamond'){
+      target.fillStyle='rgba(1,5,10,.96)';target.beginPath();target.moveTo(0,height-265);target.lineTo(width*.34,height-335);target.lineTo(width,height-252);target.lineTo(width,height);target.lineTo(0,height);target.closePath();target.fill();target.strokeStyle='#d5ab3e';target.lineWidth=10;target.stroke();
+      drawCardNumberEmblem(target,style,166,height-158,150);target.save();target.translate(300,height-92);target.rotate(-Math.PI/2);target.textAlign='left';target.fillStyle='#67e5ed';target.font='900 24px "Card Mono", monospace';target.fillText('LEVEL',0,0);target.restore();target.textAlign='left';target.lineJoin='round';target.font='italic 900 102px "Card Slant", monospace';target.strokeStyle='#d5ab3e';target.lineWidth=6;target.strokeText(levelNumber,340,height-112,280);target.fillStyle='#fff';target.fillText(levelNumber,340,height-112,280);target.fillStyle='#d5ab3e';target.font='900 21px "Card Mono", monospace';target.fillText(points,342,height-76,650);
+    }else{
+      target.fillStyle='#08283b';target.fillRect(0,height-238,width,238);target.fillStyle='#f3c64d';target.fillRect(0,height-238,width,14);
+      drawCardNumberEmblem(target,style,170,height-137,150);target.textAlign='left';target.fillStyle='#78e2e9';target.font='900 26px "Card Mono", monospace';target.fillText('LEVEL',320,height-171);target.fillStyle='#fff';target.font='900 86px "Card Block", sans-serif';target.fillText(levelNumber,316,height-91,260);target.fillStyle='#78e2e9';target.font='900 22px "Card Block", sans-serif';target.fillText(points,320,height-60,650);
+    }
+    target.restore();
+  }
+
   function renderGearPreviews() {
     if(!spritesReady)return;
     const crops={jersey:[225,150,315,300],logo:[255,225,260,225],number:[270,250,235,205],helmet:[307,174,155,153],gloves:[288,105,215,210],socks:[304,362,166,205],skates:[305,410,155,190],shaft:[220,34,165,160],tape:[174,15,132,95]};
@@ -875,6 +1221,13 @@
       const rect=preview.getBoundingClientRect(),displayW=Math.max(180,Math.round(rect.width||240)),displayH=Math.max(96,Math.round(rect.height||96)),dpr=Math.min(window.devicePixelRatio||1,3);
       preview.width=Math.round(displayW*dpr);preview.height=Math.round(displayH*dpr);
       const previewCtx=preview.getContext('2d');previewCtx.setTransform(dpr,0,0,dpr,0,0);previewCtx.imageSmoothingEnabled=true;previewCtx.imageSmoothingQuality='high';
+      if(lockerCategory==='cardstyle'){
+        drawCardStyleBackground(previewCtx,item,displayW,displayH);
+        const sprite=customPlayerSprite||createCustomizedPlayer(),scale=Math.min(displayW/510,displayH/575)*1.04,dw=510*scale,dh=575*scale;
+        previewCtx.save();previewCtx.shadowColor='rgba(0,0,0,.35)';previewCtx.shadowBlur=9;previewCtx.drawImage(sprite,110,0,510,608,(displayW-dw)/2,displayH*.05,dw,dh);previewCtx.restore();
+        drawCardBrand(previewCtx,item,displayW,displayH,true);
+        return;
+      }
       const sprite=createCustomizedPlayer({[lockerCategory]:item.id}),crop=crops[lockerCategory];
       const gradient=previewCtx.createRadialGradient(displayW/2,displayH*.48,8,displayW/2,displayH/2,Math.max(displayW,displayH)*.58);gradient.addColorStop(0,'#dff3f6');gradient.addColorStop(1,'#8db9c4');previewCtx.fillStyle=gradient;previewCtx.fillRect(0,0,displayW,displayH);
       const scale=Math.min(displayW/crop[2],displayH/crop[3])*.93,dw=crop[2]*scale,dh=crop[3]*scale;
@@ -898,35 +1251,41 @@
 
   function showPlayerShowcase(){
     ui.lockerCatalogView.hidden=true;ui.playerShowcase.hidden=false;ui.lockerDialog.scrollTop=0;
-    ui.shareStatus.textContent='On iPhone, choose Instagram or another app from the share sheet.';
+    ui.shareStatus.textContent='';
     renderPlayerShowcase();ui.backToLockerButton.focus();
   }
 
   function renderPlayerShowcase(){
-    const canvas=ui.playerRender,target=canvas.getContext('2d');refreshCustomPlayer();
-    const playerReady=Boolean(customPlayerSprite);ui.sharePlayerButton.disabled=!playerReady;ui.downloadPlayerButton.disabled=!playerReady;
-    canvas.width=1080;canvas.height=1350;target.imageSmoothingEnabled=true;target.imageSmoothingQuality='high';
-    const ice=target.createLinearGradient(0,0,1080,1350);ice.addColorStop(0,'#effbfc');ice.addColorStop(.58,'#c9e7ec');ice.addColorStop(1,'#9fcbd4');target.fillStyle=ice;target.fillRect(0,0,1080,1350);
-    target.save();target.globalAlpha=.22;target.strokeStyle='#4891a4';target.lineWidth=7;target.strokeRect(42,42,996,1266);
-    target.beginPath();target.arc(540,610,205,0,Math.PI*2);target.stroke();target.strokeStyle='#1769ff';target.lineWidth=15;target.beginPath();target.moveTo(55,325);target.lineTo(1025,325);target.stroke();target.strokeStyle='#c9343c';target.beginPath();target.moveTo(55,895);target.lineTo(1025,895);target.stroke();target.restore();
-    target.fillStyle='#176170';target.font='800 22px system-ui, sans-serif';target.textAlign='left';target.fillText("TOP CHE’S HOCKEY",128,104);target.fillText('MY PLAYER',128,136);
-    if(cheeseLogo.complete&&cheeseLogo.naturalWidth)target.drawImage(cheeseLogo,48,53,66,68);
-    if(playerReady){
-      target.save();target.shadowColor='rgba(3,17,28,.38)';target.shadowBlur=38;target.shadowOffsetY=22;
-      target.drawImage(customPlayerSprite,145,0,445,608,220,155,640,875);target.restore();
-    } else {
-      target.fillStyle='#5c8791';target.font='800 30px system-ui, sans-serif';target.textAlign='center';target.fillText('Lacing up your player…',540,610);
-    }
-    const jersey=gearItem('jersey',loadout.jersey),logo=gearItem('logo',loadout.logo);
-    const panel=target.createLinearGradient(0,1040,0,1350);panel.addColorStop(0,'rgba(7,27,43,.94)');panel.addColorStop(1,'#06131f');target.fillStyle=panel;target.fillRect(0,1030,1080,320);
-    target.textAlign='left';target.fillStyle='#63e6ed';target.font='850 25px system-ui, sans-serif';target.fillText('EQUIPPED LOOK',58,1090);
-    target.fillStyle='#ffffff';target.font='950 82px system-ui, sans-serif';target.fillText(`#${loadout.number}`,58,1180);
-    target.font='850 32px system-ui, sans-serif';target.fillText(jersey.name,224,1140);target.fillStyle='#a9c3cd';target.font='650 24px system-ui, sans-serif';target.fillText(`${logo.name} · ${gearItem('helmet',loadout.helmet).name}`,224,1180);
-    target.fillText(`${gearItem('shaft',loadout.shaft).name} · ${gearItem('tape',loadout.tape).name}`,224,1218);
-    target.fillText(`${gearItem('socks',loadout.socks).name} · ${gearItem('skates',loadout.skates).name}`,224,1256);
-    target.fillText(gearItem('gloves',loadout.gloves).name,224,1294);
-    target.fillStyle='#ffcf54';target.font='800 18px system-ui, sans-serif';target.fillText('BUILD YOUR LOOK. MAKE THE SMART PLAY.',58,1330);
+    const canvas=ui.playerRender;refreshCustomPlayer();
+    const playerReady=paintPlayerCard(canvas,gearItem('cardstyle',loadout.cardstyle));ui.sharePlayerButton.disabled=!playerReady;ui.downloadPlayerButton.disabled=!playerReady;
     ui.equippedSummary.innerHTML=equippedItems().map(({label,item})=>`<span><strong>${label}:</strong> ${item.name}</span>`).join('');
+  }
+
+  function paintPlayerCard(canvas,cardStyle){
+    const target=canvas.getContext('2d'),playerReady=Boolean(customPlayerSprite);
+    canvas.width=1080;canvas.height=1512;target.imageSmoothingEnabled=true;target.imageSmoothingQuality='high';
+    drawCardStyleBackground(target,cardStyle,canvas.width,canvas.height);
+    const darkCollection=['blueprint','arcade','graffiti','knit','banner','lava','carbon','royal','laser','masterpiece'].includes(cardStyle.motif),darkCard=['diamond','aurora','blackops','alfa','russo','monoton'].includes(cardStyle.design)||darkCollection,playerGlow=target.createRadialGradient(540,690,80,540,710,520);playerGlow.addColorStop(0,darkCard?'rgba(105,240,237,.36)':'rgba(255,255,255,.8)');playerGlow.addColorStop(.6,darkCard?'rgba(80,126,180,.14)':'rgba(239,251,252,.34)');playerGlow.addColorStop(1,'rgba(255,255,255,0)');target.fillStyle=playerGlow;target.fillRect(20,150,1040,1210);
+    if(cardStyle.design==='classic'||cardStyle.design==='vintage'){target.save();target.globalAlpha=.16;target.strokeStyle=cardStyle.design==='vintage'?cardStyle.accent:'#70b6c5';target.lineWidth=7;target.beginPath();target.arc(540,720,270,0,Math.PI*2);target.stroke();target.restore();}
+    if(playerReady){
+      const placement=cardPlayerPlacement(cardStyle);
+      target.save();target.shadowColor='rgba(3,17,28,.38)';target.shadowBlur=38;target.shadowOffsetY=22;
+      target.drawImage(customPlayerSprite,110,0,510,608,placement.x,placement.y,placement.w,placement.h);target.restore();
+    } else {
+      target.fillStyle='#5c8791';target.font='800 30px system-ui, sans-serif';target.textAlign='center';target.fillText('Lacing up your player…',540,720);
+    }
+    drawCardFooter(target,cardStyle,canvas.width,canvas.height);
+    drawCardBrand(target,cardStyle,canvas.width,canvas.height);
+    return playerReady;
+  }
+
+  function renderUnlockedCardPreview(canvas,cardStyle){
+    if(!canvas||!cardStyle)return;
+    refreshCustomPlayer();
+    const fullCard=document.createElement('canvas');paintPlayerCard(fullCard,cardStyle);
+    const target=canvas.getContext('2d');canvas.width=360;canvas.height=504;
+    target.imageSmoothingEnabled=true;target.imageSmoothingQuality='high';
+    target.clearRect(0,0,canvas.width,canvas.height);target.drawImage(fullCard,0,0,canvas.width,canvas.height);
   }
 
   function playerImageBlob(){
@@ -938,7 +1297,7 @@
   }
 
   function savePlayerBlob(blob){
-    const url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;link.download=`top-ches-player-${loadout.number}.png`;document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1500);
+    const url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;link.download=`top-ches-player-card-${loadout.number}.png`;document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1500);
   }
 
   async function downloadPlayerImage(){
@@ -951,8 +1310,8 @@
   async function sharePlayerImage(){
     ui.sharePlayerButton.disabled=true;
     try{
-      const blob=playerImageBlob(),file=new File([blob],`top-ches-player-${loadout.number}.png`,{type:'image/png'});
-      const shareData={title:"My Top Che’s Hockey Player",text:"Check out my customized player from Top Che’s Hockey!",files:[file]};
+      const blob=playerImageBlob(),file=new File([blob],`top-ches-player-card-${loadout.number}.png`,{type:'image/png'});
+      const shareData={title:"My Top Che’s Hockey Card",text:"Check out my customized player card from Top Che’s Hockey!",files:[file]};
       if(navigator.share&&(!navigator.canShare||navigator.canShare(shareData))){await navigator.share(shareData);ui.shareStatus.textContent='Player shared!';}
       else{savePlayerBlob(blob);ui.shareStatus.textContent='Your browser saved the image. Open Instagram or another app and choose it from your photos or downloads.';}
     } catch(error){if(error?.name!=='AbortError')ui.shareStatus.textContent='Sharing was not available. Try Save Image instead.';}
@@ -2147,7 +2506,7 @@
   function startIntermission(index,fromProgression=false){
     loadIntermissionAssets();clearBonusTimers();stopArenaMusic();const bonus=intermissions[index];setBonusPanel(index);
     state={...state,mode:'bonus',bonusIndex:index,bonusFromProgression:fromProgression,active:false,locked:true,round:0,total:bonus.rounds,score:0,streak:0,correct:0,elapsedTotal:0,action:null,bonusAnswer:null,bonusChoice:null,bonusResult:null,bonusPhase:'intro',bonusPuck:null,bonusStick:null,bonusStickTarget:null,bonusFlick:null,bonusAimMiss:false,bonusWide:false,bonusMissPoint:null,bonusGoalTarget:null,bonusTapPoint:null,bonusReboundStage:null,bonusReboundTier:null,bonusReactionAt:0,bonusDropAt:0,bonusGoalieFrom:0,bonusGoalieTo:0,bonusGoalieMoveAt:performance.now(),paused:false,pausedAt:0};
-    canvas.setAttribute('aria-label',`${bonus.title} intermission reaction game`);ui.startOverlay.classList.add('hidden');ui.standardControls.hidden=true;ui.bonusControls.hidden=true;ui.feedback.className='feedback';ui.powerUpIndicator.hidden=true;ui.lockerButton.disabled=true;updateUI();
+    canvas.setAttribute('aria-label',`${bonus.title} intermission reaction game`);ui.startOverlay.classList.remove('finish-mode');ui.startOverlay.classList.add('hidden');ui.standardControls.hidden=true;ui.bonusControls.hidden=true;ui.feedback.className='feedback';ui.powerUpIndicator.hidden=true;ui.lockerButton.disabled=true;updateUI();
     ui.bonusBannerTitle.textContent=bonus.title;ui.bonusBannerCopy.textContent=bonus.type==='open-net'?'Start on the puck. Flick into the gap.':bonus.type==='deflection'?'Track it. Tip it. Score.':'Watch the save. Attack the rebound.';
     ui.bonusBanner.hidden=false;requestAnimationFrame(()=>ui.bonusBanner.classList.add('show'));playBonusIntroSound();
     scheduleBonus(()=>{ui.bonusBanner.classList.remove('show');scheduleBonus(()=>{ui.bonusBanner.hidden=true;beginIntermission();},340);},2200);
@@ -2196,7 +2555,7 @@
     clearBonusTimers();state.active=false;state.locked=true;state.action=null;state.bonusPhase='complete';stopArenaMusic();ui.bonusControls.hidden=true;ui.lockerButton.disabled=false;
     const bonus=currentIntermission(),completionAward=awardCheese(15+state.correct*2),nextIndex=Math.min(levels.length-1,bonus.afterLevel),perfect=state.correct===state.total;
     const celebration=`<div class="finish-confetti" aria-hidden="true">${Array.from({length:36},(_,i)=>`<i style="--x:${(i*29)%100}%;--delay:${(i%9)*.07}s;--spin:${(i%2?1:-1)*(240+i*17)}deg;--colour:${['#ffcf54','#63e6ed','#ff6b35','#87efaf','#ffffff'][i%5]}"></i>`).join('')}</div>`;
-    ui.startOverlay.innerHTML=`${celebration}<div class="unlock-banner">Intermission complete</div><div class="score-logo" aria-hidden="true"><span>${state.correct}/${state.total}</span></div><p class="overline">BONUS GAME</p><h2>${perfect?'Perfect bonus!':'Great reactions!'}</h2><p>You scored <strong>${state.score}</strong> and earned a <strong>🧀 ${completionAward}</strong> completion bonus. Your regular level progress is safe.</p><div class="overlay-actions"><button class="primary-button" id="nextButton">Continue to Level ${nextIndex+1} <span>→</span></button><button class="secondary-button" id="levelsButton">Choose a level</button></div>`;
+    ui.startOverlay.classList.remove('finish-mode');ui.startOverlay.innerHTML=`${celebration}<div class="unlock-banner">Intermission complete</div><div class="score-logo" aria-hidden="true"><span>${state.correct}/${state.total}</span></div><p class="overline">BONUS GAME</p><h2>${perfect?'Perfect bonus!':'Great reactions!'}</h2><p>You scored <strong>${state.score}</strong> and earned a <strong>🧀 ${completionAward}</strong> completion bonus. Your regular level progress is safe.</p><div class="overlay-actions"><button class="primary-button" id="nextButton">Continue to Level ${nextIndex+1} <span>→</span></button><button class="secondary-button" id="levelsButton">Choose a level</button></div>`;
     ui.startOverlay.classList.remove('hidden');document.getElementById('nextButton').addEventListener('click',()=>startGame(nextIndex));document.getElementById('levelsButton').addEventListener('click',showLevelSelect);playGoalCelebrationSound();
   }
 
@@ -2228,7 +2587,7 @@
     const levelGrid=`<div class="level-grid" aria-label="Hockey challenges">${levels.map((level,index)=>{const locked=index>=unlocked,complete=index<unlocked-1,targetLabel=index===levels.length-1?'TARGET':'TO ADVANCE';return `<button class="level-card" data-level="${index}" ${locked?'disabled':''}><span class="level-number">LEVEL ${index+1} · ${level.unlock}/${level.rounds} ${targetLabel}</span><strong>${level.title}</strong><small>${level.short}</small><span class="level-state">${locked?'🔒':complete?'✓':'▶'}</span></button>`;}).join('')}</div>`;
     const bonusGrid=`<p class="bonus-heading">INTERMISSION BONUSES</p><div class="bonus-grid" aria-label="Intermission bonus games">${intermissions.map((bonus,index)=>{const locked=!bonusTestMode&&completed<bonus.afterLevel;return `<button class="bonus-card" data-bonus="${index}" ${locked?'disabled':''}><span>AFTER LEVEL ${bonus.afterLevel} · ${bonus.difficulty.toUpperCase()}</span><strong>${bonus.title}</strong><small>${locked?'Complete Level '+bonus.afterLevel:bonus.short}</small></button>`;}).join('')}</div>`;
     const testBadge=bonusTestMode?`<div class="bonus-test-badge">BONUS TEST MODE · ALL ${intermissions.length} UNLOCKED</div>`:'';
-    ui.startOverlay.innerHTML=`<img class="cheese-hero-logo" src="assets/top-ches-logo-v44.png" alt=""><p class="overline">${bonusTestMode?'INTERMISSION TEST BENCH':'LEVEL UP YOUR HOCKEY BRAIN'}</p><h2>Choose your<br><em>${bonusTestMode?'bonus game.':'challenge.'}</em></h2><p>${bonusTestMode?'Jump directly into any intermission bonus. Your regular level unlocks stay unchanged.':'Beat the accuracy target to unlock the next level.'}</p>${testBadge}${bonusTestMode?bonusGrid+levelGrid:levelGrid+bonusGrid}`;
+    ui.startOverlay.classList.remove('finish-mode');ui.startOverlay.innerHTML=`<img class="cheese-hero-logo" src="assets/top-ches-logo-v44.png" alt=""><p class="overline">${bonusTestMode?'INTERMISSION TEST BENCH':'LEVEL UP YOUR HOCKEY BRAIN'}</p><h2>Choose your<br><em>${bonusTestMode?'bonus game.':'challenge.'}</em></h2><p>${bonusTestMode?'Jump directly into any intermission bonus. Your regular level unlocks stay unchanged.':'Beat the accuracy target to unlock the next level.'}</p>${testBadge}${bonusTestMode?bonusGrid+levelGrid:levelGrid+bonusGrid}`;
     ui.startOverlay.classList.remove('hidden');
     ui.startOverlay.querySelectorAll('[data-level]').forEach(button=>button.addEventListener('click',()=>startGame(Number(button.dataset.level))));
     ui.startOverlay.querySelectorAll('[data-bonus]').forEach(button=>button.addEventListener('click',()=>startIntermission(Number(button.dataset.bonus),false)));
@@ -2249,7 +2608,7 @@
     clearBonusTimers();const level=levels[levelIndex];setLevelPanel(levelIndex);setStandardControls();ui.bonusBanner.classList.remove('show');ui.bonusBanner.hidden=true;
     canvas.setAttribute('aria-label','Top-down hockey rink showing fully equipped skaters, passing lanes, defenders, and goalie');
     state={...state,mode:'level',bonusIndex:null,active:true,locked:false,round:0,total:level.rounds,levelIndex,score:0,streak:0,correct:0,elapsedTotal:0,reveal:null,action:null,deck:shuffledScenarios(level),paused:false,pausedAt:0};
-    ui.startOverlay.classList.add('hidden');ui.feedback.className='feedback';ui.lockerButton.disabled=false;
+    ui.startOverlay.classList.remove('finish-mode');ui.startOverlay.classList.add('hidden');ui.feedback.className='feedback';ui.lockerButton.disabled=false;
     updateUI();beginRound();startArenaMusic();
   }
 
@@ -2313,22 +2672,35 @@
     state.active=false;state.locked=true;state.action=null;state.paused=false;state.pausedAt=0;stopArenaMusic();choiceButtons.forEach(b=>b.disabled=true);
     ui.lockerButton.disabled=false;
     const level=levels[state.levelIndex],oldBest=bestScore();if(state.score>oldBest)localStorage.setItem('superHockeyBest',state.score);
-    const previouslyUnlocked=unlockedCount(),passed=state.correct>=level.unlock,nextLevel=levels[state.levelIndex+1];
+    const previouslyUnlocked=unlockedCount(),completedBefore=completedLevelCount(),passed=state.correct>=level.unlock,nextLevel=levels[state.levelIndex+1];
     const unlockedNew=passed&&nextLevel&&previouslyUnlocked<state.levelIndex+2;
+    const firstCompletion=passed&&completedBefore<state.levelIndex+1;
+    const unlockedCard=firstCompletion?gearCatalog.cardstyle.find(item=>item.unlockLevel===state.levelIndex+1):null;
     if(unlockedNew)localStorage.setItem('superHockeyUnlocked',String(state.levelIndex+2));
     if(passed)localStorage.setItem('superHockeyCompletedThrough',String(Math.max(completedLevelCount(),state.levelIndex+1)));
     const cheeseBonus=passed?awardCheese(25+(unlockedNew?75:0)):0;
     const nowUnlocked=unlockedCount(),nowCompleted=completedLevelCount(),bonusUnlocked=intermissions.filter(bonus=>nowCompleted>=bonus.afterLevel).length;
     ui.bestScore.textContent=Math.max(oldBest,state.score);
     ui.levelStatus.textContent=`${nowUnlocked} of ${levels.length} levels · ${bonusUnlocked} of ${intermissions.length} bonuses`;
-    const headline=unlockedNew?`${nextLevel.title} unlocked!`:passed&&state.levelIndex===levels.length-1?'New heights reached!':passed?'Level complete!':'So close!';
-    const revealedGear=passed?Object.values(gearCatalog).flat().filter(item=>item.unlockLevel===state.levelIndex+1).length:0;
-    const revealMessage=revealedGear?` <strong>${revealedGear} new mystery ${revealedGear===1?'customization has':'customizations have'} been revealed in the Locker!</strong>`:'';
-    const message=passed?`You made ${state.correct} of ${state.total} best-play decisions, scored <strong>${state.score}</strong>, and earned a <strong>🧀 ${cheeseBonus}</strong> level bonus.${revealMessage}`:`Get ${level.unlock} correct to advance. You made ${state.correct} this time.`;
+    const revealedGear=passed?Object.entries(gearCatalog).flatMap(([category,items])=>items.filter(item=>category!=='cardstyle'&&item.unlockLevel===state.levelIndex+1)).length:0;
+    const revealMessage=revealedGear?` Plus ${revealedGear} more Locker ${revealedGear===1?'item is':'items are'} now available.`:'';
+    const message=passed?`You made ${state.correct} of ${state.total} best-play decisions and earned <strong>🧀 ${cheeseBonus}</strong>.${revealMessage}`:`Get ${level.unlock} correct to advance. You made ${state.correct} this time.`;
     const nextIndex=passed&&nextLevel?state.levelIndex+1:state.levelIndex,intermissionIndex=passed?intermissions.findIndex(bonus=>bonus.afterLevel===state.levelIndex+1):-1;
     const hasIntermission=intermissionIndex>=0,primaryLabel=hasIntermission?'Play bonus game':passed&&nextLevel?'Play next level':'Try again';
     const celebration=passed?`<div class="finish-confetti" aria-hidden="true">${Array.from({length:30},(_,i)=>`<i style="--x:${(i*37)%100}%;--delay:${(i%10)*.08}s;--spin:${(i%2?1:-1)*(180+i*19)}deg;--colour:${['#ffcf54','#63e6ed','#ff6b35','#87efaf','#ffffff'][i%5]}"></i>`).join('')}</div>`:'';
-    ui.startOverlay.innerHTML=`${celebration}${hasIntermission?'<div class="unlock-banner">Intermission bonus unlocked</div>':unlockedNew?'<div class="unlock-banner">New challenge unlocked</div>':''}<div class="score-logo" aria-hidden="true"><span>${Math.round(state.correct/state.total*100)}%</span></div><p class="overline">LEVEL ${state.levelIndex+1} COMPLETE</p><h2>${headline}</h2><p>${message}</p><div class="overlay-actions"><button class="primary-button" id="nextButton">${primaryLabel} <span>→</span></button><button class="secondary-button" id="levelsButton">Choose a level</button></div><small>${state.score>oldBest?'New personal best':'Best score: '+Math.max(oldBest,state.score)}</small>`;
+    if(passed){
+      const unlockBanner=hasIntermission?'Intermission bonus unlocked':unlockedNew?`${nextLevel.title} unlocked`:state.levelIndex===levels.length-1?'New heights reached':'Challenge cleared';
+      const cardMarkup=unlockedCard?`<section class="finish-card-reveal" aria-label="New card revealed: ${unlockedCard.name}"><div class="finish-card-label"><span>NEW CARD</span><strong>REVEALED</strong></div><div class="finish-card-tilt"><canvas id="unlockedCardPreview" class="finish-card-canvas" width="360" height="504" aria-label="Preview of ${unlockedCard.name}"></canvas></div><h3>${unlockedCard.name}</h3><p>Level ${state.levelIndex+1} reward</p><button class="finish-locker-button" id="unlockedCardLockerButton">View in Locker <span>→</span></button></section>`:'';
+      ui.startOverlay.classList.add('finish-mode');
+      ui.startOverlay.innerHTML=`${celebration}<div class="finish-layout ${unlockedCard?'has-card':'no-card'}"><section class="finish-result"><div class="unlock-banner">${unlockBanner}</div><p class="finish-kicker">CHALLENGE CLEARED</p><h2 class="finish-title"><span>LEVEL ${state.levelIndex+1}</span> COMPLETE</h2><div class="finish-score"><strong>${Math.round(state.correct/state.total*100)}%</strong><span>${state.correct}/${state.total} best reads<br>${state.score} points</span></div><p class="finish-copy">${message}</p></section>${cardMarkup}<div class="overlay-actions finish-actions"><button class="primary-button" id="nextButton">${primaryLabel} <span>→</span></button><button class="secondary-button" id="levelsButton">Choose a level</button></div><small class="finish-best">${state.score>oldBest?'NEW PERSONAL BEST':'BEST SCORE '+Math.max(oldBest,state.score)}</small></div>`;
+      if(unlockedCard){
+        requestAnimationFrame(()=>renderUnlockedCardPreview(document.getElementById('unlockedCardPreview'),unlockedCard));
+        document.getElementById('unlockedCardLockerButton').addEventListener('click',()=>{lockerCategory='cardstyle';openLocker();});
+      }
+    }else{
+      ui.startOverlay.classList.remove('finish-mode');
+      ui.startOverlay.innerHTML=`<div class="score-logo" aria-hidden="true"><span>${Math.round(state.correct/state.total*100)}%</span></div><p class="overline">LEVEL ${state.levelIndex+1} RESULT</p><h2>So close!</h2><p>${message}</p><div class="overlay-actions"><button class="primary-button" id="nextButton">${primaryLabel} <span>→</span></button><button class="secondary-button" id="levelsButton">Choose a level</button></div><small>${state.score>oldBest?'New personal best':'Best score: '+Math.max(oldBest,state.score)}</small>`;
+    }
     ui.startOverlay.classList.remove('hidden');
     document.getElementById('nextButton').addEventListener('click',()=>hasIntermission?startIntermission(intermissionIndex,true):startGame(nextIndex));
     document.getElementById('levelsButton').addEventListener('click',showLevelSelect);

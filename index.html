@@ -28,7 +28,18 @@
     @keyframes boot-load { to { width: 84%; } }
     @media (prefers-reduced-motion: reduce) { .boot-logo-wrap,.boot-progress { animation: none; } .boot-progress { width: 72%; } }
   </style>
-  <link rel="stylesheet" href="styles.css?v=20260920.5">
+  <link rel="preload" href="assets/fonts/CardBlock.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="preload" href="assets/fonts/CardMono.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="preload" href="assets/fonts/CardSlant.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="preload" href="assets/fonts/CardSerif.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="preload" href="assets/fonts/Anton.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="preload" href="assets/fonts/Bungee.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="preload" href="assets/fonts/BlackOpsOne.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="preload" href="assets/fonts/Graduate.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="preload" href="assets/fonts/AlfaSlabOne.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="preload" href="assets/fonts/RussoOne.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="preload" href="assets/fonts/Monoton.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="stylesheet" href="styles.css?v=20260924.3">
 </head>
 <body class="app-loading">
   <div id="bootLoader" role="status" aria-live="polite" aria-label="Top Che’s Hockey is loading">
@@ -152,7 +163,7 @@
     <details class="sound-credits"><summary>Hockey sound credits</summary>
       <p>Skating: <a href="https://soundbible.com/2198-Ice-Skating.html" target="_blank" rel="noopener">Ice Skating</a> by Daniel Simion. Shot: <a href="https://soundbible.com/1556-Hockey-Puck-Slap.html" target="_blank" rel="noopener">Hockey Puck Slap</a> by jameb32. Pass and reception: <a href="https://soundbible.com/1747-Hockey-Stick-Slap-2.html" target="_blank" rel="noopener">Hockey Stick Slap 2</a> by jameb32. These clips are <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener">CC BY 3.0</a>; they were trimmed, equalized, and adjusted for volume, and the reception clip was softened. Bodycheck: <a href="https://freesound.org/people/producerdan/sounds/161996/" target="_blank" rel="noopener">Hockey - Huge Body Check Hit Into Boards</a> by producerdan, <a href="https://creativecommons.org/publicdomain/zero/1.0/" target="_blank" rel="noopener">CC0</a>; trimmed, filtered, and faded.</p>
     </details>
-    <p class="how-version">TOP CHE’S HOCKEY <span>VERSION 60</span></p>
+    <p class="how-version">TOP CHE’S HOCKEY <span>VERSION 71</span></p>
   </dialog>
 
   <dialog id="lockerDialog" class="locker-dialog">
@@ -177,17 +188,17 @@
       <p class="overline">MY PLAYER</p>
       <h2 id="playerShowcaseTitle">Ready for the spotlight</h2>
       <div class="player-render-frame">
-        <canvas id="playerRender" width="1080" height="1350" aria-label="High-resolution render of your customized hockey player"></canvas>
+        <canvas id="playerRender" width="1080" height="1512" aria-label="High-resolution hockey card featuring your customized player"></canvas>
       </div>
-      <div class="equipped-summary" id="equippedSummary" aria-label="Currently equipped customizations"></div>
       <div class="showcase-actions">
         <button class="share-player-button" id="sharePlayerButton"><span aria-hidden="true">↗</span> Share My Player</button>
         <button class="download-player-button" id="downloadPlayerButton">Save Image</button>
       </div>
-      <p class="share-status" id="shareStatus" aria-live="polite">On iPhone, choose Instagram or another app from the share sheet.</p>
+      <p class="share-status" id="shareStatus" aria-live="polite"></p>
+      <div class="equipped-summary" id="equippedSummary" aria-label="Currently equipped customizations"></div>
     </section>
   </dialog>
 
-  <script src="game.js?v=20260921.3"></script>
+  <script src="game.js?v=20260924.3"></script>
 </body>
 </html>
