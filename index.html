@@ -45,7 +45,7 @@
   <link rel="preload" href="assets/fonts/RussoOne.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="preload" href="assets/fonts/Monoton.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="stylesheet" href="styles.css?v=20260925.1">
-  <link rel="stylesheet" href="leaderboard.css?v=20260925.3">
+  <link rel="stylesheet" href="leaderboard.css?v=20260925.4">
 </head>
 <body class="app-loading">
   <div id="bootLoader" role="status" aria-live="polite" aria-label="Top Che’s Hockey is loading">
@@ -170,7 +170,7 @@
     <details class="sound-credits"><summary>Hockey sound credits</summary>
       <p>Skating: <a href="https://soundbible.com/2198-Ice-Skating.html" target="_blank" rel="noopener">Ice Skating</a> by Daniel Simion. Shot: <a href="https://soundbible.com/1556-Hockey-Puck-Slap.html" target="_blank" rel="noopener">Hockey Puck Slap</a> by jameb32. Pass and reception: <a href="https://soundbible.com/1747-Hockey-Stick-Slap-2.html" target="_blank" rel="noopener">Hockey Stick Slap 2</a> by jameb32. These clips are <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener">CC BY 3.0</a>; they were trimmed, equalized, and adjusted for volume, and the reception clip was softened. Bodycheck: <a href="https://freesound.org/people/producerdan/sounds/161996/" target="_blank" rel="noopener">Hockey - Huge Body Check Hit Into Boards</a> by producerdan, <a href="https://creativecommons.org/publicdomain/zero/1.0/" target="_blank" rel="noopener">CC0</a>; trimmed, filtered, and faded.</p>
     </details>
-    <p class="how-version">TOP CHE’S HOCKEY <span>VERSION 80</span></p>
+    <p class="how-version">TOP CHE’S HOCKEY <span>VERSION 81</span></p>
   </dialog>
 
   <dialog id="usernameDialog" class="leaderboard-dialog username-dialog" aria-labelledby="usernameTitle">
@@ -241,6 +241,7 @@
       <div class="global-player-tools" id="globalPlayerTools" hidden>
         <div class="global-player-tag" id="globalPlayerTag"><small>RINK NAME</small><strong></strong></div>
         <button id="manageRecoveryCodeButton" type="button">Replace Player Code</button>
+        <button class="switch-player-button" id="switchPlayerButton" type="button">Log Out / Switch Player</button>
       </div>
     </div>
     <label class="leaderboard-level-label" for="leaderboardLevelSelect">REGULAR LEVEL</label>
@@ -285,7 +286,7 @@
   </dialog>
 
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
-  <script src="leaderboard.js?v=20260925.4"></script>
+  <script src="leaderboard.js?v=20260925.5"></script>
   <script src="game.js?v=20260925.7"></script>
 </body>
 </html>

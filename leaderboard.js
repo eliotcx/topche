@@ -9,6 +9,7 @@
   });
   const PROFILE_KEY = 'topCheGlobalLeaderboardProfile';
   const OFFLINE_KEY = 'topCheLeaderboardOffline';
+  const PLAYER_LOCAL_KEYS = ['superHockeyUnlocked','superHockeyCompletedThrough','superHockeyCheesePoints','superHockeyLifetimeCheesePoints','superHockeyOwned','superHockeyLoadout','superHockeyActivePowerUp','superHockeyBest'];
   const REQUEST_TIMEOUT = 9000;
   const BLOCKED_EXACT = new Set(['admin','administrator','moderator','system','support','official','owner','staff','root','fuck','fucker','fucking','shit','bitch','cunt','dick','penis','pussy','whore','slut','nigger','nigga','faggot','retard','rapist','nazi','hitler']);
   const BLOCKED_CONTAINS = ['fuck','shit','bitch','cunt','penis','pussy','whore','nigger','nigga','faggot','rapist','porn'];
@@ -47,6 +48,7 @@
     playerTag: document.getElementById('globalPlayerTag'),
     playerTools: document.getElementById('globalPlayerTools'),
     manageRecoveryCode: document.getElementById('manageRecoveryCodeButton'),
+    switchPlayer: document.getElementById('switchPlayerButton'),
     turnstileMount: document.getElementById('turnstileMount')
   };
 
@@ -346,6 +348,18 @@
     if (name) name.textContent = state.profile?.username || '';
   }
 
+  function logoutPlayer() {
+    if (!state.profile) return;
+    const username = state.profile.username;
+    if (!window.confirm(`Log out ${username} on this device? Their cloud progress and Global scores will remain saved.`)) return;
+    for (const key of PLAYER_LOCAL_KEYS) localStorage.removeItem(key);
+    localStorage.removeItem(PROFILE_KEY);
+    sessionStorage.removeItem(OFFLINE_KEY);
+    state.profile = null;
+    state.recoveryCode = '';
+    window.location.reload();
+  }
+
   function setLevels(levels) {
     state.levels = Array.isArray(levels) ? levels : [];
     if (!ui.levelSelect) return;
@@ -516,6 +530,7 @@
       ui.manageRecoveryCode.disabled = false;
     }
   });
+  ui.switchPlayer?.addEventListener('click', logoutPlayer);
   ui.offlineButton?.addEventListener('click', () => {
     sessionStorage.setItem(OFFLINE_KEY, '1');
     closeDialog(ui.usernameDialog);

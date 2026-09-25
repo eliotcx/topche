@@ -56,6 +56,8 @@
 .global-player-tag strong { color: #ffdc6a; font-size: .78rem; letter-spacing: .04em; }
 .global-player-tools > button { padding: 3px 4px; color: #78b7c5; border: 0; background: transparent; font-size: .48rem; font-weight: 850; cursor: pointer; }
 .global-player-tools > button:hover { color: #63e6ed; }
+.global-player-tools > .switch-player-button { color: #d39a83; }
+.global-player-tools > .switch-player-button:hover { color: #ff9b70; }
 .leaderboard-level-label { display: block; margin-top: 13px; }
 .leaderboard-level-select { width: 100%; height: 44px; padding: 0 38px 0 12px; color: #f5fbfc; border: 1px solid #315b72; border-radius: 6px; background: #0a2233; font-weight: 850; }
 .leaderboard-table-heading { display: grid; grid-template-columns: 54px minmax(0,1fr) 88px; margin: 15px 0 5px; padding: 0 9px; color: #688895; font-size: .49rem; font-weight: 950; letter-spacing: .16em; }
