@@ -113,21 +113,31 @@
     if (!ui.turnstileMount) throw new Error('Security check is unavailable.');
     ui.turnstileMount.replaceChildren();
     return new Promise((resolve, reject) => {
-      let widgetId;
+      let widgetId, settled = false;
+      const timeout = setTimeout(() => finish(reject)(new Error('Security check timed out. Check your connection and try again.')), 20000);
       const finish = callback => value => {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timeout);
         try { if (widgetId !== undefined) turnstile.remove(widgetId); } catch { /* Widget already removed. */ }
         callback(value);
       };
-      widgetId = turnstile.render(ui.turnstileMount, {
-        sitekey: CONFIG.turnstileSiteKey,
-        action: 'create_player',
-        appearance: 'interaction-only',
-        execution: 'execute',
-        callback: finish(resolve),
-        'error-callback': finish(() => reject(new Error('Security check failed. Please try again.'))),
-        'expired-callback': finish(() => reject(new Error('Security check expired. Please try again.')))
-      });
-      turnstile.execute(widgetId);
+      try {
+        widgetId = turnstile.render(ui.turnstileMount, {
+          sitekey: CONFIG.turnstileSiteKey,
+          action: 'create_player',
+          appearance: 'interaction-only',
+          execution: 'execute',
+          callback: finish(resolve),
+          'error-callback': finish(() => reject(new Error('Security check failed. Please try again.'))),
+          'expired-callback': finish(() => reject(new Error('Security check expired. Please try again.'))),
+          'timeout-callback': finish(() => reject(new Error('Security check timed out. Please try again.'))),
+          'unsupported-callback': finish(() => reject(new Error('This browser could not run the security check.')))
+        });
+        turnstile.execute(widgetId);
+      } catch {
+        finish(reject)(new Error('Security check could not start. Refresh the page and try again.'));
+      }
     });
   }
 
@@ -151,9 +161,10 @@
     }
     const submit = ui.usernameForm?.querySelector('[type="submit"]');
     if (submit) submit.disabled = true;
-    setStatus(ui.usernameStatus, 'Checking availability…', 'loading');
+    setStatus(ui.usernameStatus, 'Running security check…', 'loading');
     try {
       const turnstileToken = await getTurnstileToken();
+      setStatus(ui.usernameStatus, 'Checking availability…', 'loading');
       const response = await request('/api/players', {
         method: 'POST',
         body: JSON.stringify({ username: validation.username, turnstileToken })

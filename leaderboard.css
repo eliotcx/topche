@@ -23,7 +23,9 @@
 .leaderboard-join:disabled { opacity: .55; cursor: wait; }
 .leaderboard-offline { justify-self: center; margin-top: 13px; padding: 5px 8px; color: #8da9b5; border: 0; background: transparent; font-size: .72rem; font-weight: 800; cursor: pointer; }
 .leaderboard-offline:hover { color: #d7e8ed; }
-.turnstile-mount { position: fixed; z-index: 10002; right: max(12px,env(safe-area-inset-right)); bottom: max(12px,env(safe-area-inset-bottom)); }
+.turnstile-mount { position: relative; z-index: 1; display: grid; place-items: center; width: 100%; overflow: visible; }
+.turnstile-mount:not(:empty) { min-height: 68px; margin-top: 10px; }
+.turnstile-mount iframe { max-width: 100%; }
 
 .global-leaderboard-dialog { padding: 25px clamp(18px,4vw,30px) 22px; }
 .global-leaderboard-dialog .dialog-close { position: absolute; right: 12px; top: 12px; }
