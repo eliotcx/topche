@@ -620,6 +620,7 @@
     loadout=restoredLoadout;
     const completed=Math.max(0,Math.min(levels.length,Number(progress.completedThrough)||0));localStorage.setItem('superHockeyCompletedThrough',String(completed));localStorage.setItem('superHockeyUnlocked',String(Math.min(levels.length,completed+1)));
     saveLocker();refreshCustomPlayer();if(ui.lockerDialog?.open)renderLocker();
+    if(state.mode==='level'&&!state.active&&!ui.startOverlay.classList.contains('finish-mode'))showLevelSelect();
   }
   async function initializeCloudProgress(){
     const service=window.TopCheLeaderboard;if(cloudProgressStarting||!service?.hasProfile?.())return;
