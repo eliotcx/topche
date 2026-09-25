@@ -40,7 +40,7 @@
   <link rel="preload" href="assets/fonts/RussoOne.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="preload" href="assets/fonts/Monoton.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="stylesheet" href="styles.css?v=20260925.1">
-  <link rel="stylesheet" href="leaderboard.css?v=20260925.2">
+  <link rel="stylesheet" href="leaderboard.css?v=20260925.3">
 </head>
 <body class="app-loading">
   <div id="bootLoader" role="status" aria-live="polite" aria-label="Top Che’s Hockey is loading">
@@ -165,7 +165,7 @@
     <details class="sound-credits"><summary>Hockey sound credits</summary>
       <p>Skating: <a href="https://soundbible.com/2198-Ice-Skating.html" target="_blank" rel="noopener">Ice Skating</a> by Daniel Simion. Shot: <a href="https://soundbible.com/1556-Hockey-Puck-Slap.html" target="_blank" rel="noopener">Hockey Puck Slap</a> by jameb32. Pass and reception: <a href="https://soundbible.com/1747-Hockey-Stick-Slap-2.html" target="_blank" rel="noopener">Hockey Stick Slap 2</a> by jameb32. These clips are <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener">CC BY 3.0</a>; they were trimmed, equalized, and adjusted for volume, and the reception clip was softened. Bodycheck: <a href="https://freesound.org/people/producerdan/sounds/161996/" target="_blank" rel="noopener">Hockey - Huge Body Check Hit Into Boards</a> by producerdan, <a href="https://creativecommons.org/publicdomain/zero/1.0/" target="_blank" rel="noopener">CC0</a>; trimmed, filtered, and faded.</p>
     </details>
-    <p class="how-version">TOP CHE’S HOCKEY <span>VERSION 75</span></p>
+    <p class="how-version">TOP CHE’S HOCKEY <span>VERSION 76</span></p>
   </dialog>
 
   <dialog id="usernameDialog" class="leaderboard-dialog username-dialog" aria-labelledby="usernameTitle">
@@ -184,8 +184,46 @@
       <div id="turnstileMount" class="turnstile-mount" aria-live="polite"></div>
       <p id="usernameStatus" class="leaderboard-status" aria-live="polite"></p>
       <button class="primary-button leaderboard-join" type="submit">Join Global Leaderboards <span>→</span></button>
+      <button class="leaderboard-existing" id="leaderboardExistingButton" type="button">I already have a rink name</button>
       <button class="leaderboard-offline" id="leaderboardOfflineButton" type="button">Play offline for now</button>
     </form>
+  </dialog>
+
+  <dialog id="recoveryLoginDialog" class="leaderboard-dialog recovery-login-dialog" aria-labelledby="recoveryLoginTitle">
+    <button class="dialog-close" id="closeRecoveryLogin" aria-label="Back to username selection">×</button>
+    <img class="leaderboard-dialog-logo" src="assets/top-ches-logo-v44.png" alt="">
+    <p class="overline">RETURNING PLAYER</p>
+    <h2 id="recoveryLoginTitle">Restore your player</h2>
+    <p class="leaderboard-intro">Enter the rink name and Player Code you saved. Your scores and Global ranking will reconnect on this device.</p>
+    <form id="recoveryLoginForm" novalidate>
+      <label for="recoveryUsername">RINK NAME</label>
+      <input id="recoveryUsername" type="text" maxlength="8" pattern="[A-Za-z0-9]+" autocapitalize="characters" autocomplete="nickname" spellcheck="false" placeholder="TOPCHE10">
+      <label for="recoveryCodeInput">PLAYER CODE</label>
+      <input id="recoveryCodeInput" class="recovery-code-input" type="text" maxlength="22" autocapitalize="characters" autocomplete="off" spellcheck="false" placeholder="TC-XXXX-XXXX-XXXX-XXXX">
+      <div id="recoveryTurnstileMount" class="turnstile-mount" aria-live="polite"></div>
+      <p id="recoveryLoginStatus" class="leaderboard-status" aria-live="polite"></p>
+      <button class="primary-button leaderboard-join" type="submit">Restore My Player <span>→</span></button>
+    </form>
+  </dialog>
+
+  <dialog id="recoveryCodeDialog" class="leaderboard-dialog recovery-code-dialog" aria-labelledby="recoveryCodeTitle">
+    <div class="leaderboard-dialog-glow" aria-hidden="true"></div>
+    <img class="leaderboard-dialog-logo" src="assets/top-ches-logo-v44.png" alt="">
+    <p class="overline">PLAYER RECOVERY</p>
+    <h2 id="recoveryCodeTitle">Save your Player Code</h2>
+    <p class="leaderboard-intro">Use this code to restore <strong id="recoveryCodeUsername"></strong> and their scores on another browser or device.</p>
+    <div class="recovery-code-card">
+      <small>TOP CHE’S PLAYER CODE</small>
+      <strong id="recoveryCodeValue">TC-XXXX-XXXX-XXXX-XXXX</strong>
+      <span>Keep this private · shown only once</span>
+    </div>
+    <div class="recovery-code-actions">
+      <button id="copyRecoveryCode" type="button">Copy Code</button>
+      <button id="shareRecoveryCode" type="button">Share with Parent</button>
+      <button id="saveRecoveryCode" type="button">Save Image</button>
+    </div>
+    <p id="recoveryCodeStatus" class="leaderboard-status" aria-live="polite"></p>
+    <button class="primary-button recovery-saved-button" id="recoveryCodeSaved" type="button">I’ve saved my code <span>→</span></button>
   </dialog>
 
   <dialog id="globalLeaderboardDialog" class="leaderboard-dialog global-leaderboard-dialog" aria-labelledby="globalLeaderboardTitle">
@@ -195,7 +233,10 @@
         <p class="overline">TOP CHE’S HOCKEY</p>
         <h2 id="globalLeaderboardTitle">Global Leaderboard</h2>
       </div>
-      <div class="global-player-tag" id="globalPlayerTag" hidden><small>RINK NAME</small><strong></strong></div>
+      <div class="global-player-tools" id="globalPlayerTools" hidden>
+        <div class="global-player-tag" id="globalPlayerTag"><small>RINK NAME</small><strong></strong></div>
+        <button id="manageRecoveryCodeButton" type="button">Replace Player Code</button>
+      </div>
     </div>
     <label class="leaderboard-level-label" for="leaderboardLevelSelect">REGULAR LEVEL</label>
     <select id="leaderboardLevelSelect" class="leaderboard-level-select" aria-label="Choose a regular level"></select>
@@ -239,7 +280,7 @@
   </dialog>
 
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
-  <script src="leaderboard.js?v=20260925.2"></script>
+  <script src="leaderboard.js?v=20260925.3"></script>
   <script src="game.js?v=20260925.1"></script>
 </body>
 </html>

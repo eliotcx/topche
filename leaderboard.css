@@ -8,8 +8,8 @@
 .leaderboard-dialog-logo { width: 82px; height: 68px; object-fit: contain; filter: drop-shadow(0 12px 20px rgba(0,0,0,.38)); }
 .leaderboard-dialog h2 { margin: 7px 0 9px; font-size: clamp(1.75rem,7vw,2.5rem); line-height: .96; letter-spacing: -.05em; }
 .leaderboard-intro { max-width: 390px; margin: 0 auto 21px; color: #afc6d0; font-size: .86rem; line-height: 1.48; }
-.username-dialog form { position: relative; display: grid; text-align: left; }
-.username-dialog label,.leaderboard-level-label { margin-bottom: 7px; color: #77dfe7; font-size: .62rem; font-weight: 950; letter-spacing: .18em; }
+.username-dialog form,.recovery-login-dialog form { position: relative; display: grid; text-align: left; }
+.username-dialog label,.recovery-login-dialog label,.leaderboard-level-label { margin-bottom: 7px; color: #77dfe7; font-size: .62rem; font-weight: 950; letter-spacing: .18em; }
 .username-input-wrap { position: relative; }
 .username-input-wrap input { width: 100%; height: 58px; padding: 0 65px 0 16px; color: #fff; border: 1px solid #32657c; border-radius: 7px; outline: 0; background: rgba(3,18,29,.72); font: 900 1.35rem/1 "Card Block",system-ui,sans-serif; letter-spacing: .08em; text-transform: uppercase; box-shadow: inset 0 0 20px rgba(99,230,237,.035); }
 .username-input-wrap input:focus { border-color: #63e6ed; box-shadow: 0 0 0 3px rgba(99,230,237,.11),inset 0 0 20px rgba(99,230,237,.05); }
@@ -21,19 +21,41 @@
 .leaderboard-status[data-kind="loading"] { color: #7fe5ec; }
 .leaderboard-join { width: 100%; margin-top: 1px; }
 .leaderboard-join:disabled { opacity: .55; cursor: wait; }
-.leaderboard-offline { justify-self: center; margin-top: 13px; padding: 5px 8px; color: #8da9b5; border: 0; background: transparent; font-size: .72rem; font-weight: 800; cursor: pointer; }
-.leaderboard-offline:hover { color: #d7e8ed; }
+.leaderboard-existing,.leaderboard-offline { justify-self: center; padding: 5px 8px; border: 0; background: transparent; font-size: .72rem; font-weight: 800; cursor: pointer; }
+.leaderboard-existing { margin-top: 13px; color: #75e1e9; }
+.leaderboard-offline { margin-top: 4px; color: #8da9b5; }
+.leaderboard-existing:hover,.leaderboard-offline:hover { color: #f2fbfd; }
 .turnstile-mount { position: relative; z-index: 1; display: grid; place-items: center; width: 100%; overflow: visible; }
 .turnstile-mount:not(:empty) { min-height: 68px; margin-top: 10px; }
 .turnstile-mount iframe { max-width: 100%; }
+
+.recovery-login-dialog,.recovery-code-dialog { padding: 27px clamp(22px,6vw,42px) 24px; text-align: center; }
+.recovery-login-dialog .dialog-close { position: absolute; right: 12px; top: 12px; }
+.recovery-login-dialog form { gap: 0; }
+.recovery-login-dialog label:not(:first-child) { margin-top: 14px; }
+.recovery-login-dialog input { width: 100%; height: 52px; padding: 0 14px; color: #fff; border: 1px solid #32657c; border-radius: 7px; outline: 0; background: rgba(3,18,29,.72); font: 900 1.08rem/1 "Card Block",system-ui,sans-serif; letter-spacing: .07em; text-transform: uppercase; }
+.recovery-login-dialog input:focus { border-color: #63e6ed; box-shadow: 0 0 0 3px rgba(99,230,237,.11); }
+.recovery-login-dialog .recovery-code-input { font-family: "Card Mono",ui-monospace,monospace; font-size: .95rem; letter-spacing: .055em; }
+.recovery-code-card { position: relative; display: grid; gap: 8px; margin: 17px 0 15px; padding: 18px 12px 15px; overflow: hidden; border: 1px solid rgba(255,207,84,.55); border-radius: 9px; background: radial-gradient(circle at 20% 20%,rgba(99,230,237,.14),transparent 34%),linear-gradient(145deg,#133d54,#071a29); box-shadow: 0 16px 35px rgba(0,0,0,.34),inset 0 1px rgba(255,255,255,.06); }
+.recovery-code-card::after { content: ''; position: absolute; width: 105px; height: 105px; right: -45px; top: -54px; border: 15px solid rgba(255,207,84,.08); border-radius: 50%; }
+.recovery-code-card small { color: #8fb3c1; font-size: .54rem; font-weight: 950; letter-spacing: .18em; }
+.recovery-code-card strong { position: relative; z-index: 1; color: #ffdb67; font: 900 clamp(.88rem,4.2vw,1.18rem)/1.2 "Card Mono",ui-monospace,monospace; letter-spacing: .045em; text-shadow: 0 0 18px rgba(255,207,84,.2); }
+.recovery-code-card span { color: #7795a2; font-size: .59rem; font-weight: 750; }
+.recovery-code-actions { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 7px; }
+.recovery-code-actions button { min-height: 42px; padding: 7px 5px; color: #c7dce3; border: 1px solid #31576c; border-radius: 5px; background: #0b2639; font-size: .64rem; font-weight: 900; cursor: pointer; }
+.recovery-code-actions button:hover { color: #fff; border-color: #63e6ed; }
+.recovery-saved-button { width: 100%; }
 
 .global-leaderboard-dialog { padding: 25px clamp(18px,4vw,30px) 22px; }
 .global-leaderboard-dialog .dialog-close { position: absolute; right: 12px; top: 12px; }
 .global-leaderboard-heading { display: flex; align-items: start; justify-content: space-between; gap: 12px; padding-right: 34px; }
 .global-leaderboard-heading h2 { margin-top: 5px; }
-.global-player-tag { flex: 0 0 auto; min-width: 86px; padding: 8px 10px; text-align: center; border: 1px solid rgba(255,207,84,.36); border-radius: 6px; background: rgba(255,207,84,.06); }
+.global-player-tools { flex: 0 0 auto; display: grid; gap: 4px; }
+.global-player-tag { min-width: 86px; padding: 8px 10px; text-align: center; border: 1px solid rgba(255,207,84,.36); border-radius: 6px; background: rgba(255,207,84,.06); }
 .global-player-tag small { display: block; margin-bottom: 3px; color: #91aeb9; font-size: .48rem; font-weight: 900; letter-spacing: .14em; }
 .global-player-tag strong { color: #ffdc6a; font-size: .78rem; letter-spacing: .04em; }
+.global-player-tools > button { padding: 3px 4px; color: #78b7c5; border: 0; background: transparent; font-size: .48rem; font-weight: 850; cursor: pointer; }
+.global-player-tools > button:hover { color: #63e6ed; }
 .leaderboard-level-label { display: block; margin-top: 13px; }
 .leaderboard-level-select { width: 100%; height: 44px; padding: 0 38px 0 12px; color: #f5fbfc; border: 1px solid #315b72; border-radius: 6px; background: #0a2233; font-weight: 850; }
 .leaderboard-table-heading { display: grid; grid-template-columns: 54px minmax(0,1fr) 88px; margin: 15px 0 5px; padding: 0 9px; color: #688895; font-size: .49rem; font-weight: 950; letter-spacing: .16em; }
@@ -84,7 +106,10 @@
   .global-button { width: 36px; min-height: 36px; }
   .leaderboard-dialog { width: min(480px,calc(100% - 16px)); max-height: calc(100dvh - 16px); }
   .username-dialog { padding: 22px 18px 19px; }
+  .recovery-login-dialog,.recovery-code-dialog { padding: 22px 17px 19px; }
   .leaderboard-dialog-logo { width: 68px; height: 56px; }
+  .recovery-code-actions { grid-template-columns: 1fr; }
+  .recovery-code-actions button { min-height: 38px; }
   .global-leaderboard-dialog { padding: 20px 13px 16px; }
   .global-leaderboard-heading { padding-right: 30px; }
   .global-player-tag { min-width: 75px; padding: 7px; }

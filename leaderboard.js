@@ -12,7 +12,7 @@
   const REQUEST_TIMEOUT = 9000;
   const BLOCKED_EXACT = new Set(['admin','administrator','moderator','system','support','official','owner','staff','root','fuck','fucker','fucking','shit','bitch','cunt','dick','penis','pussy','whore','slut','nigger','nigga','faggot','retard','rapist','nazi','hitler']);
   const BLOCKED_CONTAINS = ['fuck','shit','bitch','cunt','penis','pussy','whore','nigger','nigga','faggot','rapist','porn'];
-  const state = { levels: [], currentLevel: 1, profile: readProfile(), completionRequest: 0 };
+  const state = { levels: [], currentLevel: 1, profile: readProfile(), completionRequest: 0, recoveryCode: '' };
 
   const ui = {
     openButton: document.getElementById('globalLeaderboardButton'),
@@ -21,7 +21,23 @@
     usernameInput: document.getElementById('leaderboardUsername'),
     usernameCounter: document.getElementById('usernameCounter'),
     usernameStatus: document.getElementById('usernameStatus'),
+    existingButton: document.getElementById('leaderboardExistingButton'),
     offlineButton: document.getElementById('leaderboardOfflineButton'),
+    recoveryLoginDialog: document.getElementById('recoveryLoginDialog'),
+    closeRecoveryLogin: document.getElementById('closeRecoveryLogin'),
+    recoveryLoginForm: document.getElementById('recoveryLoginForm'),
+    recoveryUsername: document.getElementById('recoveryUsername'),
+    recoveryCodeInput: document.getElementById('recoveryCodeInput'),
+    recoveryLoginStatus: document.getElementById('recoveryLoginStatus'),
+    recoveryTurnstileMount: document.getElementById('recoveryTurnstileMount'),
+    recoveryCodeDialog: document.getElementById('recoveryCodeDialog'),
+    recoveryCodeUsername: document.getElementById('recoveryCodeUsername'),
+    recoveryCodeValue: document.getElementById('recoveryCodeValue'),
+    recoveryCodeStatus: document.getElementById('recoveryCodeStatus'),
+    copyRecoveryCode: document.getElementById('copyRecoveryCode'),
+    shareRecoveryCode: document.getElementById('shareRecoveryCode'),
+    saveRecoveryCode: document.getElementById('saveRecoveryCode'),
+    recoveryCodeSaved: document.getElementById('recoveryCodeSaved'),
     dialog: document.getElementById('globalLeaderboardDialog'),
     closeButton: document.getElementById('closeGlobalLeaderboard'),
     levelSelect: document.getElementById('leaderboardLevelSelect'),
@@ -29,6 +45,8 @@
     rankCard: document.getElementById('globalRankCard'),
     status: document.getElementById('globalLeaderboardStatus'),
     playerTag: document.getElementById('globalPlayerTag'),
+    playerTools: document.getElementById('globalPlayerTools'),
+    manageRecoveryCode: document.getElementById('manageRecoveryCodeButton'),
     turnstileMount: document.getElementById('turnstileMount')
   };
 
@@ -108,10 +126,10 @@
     });
   }
 
-  async function getTurnstileToken() {
+  async function getTurnstileToken(mount = ui.turnstileMount, action = 'create_player') {
     const turnstile = await waitForTurnstile();
-    if (!ui.turnstileMount) throw new Error('Security check is unavailable.');
-    ui.turnstileMount.replaceChildren();
+    if (!mount) throw new Error('Security check is unavailable.');
+    mount.replaceChildren();
     return new Promise((resolve, reject) => {
       let widgetId, settled = false;
       const timeout = setTimeout(() => finish(reject)(new Error('Security check timed out. Check your connection and try again.')), 20000);
@@ -123,9 +141,9 @@
         callback(value);
       };
       try {
-        widgetId = turnstile.render(ui.turnstileMount, {
+        widgetId = turnstile.render(mount, {
           sitekey: CONFIG.turnstileSiteKey,
-          action: 'create_player',
+          action,
           appearance: 'interaction-only',
           execution: 'execute',
           callback: finish(resolve),
@@ -163,15 +181,20 @@
     if (submit) submit.disabled = true;
     setStatus(ui.usernameStatus, 'Running security check…', 'loading');
     try {
-      const turnstileToken = await getTurnstileToken();
+      const turnstileToken = await getTurnstileToken(ui.turnstileMount, 'create_player');
       setStatus(ui.usernameStatus, 'Checking availability…', 'loading');
       const response = await request('/api/players', {
         method: 'POST',
         body: JSON.stringify({ username: validation.username, turnstileToken })
       });
       saveProfile({ username: response.player.username, token: response.token, playerId: response.player.id });
-      setStatus(ui.usernameStatus, `Welcome, ${response.player.username}!`, 'success');
-      setTimeout(() => closeDialog(ui.usernameDialog), 360);
+      if (response.recoveryCode) {
+        closeDialog(ui.usernameDialog);
+        showRecoveryCode(response.player.username, response.recoveryCode);
+      } else {
+        setStatus(ui.usernameStatus, `Welcome, ${response.player.username}!`, 'success');
+        setTimeout(() => closeDialog(ui.usernameDialog), 360);
+      }
     } catch (error) {
       const message = error.status === 409 ? 'That rink name is already taken. Try another.' : error.message;
       setStatus(ui.usernameStatus, message, 'error');
@@ -180,9 +203,144 @@
     }
   }
 
+  function normalizeRecoveryEntry(value) {
+    const compact = String(value || '').toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 18);
+    if (compact === 'T') return 'T';
+    const remainder = (compact.startsWith('TC') ? compact.slice(2) : compact).slice(0, 16);
+    const groups = remainder.match(/.{1,4}/g) || [];
+    return ['TC', ...groups].join('-');
+  }
+
+  function showRecoveryCode(username, recoveryCode) {
+    state.recoveryCode = recoveryCode;
+    if (ui.recoveryCodeUsername) ui.recoveryCodeUsername.textContent = username;
+    if (ui.recoveryCodeValue) ui.recoveryCodeValue.textContent = recoveryCode;
+    setStatus(ui.recoveryCodeStatus, '');
+    openDialog(ui.recoveryCodeDialog);
+  }
+
+  async function recoverPlayer(event) {
+    event.preventDefault();
+    const validation = validateUsername(ui.recoveryUsername?.value);
+    const compactCode = String(ui.recoveryCodeInput?.value || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+    if (validation.error) {
+      setStatus(ui.recoveryLoginStatus, validation.error, 'error');
+      return;
+    }
+    if (!/^TC[2-9A-HJKMNP-Z]{16}$/.test(compactCode)) {
+      setStatus(ui.recoveryLoginStatus, 'Enter the complete Player Code.', 'error');
+      return;
+    }
+    const submit = ui.recoveryLoginForm?.querySelector('[type="submit"]');
+    if (submit) submit.disabled = true;
+    setStatus(ui.recoveryLoginStatus, 'Running security check…', 'loading');
+    try {
+      const turnstileToken = await getTurnstileToken(ui.recoveryTurnstileMount, 'recover_player');
+      setStatus(ui.recoveryLoginStatus, 'Restoring your player…', 'loading');
+      const response = await request('/api/recover', {
+        method: 'POST',
+        body: JSON.stringify({ username: validation.username, recoveryCode: compactCode, turnstileToken })
+      });
+      saveProfile({ username: response.player.username, token: response.token, playerId: response.player.id });
+      setStatus(ui.recoveryLoginStatus, `Welcome back, ${response.player.username}!`, 'success');
+      setTimeout(() => closeDialog(ui.recoveryLoginDialog), 420);
+    } catch (error) {
+      setStatus(ui.recoveryLoginStatus, error.message, 'error');
+    } finally {
+      if (submit) submit.disabled = false;
+    }
+  }
+
+  async function copyText(value) {
+    if (navigator.clipboard?.writeText) return navigator.clipboard.writeText(value);
+    const field = document.createElement('textarea');
+    field.value = value;
+    field.style.position = 'fixed';
+    field.style.opacity = '0';
+    document.body.append(field);
+    field.select();
+    document.execCommand('copy');
+    field.remove();
+  }
+
+  function recoveryMessage() {
+    return `Top Che’s Hockey Player Code\nRink name: ${state.profile?.username || ''}\nPlayer Code: ${state.recoveryCode}\nRestore at https://topche.org\n\nKeep this code private.`;
+  }
+
+  async function copyRecoveryCode() {
+    try {
+      await copyText(state.recoveryCode);
+      setStatus(ui.recoveryCodeStatus, 'Player Code copied.', 'success');
+    } catch {
+      setStatus(ui.recoveryCodeStatus, 'Press and hold the code above to copy it.', 'error');
+    }
+  }
+
+  async function shareRecoveryCode() {
+    try {
+      if (!navigator.share) throw new Error('Sharing unavailable');
+      await navigator.share({ title:'Top Che’s Player Code', text:recoveryMessage() });
+      setStatus(ui.recoveryCodeStatus, 'Player Code shared.', 'success');
+    } catch (error) {
+      if (error?.name !== 'AbortError') {
+        await copyRecoveryCode();
+        setStatus(ui.recoveryCodeStatus, 'Sharing was unavailable, so the code was copied.', 'success');
+      }
+    }
+  }
+
+  function recoveryCardBlob() {
+    return new Promise(resolve => {
+      const canvas = document.createElement('canvas');
+      canvas.width = 1200; canvas.height = 760;
+      const context = canvas.getContext('2d');
+      const gradient = context.createLinearGradient(0,0,1200,760);
+      gradient.addColorStop(0,'#123e56');gradient.addColorStop(.58,'#071c2b');gradient.addColorStop(1,'#06121e');
+      context.fillStyle=gradient;context.fillRect(0,0,1200,760);
+      context.strokeStyle='#63e6ed';context.lineWidth=5;context.strokeRect(40,40,1120,680);
+      context.fillStyle='#63e6ed';context.font='900 30px system-ui,sans-serif';context.letterSpacing='7px';context.fillText('TOP CHE’S HOCKEY',78,112);
+      context.fillStyle='#ffda62';context.font='900 66px system-ui,sans-serif';context.fillText('PLAYER CODE',78,210);
+      context.fillStyle='#9bb7c2';context.font='700 28px system-ui,sans-serif';context.fillText(`RINK NAME  ·  ${state.profile?.username || ''}`,82,284);
+      context.fillStyle='#f8fdff';context.font='900 55px ui-monospace,monospace';context.fillText(state.recoveryCode,78,405);
+      context.fillStyle='#8ba7b2';context.font='600 24px system-ui,sans-serif';context.fillText('Restore your player and Global scores at topche.org',82,500);
+      context.fillStyle='#ffda62';context.font='800 22px system-ui,sans-serif';context.fillText('KEEP THIS CODE PRIVATE · SHOWN ONLY ONCE',82,642);
+      canvas.toBlob(resolve,'image/png');
+    });
+  }
+
+  async function saveRecoveryImage() {
+    try {
+      const blob = await recoveryCardBlob();
+      if (!blob) throw new Error('Image unavailable');
+      const file = new File([blob],`top-che-player-code-${state.profile?.username || 'player'}.png`,{type:'image/png'});
+      if (navigator.share && navigator.canShare?.({files:[file]})) {
+        await navigator.share({ title:'Save Top Che’s Player Code', files:[file] });
+      } else {
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);link.download=file.name;link.click();
+        setTimeout(()=>URL.revokeObjectURL(link.href),1000);
+      }
+      setStatus(ui.recoveryCodeStatus, 'Player Code image ready to save.', 'success');
+    } catch (error) {
+      if (error?.name !== 'AbortError') setStatus(ui.recoveryCodeStatus, 'Could not create the image. Copy the code instead.', 'error');
+    }
+  }
+
+  async function offerExistingPlayerRecoveryCode() {
+    if (!state.profile) return;
+    try {
+      const profile = await request('/api/profile');
+      if (profile.hasRecoveryCode) return;
+      const response = await request('/api/recovery-code', { method:'POST', body:'{}' });
+      if (response.recoveryCode) showRecoveryCode(response.player.username, response.recoveryCode);
+    } catch {
+      // The leaderboard remains usable if recovery setup is temporarily unavailable.
+    }
+  }
+
   function updatePlayerTag() {
     if (!ui.playerTag) return;
-    ui.playerTag.hidden = !state.profile;
+    if (ui.playerTools) ui.playerTools.hidden = !state.profile;
     const name = ui.playerTag.querySelector('strong');
     if (name) name.textContent = state.profile?.username || '';
   }
@@ -304,6 +462,46 @@
     setStatus(ui.usernameStatus, '');
   });
   ui.usernameForm?.addEventListener('submit', createPlayer);
+  ui.existingButton?.addEventListener('click', () => {
+    closeDialog(ui.usernameDialog);
+    setStatus(ui.recoveryLoginStatus, '');
+    openDialog(ui.recoveryLoginDialog);
+    setTimeout(() => ui.recoveryUsername?.focus(), 80);
+  });
+  ui.closeRecoveryLogin?.addEventListener('click', () => {
+    closeDialog(ui.recoveryLoginDialog);
+    openDialog(ui.usernameDialog);
+  });
+  ui.recoveryUsername?.addEventListener('input', () => {
+    ui.recoveryUsername.value = ui.recoveryUsername.value.replace(/[^A-Za-z0-9]/g, '').slice(0, 8);
+    setStatus(ui.recoveryLoginStatus, '');
+  });
+  ui.recoveryCodeInput?.addEventListener('input', () => {
+    ui.recoveryCodeInput.value = normalizeRecoveryEntry(ui.recoveryCodeInput.value);
+    setStatus(ui.recoveryLoginStatus, '');
+  });
+  ui.recoveryLoginForm?.addEventListener('submit', recoverPlayer);
+  ui.copyRecoveryCode?.addEventListener('click', copyRecoveryCode);
+  ui.shareRecoveryCode?.addEventListener('click', shareRecoveryCode);
+  ui.saveRecoveryCode?.addEventListener('click', saveRecoveryImage);
+  ui.recoveryCodeSaved?.addEventListener('click', () => {
+    state.recoveryCode = '';
+    closeDialog(ui.recoveryCodeDialog);
+  });
+  ui.manageRecoveryCode?.addEventListener('click', async () => {
+    if (!window.confirm('Replace your Player Code? Your saved old code will stop working, but devices already signed in will stay connected.')) return;
+    ui.manageRecoveryCode.disabled = true;
+    setStatus(ui.status, 'Creating a new Player Code…', 'loading');
+    try {
+      const response = await request('/api/recovery-code', { method:'POST', body:JSON.stringify({ rotate:true }) });
+      closeDialog(ui.dialog);
+      showRecoveryCode(response.player.username, response.recoveryCode);
+    } catch (error) {
+      setStatus(ui.status, error.message, 'error');
+    } finally {
+      ui.manageRecoveryCode.disabled = false;
+    }
+  });
   ui.offlineButton?.addEventListener('click', () => {
     sessionStorage.setItem(OFFLINE_KEY, '1');
     closeDialog(ui.usernameDialog);
@@ -314,6 +512,7 @@
   ui.levelSelect?.addEventListener('change', () => loadFullLeaderboard(ui.levelSelect.value));
 
   updatePlayerTag();
+  if (state.profile) setTimeout(offerExistingPlayerRecoveryCode, 1600);
   setTimeout(() => {
     if (!state.profile && !sessionStorage.getItem(OFFLINE_KEY)) openDialog(ui.usernameDialog);
   }, 1050);
