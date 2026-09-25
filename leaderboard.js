@@ -64,6 +64,7 @@
     localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
     localStorage.removeItem(OFFLINE_KEY);
     updatePlayerTag();
+    window.dispatchEvent(new CustomEvent('topche:profile-ready', { detail: { username: profile.username } }));
   }
 
   function openDialog(dialog) {
@@ -366,6 +367,19 @@
     return request(`/api/leaderboards/${encodeURIComponent(level)}?limit=${limit}&rules=${encodeURIComponent(CONFIG.rulesVersion)}`);
   }
 
+  async function bootstrapCloudProgress(snapshot) {
+    if (!state.profile) return null;
+    return request('/api/progress/bootstrap', { method:'POST', body:JSON.stringify(snapshot) });
+  }
+
+  async function syncCloudProgress(change) {
+    if (!state.profile) return null;
+    return request('/api/progress/sync', { method:'POST', body:JSON.stringify(change) });
+  }
+
+  function hasProfile() { return Boolean(state.profile); }
+  function playerId() { return state.profile?.playerId || ''; }
+
   function renderFullLeaderboard(payload) {
     if (ui.list) ui.list.innerHTML = leaderboardRows(payload.entries, 10);
     if (ui.rankCard) {
@@ -517,5 +531,13 @@
     if (!state.profile && !sessionStorage.getItem(OFFLINE_KEY)) openDialog(ui.usernameDialog);
   }, 1050);
 
-  window.TopCheLeaderboard = Object.freeze({ setLevels, recordLevelResult, open: openGlobalLeaderboard });
+  window.TopCheLeaderboard = Object.freeze({
+    setLevels,
+    recordLevelResult,
+    open: openGlobalLeaderboard,
+    hasProfile,
+    playerId,
+    bootstrapCloudProgress,
+    syncCloudProgress
+  });
 })();

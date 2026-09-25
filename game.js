@@ -507,6 +507,8 @@
   const estimatedEarnedCheese=cheesePoints+Object.keys(ownedGear).reduce((total,key)=>{const [category,id]=key.split(':');const item=gearCatalog[category]?.find(entry=>entry.id===id);return total+(item?.cost||0);},0);
   let lifetimeCheesePoints=Number.isFinite(storedLifetimeCheese)&&storedLifetimeCheese>=0?storedLifetimeCheese:Math.max(0,estimatedEarnedCheese);
   let loadout={...defaultLoadout,...safeStoredObject('superHockeyLoadout',{})};
+  const cloudQueueKey='topCheCloudProgressQueue';
+  let cloudProgressReady=false,cloudProgressStarting=false,cloudProgressFlushing=false;
   let activePowerUp=safeStoredObject('superHockeyActivePowerUp',null);
   const hockeySprites = new Image();
   let spritesReady = false;
@@ -598,7 +600,52 @@
   }
   function saveLocker(){localStorage.setItem('superHockeyCheesePoints',String(cheesePoints));localStorage.setItem('superHockeyLifetimeCheesePoints',String(lifetimeCheesePoints));localStorage.setItem('superHockeyOwned',JSON.stringify(ownedGear));localStorage.setItem('superHockeyLoadout',JSON.stringify(loadout));updateCheeseUI();}
   function updateCheeseUI(){if(ui.cheesePoints)ui.cheesePoints.textContent=cheesePoints;if(ui.lockerPoints)ui.lockerPoints.textContent=cheesePoints;}
-  function awardCheese(amount){cheesePoints+=amount;lifetimeCheesePoints+=amount;saveLocker();return amount;}
+  function cloudEventId(){return globalThis.crypto?.randomUUID?.()||`event_${Date.now()}_${Math.random().toString(36).slice(2)}`;}
+  function readCloudQueue(){const value=safeStoredObject(cloudQueueKey,[]);return Array.isArray(value)?value:[];}
+  function writeCloudQueue(queue){localStorage.setItem(cloudQueueKey,JSON.stringify(queue.slice(-2000)));}
+  function localCloudSnapshot(){return {completedThrough:completedLevelCount(),cheesePoints:Math.max(0,Math.round(cheesePoints)),lifetimeCheesePoints:Math.max(0,Math.round(lifetimeCheesePoints)),ownedGear:Object.keys(ownedGear).filter(key=>ownedGear[key]),loadout:{...loadout}};}
+  function queueCloudChange(change){
+    const service=window.TopCheLeaderboard,owner=service?.playerId?.();
+    if(!owner)return;
+    const queue=readCloudQueue();queue.push({eventId:cloudEventId(),owner,cheeseDelta:0,lifetimeDelta:0,completedThrough:0,purchasedGear:[],loadout:{},...change});writeCloudQueue(queue);flushCloudProgress();
+  }
+  function applyCloudProgress(progress){
+    if(!progress)return;
+    cheesePoints=Math.max(0,Number(progress.cheesePoints)||0);lifetimeCheesePoints=Math.max(0,Number(progress.lifetimeCheesePoints)||0);
+    const restoredOwned={};
+    for(const key of progress.ownedGear||[]){const [category,id]=String(key).split(':');if(gearCatalog[category]?.some(item=>item.id===id))restoredOwned[key]=true;}
+    Object.entries(gearCatalog).forEach(([category,items])=>{const starter=items.find(item=>item.cost===0);if(starter)restoredOwned[`${category}:${starter.id}`]=true;});ownedGear=restoredOwned;
+    const restoredLoadout={...defaultLoadout};
+    for(const [category,id] of Object.entries(progress.loadout||{})){if(gearCatalog[category]?.some(item=>item.id===id)&&ownedGear[`${category}:${id}`])restoredLoadout[category]=id;}
+    loadout=restoredLoadout;
+    const completed=Math.max(0,Math.min(levels.length,Number(progress.completedThrough)||0));localStorage.setItem('superHockeyCompletedThrough',String(completed));localStorage.setItem('superHockeyUnlocked',String(Math.min(levels.length,completed+1)));
+    saveLocker();refreshCustomPlayer();if(ui.lockerDialog?.open)renderLocker();
+  }
+  async function initializeCloudProgress(){
+    const service=window.TopCheLeaderboard;if(cloudProgressStarting||!service?.hasProfile?.())return;
+    cloudProgressStarting=true;
+    try{const response=await service.bootstrapCloudProgress(localCloudSnapshot());cloudProgressReady=true;const owner=service.playerId?.();if(readCloudQueue().some(event=>event.owner===owner))await flushCloudProgress();else applyCloudProgress(response?.progress);}
+    catch{/* Local play remains available while the cloud service is offline. */}
+    finally{cloudProgressStarting=false;}
+  }
+  async function flushCloudProgress(){
+    const service=window.TopCheLeaderboard,owner=service?.playerId?.();if(!cloudProgressReady||cloudProgressFlushing||!owner)return;
+    cloudProgressFlushing=true;
+    try{
+      let queue=readCloudQueue(),index=queue.findIndex(event=>event.owner===owner),latestProgress=null;
+      while(index>=0){
+        const event=queue[index];
+        try{const response=await service.syncCloudProgress(event);latestProgress=response?.progress||latestProgress;queue=readCloudQueue().filter(item=>item.eventId!==event.eventId);writeCloudQueue(queue);}
+        catch(error){
+          if(error?.code==='INSUFFICIENT_CHEESE'){queue=readCloudQueue().filter(item=>item.eventId!==event.eventId);writeCloudQueue(queue);cloudProgressReady=false;setTimeout(initializeCloudProgress,50);}
+          break;
+        }
+        index=queue.findIndex(item=>item.owner===owner);
+      }
+      if(latestProgress&&cloudProgressReady&&!readCloudQueue().some(item=>item.owner===owner))applyCloudProgress(latestProgress);
+    }finally{cloudProgressFlushing=false;if(cloudProgressReady&&readCloudQueue().some(item=>item.owner===owner))setTimeout(flushCloudProgress,0);}
+  }
+  function awardCheese(amount){cheesePoints+=amount;lifetimeCheesePoints+=amount;saveLocker();queueCloudChange({cheeseDelta:amount,lifetimeDelta:amount});return amount;}
   function renderLocker() {
     ui.lockerTabs.innerHTML=lockerCategories.map(category=>`<button class="locker-tab ${category===lockerCategory?'active':''}" role="tab" aria-selected="${category===lockerCategory}" data-locker-category="${category}">${gearLabels[category]}</button>`).join('');
     ui.lockerTabs.querySelectorAll('[data-locker-category]').forEach(button=>button.addEventListener('click',()=>{lockerCategory=button.dataset.lockerCategory;ui.lockerStatus.textContent='';renderLocker();}));
@@ -627,11 +674,12 @@
   function selectGear(category,id) {
     const item=gearItem(category,id),key=`${category}:${id}`;
     if(item.unlockLevel&&completedLevelCount()<item.unlockLevel){ui.lockerStatus.textContent=`Complete Level ${item.unlockLevel} to reveal this ${gearSingular[category].toLowerCase()} customization.`;return;}
+    let purchased=false;
     if(!ownedGear[key]){
       if(cheesePoints<item.cost){ui.lockerStatus.textContent=`You need ${item.cost-cheesePoints} more Cheese Points for ${item.name}.`;return;}
-      cheesePoints-=item.cost;ownedGear[key]=true;ui.lockerStatus.textContent=`${item.name} unlocked and equipped!`;
+      cheesePoints-=item.cost;ownedGear[key]=true;purchased=true;ui.lockerStatus.textContent=`${item.name} unlocked and equipped!`;
     } else ui.lockerStatus.textContent=`${item.name} equipped.`;
-    loadout[category]=id;saveLocker();refreshCustomPlayer();renderLocker();
+    loadout[category]=id;saveLocker();queueCloudChange({cheeseDelta:purchased?-item.cost:0,purchasedGear:purchased?[key]:[],loadout:{[category]:id}});refreshCustomPlayer();renderLocker();
   }
   function selectPowerUp(id){
     const item=powerUpItem(id),active=currentPowerUp();
@@ -640,7 +688,7 @@
     if(cheesePoints<item.cost){ui.lockerStatus.textContent=`You need ${item.cost-cheesePoints} more Cheese Points for ${item.name}.`;return;}
     cheesePoints-=item.cost;
     const now=Date.now();activePowerUp={id:item.id,activatedAt:now,expiresAt:now+item.durationMs};
-    localStorage.setItem('superHockeyActivePowerUp',JSON.stringify(activePowerUp));saveLocker();updatePowerUpIndicator();
+    localStorage.setItem('superHockeyActivePowerUp',JSON.stringify(activePowerUp));saveLocker();queueCloudChange({cheeseDelta:-item.cost});updatePowerUpIndicator();
     ui.lockerStatus.textContent=`${item.name} activated! The timer now counts down ${Math.round(item.slowdown*100)}% slower for ${item.durationMs/60000} minutes.`;
     renderLocker();
   }
@@ -2627,6 +2675,16 @@
     }
     const deck=ids.map(index=>({...scenarios[index]}));
     for(let i=deck.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[deck[i],deck[j]]=[deck[j],deck[i]];}
+    if(levels.indexOf(level)<5){
+      const arrange=(remaining,result=[])=>{
+        if(!remaining.length)return result;
+        const blocked=result.length>1&&result.at(-1).answer===result.at(-2).answer?result.at(-1).answer:null;
+        const choices=remaining.map((scenario,index)=>({scenario,index})).filter(({scenario})=>scenario.answer!==blocked);
+        for(const {scenario,index} of choices){const next=arrange([...remaining.slice(0,index),...remaining.slice(index+1)],[...result,scenario]);if(next)return next;}
+        return null;
+      };
+      return (arrange(deck)||deck).slice(0,level.rounds);
+    }
     return deck.slice(0,level.rounds);
   }
 
@@ -2736,6 +2794,7 @@
     const unlockedCard=firstCompletion?gearCatalog.cardstyle.find(item=>item.unlockLevel===state.levelIndex+1):null;
     if(unlockedNew)localStorage.setItem('superHockeyUnlocked',String(state.levelIndex+2));
     if(passed)localStorage.setItem('superHockeyCompletedThrough',String(Math.max(completedLevelCount(),state.levelIndex+1)));
+    if(passed)queueCloudChange({completedThrough:completedLevelCount()});
     const cheeseBonus=passed?awardCheese(25+(unlockedNew?75:0)):0;
     const nowUnlocked=unlockedCount(),nowCompleted=completedLevelCount(),bonusUnlocked=intermissions.filter(bonus=>nowCompleted>=bonus.afterLevel).length;
     ui.bestScore.textContent=Math.max(oldBest,state.score);
@@ -2862,5 +2921,8 @@
   ui.viewPlayerButton.addEventListener('click',showPlayerShowcase);ui.backToLockerButton.addEventListener('click',()=>{showLockerCatalog();scheduleGearPreviews();ui.viewPlayerButton.focus();});
   ui.sharePlayerButton.addEventListener('click',sharePlayerImage);ui.downloadPlayerButton.addEventListener('click',downloadPlayerImage);
   ui.lockerDialog.addEventListener('click',e=>{if(e.target===ui.lockerDialog)closeLocker();});ui.lockerDialog.addEventListener('close',resumeAfterLocker);
-  window.addEventListener('resize',()=>{resizeCanvas();if(ui.lockerDialog?.open)scheduleGearPreviews();});resizeCanvas();showLevelSelect();cancelAnimationFrame(raf);raf=requestAnimationFrame(drawGame);requestAnimationFrame(tick);
+  window.addEventListener('resize',()=>{resizeCanvas();if(ui.lockerDialog?.open)scheduleGearPreviews();});
+  window.addEventListener('online',()=>{initializeCloudProgress();flushCloudProgress();});
+  window.addEventListener('topche:profile-ready',()=>{cloudProgressReady=false;initializeCloudProgress();});
+  resizeCanvas();showLevelSelect();setTimeout(initializeCloudProgress,700);cancelAnimationFrame(raf);raf=requestAnimationFrame(drawGame);requestAnimationFrame(tick);
 })();
