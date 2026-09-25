@@ -39,7 +39,8 @@
   <link rel="preload" href="assets/fonts/AlfaSlabOne.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="preload" href="assets/fonts/RussoOne.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="preload" href="assets/fonts/Monoton.ttf" as="font" type="font/ttf" crossorigin>
-  <link rel="stylesheet" href="styles.css?v=20260924.5">
+  <link rel="stylesheet" href="styles.css?v=20260925.1">
+  <link rel="stylesheet" href="leaderboard.css?v=20260925.1">
 </head>
 <body class="app-loading">
   <div id="bootLoader" role="status" aria-live="polite" aria-label="Top Che’s Hockey is loading">
@@ -59,6 +60,7 @@
         <span class="brand-name">HOCKEY IQ</span>
       </div>
       <div class="top-actions">
+        <button class="icon-button global-button" id="globalLeaderboardButton" aria-label="Open Global Leaderboard" title="Global Leaderboard">◎</button>
         <button class="points-button" id="lockerButton" aria-label="Open player locker"><span aria-hidden="true">🧀</span><strong id="cheesePoints">0</strong><span>Locker</span></button>
         <button class="icon-button music-button" id="soundButton" aria-label="Mute music and sound" title="Music and sound">♪</button>
         <button class="icon-button help-button" id="howButton" aria-label="How to play" title="How to play">?</button>
@@ -163,7 +165,43 @@
     <details class="sound-credits"><summary>Hockey sound credits</summary>
       <p>Skating: <a href="https://soundbible.com/2198-Ice-Skating.html" target="_blank" rel="noopener">Ice Skating</a> by Daniel Simion. Shot: <a href="https://soundbible.com/1556-Hockey-Puck-Slap.html" target="_blank" rel="noopener">Hockey Puck Slap</a> by jameb32. Pass and reception: <a href="https://soundbible.com/1747-Hockey-Stick-Slap-2.html" target="_blank" rel="noopener">Hockey Stick Slap 2</a> by jameb32. These clips are <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener">CC BY 3.0</a>; they were trimmed, equalized, and adjusted for volume, and the reception clip was softened. Bodycheck: <a href="https://freesound.org/people/producerdan/sounds/161996/" target="_blank" rel="noopener">Hockey - Huge Body Check Hit Into Boards</a> by producerdan, <a href="https://creativecommons.org/publicdomain/zero/1.0/" target="_blank" rel="noopener">CC0</a>; trimmed, filtered, and faded.</p>
     </details>
-    <p class="how-version">TOP CHE’S HOCKEY <span>VERSION 73</span></p>
+    <p class="how-version">TOP CHE’S HOCKEY <span>VERSION 74</span></p>
+  </dialog>
+
+  <dialog id="usernameDialog" class="leaderboard-dialog username-dialog" aria-labelledby="usernameTitle">
+    <div class="leaderboard-dialog-glow" aria-hidden="true"></div>
+    <img class="leaderboard-dialog-logo" src="assets/top-ches-logo-v44.png" alt="">
+    <p class="overline">GLOBAL LEADERBOARDS</p>
+    <h2 id="usernameTitle">Choose your rink name</h2>
+    <p class="leaderboard-intro">This public name will appear beside your best score. Use letters and numbers only.</p>
+    <form id="usernameForm" novalidate>
+      <label for="leaderboardUsername">RINK NAME</label>
+      <div class="username-input-wrap">
+        <input id="leaderboardUsername" name="username" type="text" maxlength="8" minlength="1" pattern="[A-Za-z0-9]+" inputmode="text" autocomplete="nickname" autocapitalize="characters" spellcheck="false" placeholder="TOPCHE10" aria-describedby="usernameRules usernameStatus">
+        <span id="usernameCounter">0/8</span>
+      </div>
+      <p id="usernameRules" class="username-rules">1–8 letters or numbers · no spaces, symbols or profanity</p>
+      <p id="usernameStatus" class="leaderboard-status" aria-live="polite"></p>
+      <button class="primary-button leaderboard-join" type="submit">Join Global Leaderboards <span>→</span></button>
+      <button class="leaderboard-offline" id="leaderboardOfflineButton" type="button">Play offline for now</button>
+    </form>
+  </dialog>
+
+  <dialog id="globalLeaderboardDialog" class="leaderboard-dialog global-leaderboard-dialog" aria-labelledby="globalLeaderboardTitle">
+    <button class="dialog-close" id="closeGlobalLeaderboard" aria-label="Close Global Leaderboard">×</button>
+    <div class="global-leaderboard-heading">
+      <div>
+        <p class="overline">TOP CHE’S HOCKEY</p>
+        <h2 id="globalLeaderboardTitle">Global Leaderboard</h2>
+      </div>
+      <div class="global-player-tag" id="globalPlayerTag" hidden><small>RINK NAME</small><strong></strong></div>
+    </div>
+    <label class="leaderboard-level-label" for="leaderboardLevelSelect">REGULAR LEVEL</label>
+    <select id="leaderboardLevelSelect" class="leaderboard-level-select" aria-label="Choose a regular level"></select>
+    <div class="leaderboard-table-heading" aria-hidden="true"><span>RANK</span><span>PLAYER</span><span>SCORE</span></div>
+    <ol class="leaderboard-list" id="globalLeaderboardList" aria-live="polite"></ol>
+    <div class="global-rank-card" id="globalRankCard" hidden></div>
+    <p class="leaderboard-status" id="globalLeaderboardStatus" aria-live="polite"></p>
   </dialog>
 
   <dialog id="lockerDialog" class="locker-dialog">
@@ -199,6 +237,9 @@
     </section>
   </dialog>
 
-  <script src="game.js?v=20260924.5"></script>
+  <div id="turnstileMount" class="turnstile-mount" aria-live="polite"></div>
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
+  <script src="leaderboard.js?v=20260925.1"></script>
+  <script src="game.js?v=20260925.1"></script>
 </body>
 </html>

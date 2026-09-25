@@ -288,6 +288,7 @@
     { id:'changing-lanes', title:'Changing Lanes', short:'Pass · shoot · protect', mission:'See the reliable decision through shifting pass and shot lanes.', focus:'Quick adjustments', rounds:23, time:1.4, minTime:1.02, unlock:20, scenarios:[24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46] },
     { id:'next-horizon', title:'Next Horizon', short:'Keep building your reads', mission:'Keep scanning as skaters move into new patterns and new challenges await.', focus:'Hockey IQ in motion', rounds:24, time:1.3, minTime:.95, unlock:21, scenarios:[24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47] }
   ];
+  window.TopCheLeaderboard?.setLevels(levels.map((level,index)=>({number:index+1,id:level.id,title:level.title})));
 
   // Every new timed read is guaranteed a place somewhere after Open Ice.
   // Replacement preserves the round count and favours an original of the same action.
@@ -2741,10 +2742,20 @@
         document.getElementById('unlockedCardLockerButton').addEventListener('click',()=>{lockerCategory='cardstyle';openLocker();});
       }
     }else{
-      ui.startOverlay.classList.remove('finish-mode');
-      ui.startOverlay.innerHTML=`<div class="score-logo" aria-hidden="true"><span>${Math.round(state.correct/state.total*100)}%</span></div><p class="overline">LEVEL ${state.levelIndex+1} RESULT</p><h2>So close!</h2><p>${message}</p><div class="overlay-actions"><button class="primary-button" id="nextButton">${primaryLabel} <span>→</span></button><button class="secondary-button" id="levelsButton">Choose a level</button></div><small>${state.score>oldBest?'New personal best':'Best score: '+Math.max(oldBest,state.score)}</small>`;
+      ui.startOverlay.classList.add('finish-mode');
+      ui.startOverlay.innerHTML=`<div class="finish-layout no-card finish-unsuccessful"><section class="finish-result"><p class="finish-kicker">LEVEL ${state.levelIndex+1} RESULT</p><h2 class="finish-title"><span>KEEP READING</span>SO CLOSE!</h2><div class="finish-score"><strong>${Math.round(state.correct/state.total*100)}%</strong><span>${state.correct}/${state.total} best reads<br>${state.score} points</span></div><p class="finish-copy">${message}</p></section><div class="overlay-actions finish-actions"><button class="primary-button" id="nextButton">${primaryLabel} <span>→</span></button><button class="secondary-button" id="levelsButton">Choose a level</button></div><small class="finish-best">${state.score>oldBest?'NEW PERSONAL BEST':'BEST SCORE '+Math.max(oldBest,state.score)}</small></div>`;
     }
     ui.startOverlay.classList.remove('hidden');
+    window.TopCheLeaderboard?.recordLevelResult({
+      level:state.levelIndex+1,
+      levelId:level.id,
+      levelTitle:level.title,
+      score:state.score,
+      correct:state.correct,
+      total:state.total,
+      elapsedMs:Math.max(0,Math.round(state.elapsedTotal*1000)),
+      passed
+    });
     document.getElementById('nextButton').addEventListener('click',()=>hasIntermission?startIntermission(intermissionIndex,true):startGame(nextIndex));
     document.getElementById('levelsButton').addEventListener('click',showLevelSelect);
     if(passed)setTimeout(playGoalCelebrationSound,120);
