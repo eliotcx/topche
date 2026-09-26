@@ -35,7 +35,7 @@
 .recovery-login-dialog label:not(:first-child) { margin-top: 14px; }
 .recovery-login-dialog input { width: 100%; height: 52px; padding: 0 14px; color: #fff; border: 1px solid #32657c; border-radius: 7px; outline: 0; background: rgba(3,18,29,.72); font: 900 1.08rem/1 "Card Block",system-ui,sans-serif; letter-spacing: .07em; text-transform: uppercase; }
 .recovery-login-dialog input:focus { border-color: #63e6ed; box-shadow: 0 0 0 3px rgba(99,230,237,.11); }
-.recovery-login-dialog .recovery-code-input { font-family: "Card Mono",ui-monospace,monospace; font-size: .95rem; letter-spacing: .055em; }
+.recovery-login-dialog .recovery-code-input { font-family: "Card Mono",ui-monospace,monospace; font-size: 1rem; letter-spacing: .055em; }
 .recovery-code-card { position: relative; display: grid; gap: 8px; margin: 17px 0 15px; padding: 18px 12px 15px; overflow: hidden; border: 1px solid rgba(255,207,84,.55); border-radius: 9px; background: radial-gradient(circle at 20% 20%,rgba(99,230,237,.14),transparent 34%),linear-gradient(145deg,#133d54,#071a29); box-shadow: 0 16px 35px rgba(0,0,0,.34),inset 0 1px rgba(255,255,255,.06); }
 .recovery-code-card::after { content: ''; position: absolute; width: 105px; height: 105px; right: -45px; top: -54px; border: 15px solid rgba(255,207,84,.08); border-radius: 50%; }
 .recovery-code-card small { color: #8fb3c1; font-size: .54rem; font-weight: 950; letter-spacing: .18em; }

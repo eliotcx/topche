@@ -366,6 +366,16 @@
   let bonusTimers=[],bonusRunToken=0;
   let audioCtx;
   let arenaMusicTimer=null,arenaMusicStep=0,arenaMusicTrackIndex=-1,arenaMusicTrackOrder=[],arenaMusicGeneration=0;
+
+  function setGameplayZoomLock(locked){document.body.classList.toggle('gameplay-zoom-locked',Boolean(locked));}
+  function shouldBlockGameplayZoom(){return document.body.classList.contains('gameplay-zoom-locked')&&!document.querySelector('dialog[open]');}
+  for(const eventName of ['gesturestart','gesturechange','gestureend']){
+    document.addEventListener(eventName,event=>{if(shouldBlockGameplayZoom())event.preventDefault();},{passive:false});
+  }
+  document.addEventListener('touchmove',event=>{
+    if(shouldBlockGameplayZoom()&&event.touches.length>1)event.preventDefault();
+  },{passive:false});
+
   const gearCatalog={
     jersey:[
       {id:'home-navy',name:'Home Navy',cost:0,color:'#1769ff',accent:'#ffffff',detail:'#071b2b'},
@@ -2729,7 +2739,7 @@
   }
 
   function startIntermission(index,fromProgression=false){
-    loadIntermissionAssets();clearBonusTimers();stopArenaMusic();const bonus=intermissions[index];setBonusPanel(index);
+    loadIntermissionAssets();clearBonusTimers();stopArenaMusic();setGameplayZoomLock(true);const bonus=intermissions[index];setBonusPanel(index);
     state={...state,mode:'bonus',bonusIndex:index,bonusFromProgression:fromProgression,active:false,locked:true,round:0,total:bonus.rounds,score:0,streak:0,correct:0,elapsedTotal:0,action:null,bonusAnswer:null,bonusChoice:null,bonusResult:null,bonusPhase:'intro',bonusPuck:null,bonusStick:null,bonusStickTarget:null,bonusFlick:null,bonusAimMiss:false,bonusWide:false,bonusMissPoint:null,bonusGoalTarget:null,bonusTapPoint:null,bonusReboundStage:null,bonusReboundTier:null,bonusReactionAt:0,bonusDropAt:0,bonusGoalieFrom:0,bonusGoalieTo:0,bonusGoalieMoveAt:performance.now(),paused:false,pausedAt:0};
     canvas.setAttribute('aria-label',`${bonus.title} intermission reaction game`);ui.startOverlay.classList.remove('finish-mode');ui.startOverlay.classList.add('hidden');ui.standardControls.hidden=true;ui.bonusControls.hidden=true;ui.feedback.className='feedback';ui.powerUpIndicator.hidden=true;ui.lockerButton.disabled=true;updateUI();
     ui.bonusBannerTitle.textContent=bonus.title;ui.bonusBannerCopy.textContent=bonus.type==='open-net'?'Start on the puck. Flick into the gap.':bonus.type==='deflection'?'Track it. Tip it. Score.':'Watch the save. Attack the rebound.';
@@ -2777,7 +2787,7 @@
   }
 
   function finishBonus(){
-    clearBonusTimers();state.active=false;state.locked=true;state.action=null;state.bonusPhase='complete';stopArenaMusic();ui.bonusControls.hidden=true;ui.lockerButton.disabled=false;
+    clearBonusTimers();setGameplayZoomLock(false);state.active=false;state.locked=true;state.action=null;state.bonusPhase='complete';stopArenaMusic();ui.bonusControls.hidden=true;ui.lockerButton.disabled=false;
     const bonus=currentIntermission(),completionAward=awardCheese(15+state.correct*2),nextIndex=Math.min(levels.length-1,bonus.afterLevel),perfect=state.correct===state.total;
     const celebration=`<div class="finish-confetti" aria-hidden="true">${Array.from({length:36},(_,i)=>`<i style="--x:${(i*29)%100}%;--delay:${(i%9)*.07}s;--spin:${(i%2?1:-1)*(240+i*17)}deg;--colour:${['#ffcf54','#63e6ed','#ff6b35','#87efaf','#ffffff'][i%5]}"></i>`).join('')}</div>`;
     ui.startOverlay.classList.remove('finish-mode');ui.startOverlay.innerHTML=`${celebration}<div class="unlock-banner">Intermission complete</div><div class="score-logo" aria-hidden="true"><span>${state.correct}/${state.total}</span></div><p class="overline">BONUS GAME</p><h2>${perfect?'Perfect bonus!':'Great reactions!'}</h2><p>You scored <strong>${state.score}</strong> and earned a <strong>🧀 ${completionAward}</strong> completion bonus. Your regular level progress is safe.</p><div class="overlay-actions"><button class="primary-button" id="nextButton">Continue to Level ${nextIndex+1} <span>→</span></button><button class="secondary-button" id="levelsButton">Choose a level</button></div>`;
@@ -2816,7 +2826,7 @@
   }
 
   function showLevelSelect() {
-    clearBonusTimers();stopArenaMusic();state.active=false;state.locked=true;state.mode='level';state.bonusIndex=null;ui.bonusBanner.classList.remove('show');ui.bonusBanner.hidden=true;setStandardControls();
+    clearBonusTimers();stopArenaMusic();setGameplayZoomLock(false);state.active=false;state.locked=true;state.mode='level';state.bonusIndex=null;ui.bonusBanner.classList.remove('show');ui.bonusBanner.hidden=true;setStandardControls();
     const unlocked=unlockedCount(),completed=completedLevelCount(),bonusUnlocked=bonusTestMode?intermissions.length:intermissions.filter(bonus=>completed>=bonus.afterLevel).length;
     ui.lockerButton.disabled=false;
     ui.levelStatus.textContent=`${unlocked} of ${levels.length} levels · ${bonusUnlocked} of ${intermissions.length} bonuses`;
@@ -2841,7 +2851,7 @@
   }
 
   function startGame(levelIndex=0) {
-    clearBonusTimers();const level=levels[levelIndex];setLevelPanel(levelIndex);setStandardControls();ui.bonusBanner.classList.remove('show');ui.bonusBanner.hidden=true;
+    clearBonusTimers();setGameplayZoomLock(true);const level=levels[levelIndex];setLevelPanel(levelIndex);setStandardControls();ui.bonusBanner.classList.remove('show');ui.bonusBanner.hidden=true;
     canvas.setAttribute('aria-label','Top-down hockey rink showing fully equipped skaters, passing lanes, defenders, and goalie');
     state={...state,mode:'level',bonusIndex:null,active:true,locked:false,round:0,total:level.rounds,levelIndex,score:0,streak:0,correct:0,elapsedTotal:0,reveal:null,action:null,deck:shuffledScenarios(level),paused:false,pausedAt:0};
     ui.startOverlay.classList.remove('finish-mode');ui.startOverlay.classList.add('hidden');ui.feedback.className='feedback';ui.lockerButton.disabled=false;
@@ -2905,7 +2915,7 @@
   }
 
   function finish(){
-    state.active=false;state.locked=true;state.action=null;state.paused=false;state.pausedAt=0;stopArenaMusic();choiceButtons.forEach(b=>b.disabled=true);
+    setGameplayZoomLock(false);state.active=false;state.locked=true;state.action=null;state.paused=false;state.pausedAt=0;stopArenaMusic();choiceButtons.forEach(b=>b.disabled=true);
     ui.lockerButton.disabled=false;
     const level=levels[state.levelIndex],oldBest=bestScore();if(state.score>oldBest)localStorage.setItem('superHockeyBest',state.score);
     const previouslyUnlocked=unlockedCount(),completedBefore=completedLevelCount(),passed=state.correct>=level.unlock,nextLevel=levels[state.levelIndex+1];

@@ -42,6 +42,13 @@ body {
 button { font: inherit; }
 button:focus-visible { outline: 3px solid var(--cyan); outline-offset: 3px; }
 
+/* During live play, rapid taps belong to the game rather than browser zoom.
+   Single-finger page scrolling remains available outside the rink/controls. */
+body.gameplay-zoom-locked .app-shell { touch-action: manipulation; }
+body.gameplay-zoom-locked .canvas-wrap,
+body.gameplay-zoom-locked .controls,
+body.gameplay-zoom-locked .bonus-controls { touch-action: none; }
+
 .app-shell { min-height: 100vh; padding: 22px clamp(18px, 3vw, 48px) 32px; }
 .topbar { height: 60px; max-width: 1500px; margin: 0 auto 18px; display: flex; justify-content: space-between; align-items: center; }
 .brand { display: flex; gap: 1px; align-items: center; letter-spacing: .08em; }
