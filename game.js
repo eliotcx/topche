@@ -310,6 +310,38 @@
     if(!freshScenariosByLevel[levelIndex].includes(scenarioIndex))freshScenariosByLevel[levelIndex].push(scenarioIndex);
   }
 
+  // Advanced levels emphasize reading a play while it develops. A qualifying
+  // moving scenario must animate at least one teammate and one opponent.
+  const movingScenarioIds=scenarios.map((scenario,index)=>({scenario,index})).filter(({scenario})=>
+    scenario.timedRoutes&&scenario.routes?.some(route=>route[0]==='blue')&&scenario.routes.some(route=>route[0]==='white')
+  ).map(({index})=>index);
+  const advancedMotionShare=new Map([
+    [20,.5],[21,.5],[22,.5],[23,.5],
+    [24,.8],[25,.8],[26,.8],[27,.8],[28,.8],[29,.8]
+  ]);
+
+  function ensureAdvancedMotion(ids,levelIndex){
+    const share=advancedMotionShare.get(levelIndex);
+    if(!share)return ids;
+    const qualifies=index=>movingScenarioIds.includes(index);
+    const target=Math.ceil(levels[levelIndex].rounds*share);
+    let movingCount=ids.filter(qualifies).length;
+    if(movingCount>=target)return ids;
+    const selected=new Set(ids),offset=(levelIndex-20)*7;
+    const candidates=Array.from({length:movingScenarioIds.length},(_,slot)=>movingScenarioIds[(offset+slot)%movingScenarioIds.length]);
+    for(const candidate of candidates){
+      if(movingCount>=target)break;
+      if(selected.has(candidate))continue;
+      const answer=scenarios[candidate].answer;
+      let replace=-1;
+      for(let slot=ids.length-1;slot>=0;slot--){if(!qualifies(ids[slot])&&scenarios[ids[slot]].answer===answer){replace=slot;break;}}
+      if(replace<0)for(let slot=ids.length-1;slot>=0;slot--){if(!qualifies(ids[slot])){replace=slot;break;}}
+      if(replace<0)break;
+      selected.delete(ids[replace]);ids[replace]=candidate;selected.add(candidate);movingCount++;
+    }
+    return ids;
+  }
+
   const intermissions = [
     { id:'open-net-rookie', type:'open-net', afterLevel:3, title:'Open Net Rush!', short:'Flick into the gap', difficulty:'Beginner', rounds:6, time:2.75, cue:'Start on the puck and flick it into the glowing opening before time runs out.' },
     { id:'deflection-rookie', type:'deflection', afterLevel:6, title:'Deflection Perfection!', short:'Tip it past the goalie', difficulty:'Beginner', rounds:6, time:1.65, cue:'Drag your blade in front of the puck and redirect it into the net.' },
@@ -2753,16 +2785,17 @@
   }
 
   function shuffledScenarios(level) {
-    const ids=[...level.scenarios],used=new Set();
-    for(const index of freshScenariosByLevel[levels.indexOf(level)]||[]){
+    const levelIndex=levels.indexOf(level),ids=[...level.scenarios],used=new Set();
+    for(const index of freshScenariosByLevel[levelIndex]||[]){
       let replace=-1;
       for(let i=ids.length-1;i>=0;i--){if(!used.has(i)&&scenarios[ids[i]].answer===scenarios[index].answer){replace=i;break;}}
       if(replace<0)for(let i=ids.length-1;i>=0;i--){if(!used.has(i)){replace=i;break;}}
       ids[replace]=index;used.add(replace);
     }
+    ensureAdvancedMotion(ids,levelIndex);
     const deck=ids.map(index=>({...scenarios[index]}));
     for(let i=deck.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[deck[i],deck[j]]=[deck[j],deck[i]];}
-    if(levels.indexOf(level)<5){
+    if(levelIndex<5){
       const arrange=(remaining,result=[])=>{
         if(!remaining.length)return result;
         const blocked=result.length>1&&result.at(-1).answer===result.at(-2).answer?result.at(-1).answer:null;
