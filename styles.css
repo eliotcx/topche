@@ -54,13 +54,19 @@ body.gameplay-zoom-locked .bonus-controls { touch-action: none; }
 
 .orientation-pause { position: fixed; z-index: 10020; inset: 0; display: grid; place-items: center; padding: 22px; color: #f7fbfc; background: rgba(2,10,17,.88); backdrop-filter: blur(9px); }
 .orientation-pause[hidden] { display: none; }
-.orientation-pause-card { width: min(390px,100%); padding: 24px; text-align: center; border: 1px solid #32637a; border-radius: 12px; background: radial-gradient(circle at 50% 0,rgba(99,230,237,.14),transparent 40%),linear-gradient(150deg,#0d3045,#061725); box-shadow: 0 24px 70px rgba(0,0,0,.62); }
+.orientation-pause-card { width: min(520px,100%); padding: 24px; text-align: center; border: 1px solid #32637a; border-radius: 12px; background: radial-gradient(circle at 50% 0,rgba(99,230,237,.14),transparent 40%),linear-gradient(150deg,#0d3045,#061725); box-shadow: 0 24px 70px rgba(0,0,0,.62); }
 .orientation-pause-card img { width: 72px; height: 58px; object-fit: contain; }
 .orientation-pause-card p { margin: 7px 0 5px; color: #70e6ed; font-size: .66rem; font-weight: 950; letter-spacing: .19em; }
 .orientation-pause-card h2 { margin: 0 0 8px; font-size: 1.55rem; line-height: 1.05; }
-.orientation-pause-card > span { display: block; margin-bottom: 17px; color: #a9c3cd; font-size: .83rem; line-height: 1.4; }
-.orientation-pause-card button { width: 100%; }
-.orientation-pause-card button b { margin-left: 15px; }
+.orientation-pause-card > span { display: block; color: #a9c3cd; font-size: .83rem; line-height: 1.4; }
+
+@media (orientation: landscape) and (max-height: 500px) {
+  .orientation-pause { padding: max(10px,env(safe-area-inset-top)) max(18px,env(safe-area-inset-right)) max(10px,env(safe-area-inset-bottom)) max(18px,env(safe-area-inset-left)); }
+  .orientation-pause-card { padding: 15px 24px 17px; }
+  .orientation-pause-card img { width: 59px; height: 46px; }
+  .orientation-pause-card p { margin: 2px 0 5px; }
+  .orientation-pause-card h2 { margin-bottom: 6px; font-size: 1.42rem; }
+}
 
 .app-shell { min-height: 100vh; padding: 22px clamp(18px, 3vw, 48px) 32px; }
 .topbar { height: 60px; max-width: 1500px; margin: 0 auto 18px; display: flex; justify-content: space-between; align-items: center; }

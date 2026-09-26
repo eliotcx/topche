@@ -39,7 +39,7 @@
     powerUpIcon: document.getElementById('powerUpIcon'), standardControls: document.getElementById('standardControls'),
     bonusControls: document.getElementById('bonusControls'), bonusBanner: document.getElementById('bonusBanner'),
     bonusBannerTitle: document.getElementById('bonusBannerTitle'), bonusBannerCopy: document.getElementById('bonusBannerCopy'),
-    orientationPause: document.getElementById('orientationPause'), orientationResumeButton: document.getElementById('orientationResumeButton')
+    orientationPause: document.getElementById('orientationPause')
   };
   const choiceButtons = [...document.querySelectorAll('[data-choice]')];
 
@@ -364,7 +364,7 @@
     bonusPuck:null, bonusStick:null, bonusStickTarget:null, bonusFlick:null, bonusAimMiss:false, bonusWide:false, bonusGoalTarget:null, bonusSaveType:'pad', bonusGoalieFrom:0, bonusGoalieTo:0, bonusGoalieMoveAt:0
   };
   let raf;
-  let bonusTimers=[],bonusRunToken=0;
+  let bonusTimers=[],bonusRunToken=0,orientationSafetyActive=false;
   let audioCtx;
   let arenaMusicTimer=null,arenaMusicStep=0,arenaMusicTrackIndex=-1,arenaMusicTrackOrder=[],arenaMusicGeneration=0;
 
@@ -763,29 +763,63 @@
   }
   function openLocker(){
     if(ui.lockerDialog.open)return;
-    if(state.active&&!state.paused){state.paused=true;state.pausedAt=performance.now();stopArenaMusic();}
+    if(state.active)pauseActiveGameplay();
     ui.lockerStatus.textContent='';showLockerCatalog();
     try{ui.lockerDialog.showModal();}catch{ui.lockerDialog.setAttribute('open','');}
     requestAnimationFrame(()=>{if(ui.lockerDialog.open)renderLocker();});
   }
 
-  function resumeAfterLocker(){
+  function pauseActiveGameplay(){
+    if(!state.active||state.paused)return;
+    state.paused=true;state.pausedAt=performance.now();stopArenaMusic();
+    if(state.mode==='bonus')pauseBonusTimers();
+  }
+
+  function resumePausedGameplay(){
     if(!state.paused)return;
     const pausedFor=Math.max(0,performance.now()-state.pausedAt);
     if(state.action)state.action.start+=pausedFor;
-    else if(state.active&&!state.locked){state.startedAt+=pausedFor;if(state.mode==='bonus'&&state.bonusPhase==='waiting')state.bonusDropAt+=pausedFor;if(state.mode==='bonus'&&state.bonusReactionAt)state.bonusReactionAt+=pausedFor;}
+    else if(state.active&&!state.locked)state.startedAt+=pausedFor;
+    if(state.mode==='bonus'){
+      if(state.bonusDropAt)state.bonusDropAt+=pausedFor;
+      if(state.bonusReactionAt)state.bonusReactionAt+=pausedFor;
+      if(state.bonusGoalieMoveAt)state.bonusGoalieMoveAt+=pausedFor;
+    }
     state.animStart+=pausedFor;state.lastTickAt=performance.now();state.paused=false;state.pausedAt=0;
+    if(state.mode==='bonus')resumeBonusTimers();
     if(state.active)startArenaMusic(false);
   }
 
+  function resumeAfterLocker(){
+    if(ui.lockerDialog.open||orientationSafetyActive)return;
+    resumePausedGameplay();
+  }
+
+  function isSmallPhoneLandscape(){
+    const coarsePointer=window.matchMedia?.('(pointer: coarse)').matches??false;
+    return coarsePointer&&window.innerWidth>window.innerHeight&&Math.min(window.innerWidth,window.innerHeight)<=500;
+  }
+
   function pauseForOrientation(){
-    if(!state.active||state.paused||!ui.orientationPause.hidden)return;
-    state.paused=true;state.pausedAt=performance.now();stopArenaMusic();ui.orientationPause.hidden=false;
+    if(!state.active||orientationSafetyActive||!isSmallPhoneLandscape())return;
+    orientationSafetyActive=true;pauseActiveGameplay();ui.orientationPause.hidden=false;
     requestAnimationFrame(resizeCanvas);
   }
 
   function resumeAfterOrientation(){
-    updateCompactGameplayLayout();resizeCanvas();ui.orientationPause.hidden=true;resumeAfterLocker();
+    if(!orientationSafetyActive)return;
+    orientationSafetyActive=false;ui.orientationPause.hidden=true;updateCompactGameplayLayout();resizeCanvas();
+    if(!ui.lockerDialog.open)resumePausedGameplay();
+  }
+
+  function syncOrientationSafety(){
+    if(state.active&&isSmallPhoneLandscape())pauseForOrientation();
+    else if(orientationSafetyActive)resumeAfterOrientation();
+  }
+
+  function clearOrientationSafety(){
+    orientationSafetyActive=false;
+    ui.orientationPause.hidden=true;
   }
 
   function closeLocker(){
@@ -2740,8 +2774,21 @@
     }
   }
 
-  function clearBonusTimers(){bonusTimers.forEach(clearTimeout);bonusTimers=[];bonusRunToken++;}
-  function scheduleBonus(callback,delay){const token=bonusRunToken,id=setTimeout(()=>{bonusTimers=bonusTimers.filter(timer=>timer!==id);if(token===bonusRunToken)callback();},delay);bonusTimers.push(id);return id;}
+  function armBonusTimer(timer){
+    timer.startedAt=performance.now();
+    timer.id=setTimeout(()=>{bonusTimers=bonusTimers.filter(item=>item!==timer);if(timer.token===bonusRunToken)timer.callback();},timer.remaining);
+  }
+  function clearBonusTimers(){bonusTimers.forEach(timer=>clearTimeout(timer.id));bonusTimers=[];bonusRunToken++;}
+  function scheduleBonus(callback,delay){
+    const timer={id:null,callback,remaining:delay,startedAt:0,token:bonusRunToken};bonusTimers.push(timer);
+    if(!state.paused)armBonusTimer(timer);
+    return timer;
+  }
+  function pauseBonusTimers(){
+    const now=performance.now();
+    bonusTimers.forEach(timer=>{if(timer.id!==null){clearTimeout(timer.id);timer.remaining=Math.max(0,timer.remaining-(now-timer.startedAt));timer.id=null;}});
+  }
+  function resumeBonusTimers(){bonusTimers.forEach(timer=>{if(timer.id===null&&timer.token===bonusRunToken)armBonusTimer(timer);});}
 
   function playBonusIntroSound(){
     playTone(220,440,.22,.05,'square');playTone(330,660,.3,.045,'triangle',.12);playTone(440,880,.42,.04,'sawtooth',.25);setTimeout(playCheer,310);
@@ -2766,7 +2813,7 @@
   }
 
   function startIntermission(index,fromProgression=false){
-    loadIntermissionAssets();clearBonusTimers();stopArenaMusic();setGameplayZoomLock(true);document.body.classList.add('session-gameplay','bonus-gameplay');const bonus=intermissions[index];setBonusPanel(index);
+    loadIntermissionAssets();clearBonusTimers();clearOrientationSafety();stopArenaMusic();setGameplayZoomLock(true);document.body.classList.add('session-gameplay','bonus-gameplay');const bonus=intermissions[index];setBonusPanel(index);
     state={...state,mode:'bonus',bonusIndex:index,bonusFromProgression:fromProgression,active:false,locked:true,round:0,total:bonus.rounds,score:0,streak:0,correct:0,elapsedTotal:0,action:null,bonusAnswer:null,bonusChoice:null,bonusResult:null,bonusPhase:'intro',bonusPuck:null,bonusStick:null,bonusStickTarget:null,bonusFlick:null,bonusAimMiss:false,bonusWide:false,bonusMissPoint:null,bonusGoalTarget:null,bonusTapPoint:null,bonusReboundStage:null,bonusReboundTier:null,bonusReactionAt:0,bonusDropAt:0,bonusGoalieFrom:0,bonusGoalieTo:0,bonusGoalieMoveAt:performance.now(),paused:false,pausedAt:0};
     canvas.setAttribute('aria-label',`${bonus.title} intermission reaction game`);ui.orientationPause.hidden=true;ui.startOverlay.classList.remove('finish-mode');ui.startOverlay.classList.add('hidden');ui.standardControls.hidden=true;ui.bonusControls.hidden=true;ui.feedback.className='feedback';ui.powerUpIndicator.hidden=true;ui.lockerButton.disabled=true;resizeCanvas();updateUI();
     ui.bonusBannerTitle.textContent=bonus.title;ui.bonusBannerCopy.textContent=bonus.type==='open-net'?'Start on the puck. Flick into the gap.':bonus.type==='deflection'?'Track it. Tip it. Score.':'Watch the save. Attack the rebound.';
@@ -2776,7 +2823,7 @@
 
   function beginIntermission(){
     const bonus=currentIntermission();state.active=true;state.locked=false;state.round=0;state.total=bonus.rounds;state.animStart=performance.now();state.lastTickAt=state.animStart;
-    ui.lockerButton.disabled=false;setBonusControls(bonus);startArenaMusic();updateUI();beginBonusRound();
+    ui.lockerButton.disabled=false;setBonusControls(bonus);updateUI();beginBonusRound();syncOrientationSafety();if(!state.paused)startArenaMusic();
   }
 
   function chooseDifferentAnswer(options){
@@ -2814,7 +2861,7 @@
   }
 
   function finishBonus(){
-    clearBonusTimers();setGameplayZoomLock(false);state.active=false;state.locked=true;state.action=null;state.bonusPhase='complete';stopArenaMusic();ui.bonusControls.hidden=true;ui.lockerButton.disabled=false;
+    clearBonusTimers();clearOrientationSafety();setGameplayZoomLock(false);state.active=false;state.locked=true;state.action=null;state.bonusPhase='complete';stopArenaMusic();ui.bonusControls.hidden=true;ui.lockerButton.disabled=false;
     const bonus=currentIntermission(),completionAward=awardCheese(15+state.correct*2),nextIndex=Math.min(levels.length-1,bonus.afterLevel),perfect=state.correct===state.total;
     const celebration=`<div class="finish-confetti" aria-hidden="true">${Array.from({length:36},(_,i)=>`<i style="--x:${(i*29)%100}%;--delay:${(i%9)*.07}s;--spin:${(i%2?1:-1)*(240+i*17)}deg;--colour:${['#ffcf54','#63e6ed','#ff6b35','#87efaf','#ffffff'][i%5]}"></i>`).join('')}</div>`;
     ui.startOverlay.classList.remove('finish-mode');ui.startOverlay.innerHTML=`${celebration}<div class="unlock-banner">Intermission complete</div><div class="score-logo" aria-hidden="true"><span>${state.correct}/${state.total}</span></div><p class="overline">BONUS GAME</p><h2>${perfect?'Perfect bonus!':'Great reactions!'}</h2><p>You scored <strong>${state.score}</strong> and earned a <strong>🧀 ${completionAward}</strong> completion bonus. Your regular level progress is safe.</p><div class="overlay-actions"><button class="primary-button" id="nextButton">Continue to Level ${nextIndex+1} <span>→</span></button><button class="secondary-button" id="levelsButton">Choose a level</button></div>`;
@@ -2853,7 +2900,7 @@
   }
 
   function showLevelSelect() {
-    clearBonusTimers();stopArenaMusic();setGameplayZoomLock(false);state.active=false;state.locked=true;state.mode='level';state.bonusIndex=null;ui.bonusBanner.classList.remove('show');ui.bonusBanner.hidden=true;setStandardControls();
+    clearBonusTimers();clearOrientationSafety();stopArenaMusic();setGameplayZoomLock(false);state.active=false;state.locked=true;state.mode='level';state.bonusIndex=null;ui.bonusBanner.classList.remove('show');ui.bonusBanner.hidden=true;setStandardControls();
     const unlocked=unlockedCount(),completed=completedLevelCount(),bonusUnlocked=bonusTestMode?intermissions.length:intermissions.filter(bonus=>completed>=bonus.afterLevel).length;
     ui.lockerButton.disabled=false;
     ui.levelStatus.textContent=`${unlocked} of ${levels.length} levels · ${bonusUnlocked} of ${intermissions.length} bonuses`;
@@ -2878,11 +2925,11 @@
   }
 
   function startGame(levelIndex=0) {
-    clearBonusTimers();setGameplayZoomLock(true);document.body.classList.add('session-gameplay','level-gameplay');const level=levels[levelIndex];setLevelPanel(levelIndex);setStandardControls();ui.bonusBanner.classList.remove('show');ui.bonusBanner.hidden=true;
+    clearBonusTimers();clearOrientationSafety();setGameplayZoomLock(true);document.body.classList.add('session-gameplay','level-gameplay');const level=levels[levelIndex];setLevelPanel(levelIndex);setStandardControls();ui.bonusBanner.classList.remove('show');ui.bonusBanner.hidden=true;
     canvas.setAttribute('aria-label','Top-down hockey rink showing fully equipped skaters, passing lanes, defenders, and goalie');
     state={...state,mode:'level',bonusIndex:null,active:true,locked:false,round:0,total:level.rounds,levelIndex,score:0,streak:0,correct:0,elapsedTotal:0,reveal:null,action:null,deck:shuffledScenarios(level),paused:false,pausedAt:0};
     ui.orientationPause.hidden=true;ui.startOverlay.classList.remove('finish-mode');ui.startOverlay.classList.add('hidden');ui.feedback.className='feedback';ui.lockerButton.disabled=false;
-    resizeCanvas();updateUI();beginRound();startArenaMusic();
+    resizeCanvas();updateUI();beginRound();syncOrientationSafety();if(!state.paused)startArenaMusic();
   }
 
   function decide(choice) {
@@ -2942,7 +2989,7 @@
   }
 
   function finish(){
-    setGameplayZoomLock(false);state.active=false;state.locked=true;state.action=null;state.paused=false;state.pausedAt=0;stopArenaMusic();choiceButtons.forEach(b=>b.disabled=true);
+    clearOrientationSafety();setGameplayZoomLock(false);state.active=false;state.locked=true;state.action=null;state.paused=false;state.pausedAt=0;stopArenaMusic();choiceButtons.forEach(b=>b.disabled=true);
     ui.lockerButton.disabled=false;
     const level=levels[state.levelIndex],oldBest=bestScore();if(state.score>oldBest)localStorage.setItem('superHockeyBest',state.score);
     const previouslyUnlocked=unlockedCount(),completedBefore=completedLevelCount(),passed=state.correct>=level.unlock,nextLevel=levels[state.levelIndex+1];
@@ -3078,14 +3125,14 @@
   ui.viewPlayerButton.addEventListener('click',showPlayerShowcase);ui.backToLockerButton.addEventListener('click',()=>{showLockerCatalog();scheduleGearPreviews();ui.viewPlayerButton.focus();});
   ui.sharePlayerButton.addEventListener('click',sharePlayerImage);ui.downloadPlayerButton.addEventListener('click',downloadPlayerImage);
   ui.lockerDialog.addEventListener('click',e=>{if(e.target===ui.lockerDialog)closeLocker();});ui.lockerDialog.addEventListener('close',resumeAfterLocker);
-  ui.orientationResumeButton.addEventListener('click',resumeAfterOrientation);
-  let viewportOrientation=window.innerWidth>window.innerHeight?'landscape':'portrait';
-  window.addEventListener('resize',()=>{
-    const nextOrientation=window.innerWidth>window.innerHeight?'landscape':'portrait',rotated=nextOrientation!==viewportOrientation;viewportOrientation=nextOrientation;
-    if(state.active&&rotated)pauseForOrientation();
+  const handleViewportChange=()=>{
+    syncOrientationSafety();
     if(!state.active||state.paused)requestAnimationFrame(resizeCanvas);
     if(ui.lockerDialog?.open)scheduleGearPreviews();
-  });
+  };
+  window.addEventListener('resize',handleViewportChange);
+  window.addEventListener('orientationchange',()=>requestAnimationFrame(handleViewportChange));
+  window.visualViewport?.addEventListener('resize',handleViewportChange);
   window.addEventListener('online',()=>{initializeCloudProgress();flushCloudProgress();});
   window.addEventListener('topche:profile-ready',()=>{cloudProgressReady=false;initializeCloudProgress();});
   resizeCanvas();showLevelSelect();setTimeout(initializeCloudProgress,700);cancelAnimationFrame(raf);raf=requestAnimationFrame(drawGame);requestAnimationFrame(tick);
