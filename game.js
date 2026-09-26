@@ -517,6 +517,16 @@
   hockeySprites.onload = () => { spritesReady = true;refreshCustomPlayer();markBootAssetReady();if(ui.lockerDialog?.open){if(ui.playerShowcase.hidden)scheduleGearPreviews();else renderPlayerShowcase();} };
   hockeySprites.onerror = markBootAssetReady;
   hockeySprites.src = 'assets/hockey-sprites.png';
+  const regularGoaliePoseFiles={
+    butterfly:'regular-goalie-butterfly.png',
+    glove:'regular-goalie-glove-save.png',
+    blocker:'regular-goalie-blocker-save.png'
+  };
+  const regularGoaliePoseImages={},regularGoaliePoseReady={};
+  Object.entries(regularGoaliePoseFiles).forEach(([pose,file])=>{
+    const image=new Image();regularGoaliePoseImages[pose]=image;regularGoaliePoseReady[pose]=false;
+    image.onload=()=>{regularGoaliePoseReady[pose]=true;};image.src=`assets/${file}`;
+  });
   const cheeseLogo = new Image();
   cheeseLogo.onload = () => { markBootAssetReady();if(ui.playerShowcase&&!ui.playerShowcase.hidden)renderPlayerShowcase(); };
   cheeseLogo.onerror = markBootAssetReady;
@@ -846,8 +856,8 @@
     return item.color;
   }
 
-  function drawHelmetGraphics(target,item,sx,sy){
-    target.save();target.globalCompositeOperation='source-atop';target.beginPath();target.ellipse(384*sx,248*sy,48*sx,59*sy,0,0,Math.PI*2);target.clip();target.lineCap='round';target.lineJoin='round';
+  function paintHelmetDesign(target,item,sx,sy){
+    target.lineCap='round';target.lineJoin='round';
     if(item.design==='ice'){
       target.strokeStyle=item.accent;target.lineWidth=4*sx;[[350,214,379,238,361,268],[412,204,389,235,418,258],[382,190,381,222,398,249],[346,244,374,250,350,286]].forEach(points=>{target.beginPath();target.moveTo(points[0]*sx,points[1]*sy);target.lineTo(points[2]*sx,points[3]*sy);target.lineTo(points[4]*sx,points[5]*sy);target.stroke();});
       target.strokeStyle=item.detail;target.lineWidth=1.5*sx;target.beginPath();target.moveTo(379*sx,238*sy);target.lineTo(394*sx,247*sy);target.lineTo(386*sx,268*sy);target.stroke();
@@ -869,7 +879,32 @@
     } else {
       target.strokeStyle=item.accent;target.lineWidth=5*sx;target.beginPath();target.moveTo(376*sx,190*sy);target.lineTo(376*sx,275*sy);target.moveTo(392*sx,190*sy);target.lineTo(392*sx,275*sy);target.stroke();
     }
-    target.restore();
+  }
+
+  function drawHelmetGraphics(target,item,sx,sy){
+    // Paint the artwork flat first, then project it onto the domed shell in
+    // narrow strips. The crown stays broad while artwork at both temples is
+    // compressed, lowered and slightly darkened so it visibly wraps over the
+    // top and down the sides instead of reading as a flat sticker.
+    const design=document.createElement('canvas');design.width=Math.ceil(456*sx);design.height=Math.ceil(320*sy);
+    const designTarget=design.getContext('2d');paintHelmetDesign(designTarget,item,sx,sy);
+    const sourceLeft=Math.floor(332*sx),sourceRight=Math.ceil(436*sx),sourceTop=Math.floor(181*sy),sourceBottom=Math.ceil(310*sy);
+    const sourceCenter=384*sx,sourceRadius=52*sx,destCenter=384*sx,destRadius=48*sx;
+    target.save();target.globalCompositeOperation='source-atop';target.beginPath();target.ellipse(destCenter,248*sy,destRadius,59*sy,0,0,Math.PI*2);target.clip();
+    for(let sourceX=sourceLeft;sourceX<sourceRight;sourceX++){
+      const t=Math.max(-1,Math.min(1,(sourceX-sourceCenter)/sourceRadius));
+      const nextT=Math.max(-1,Math.min(1,(sourceX+1-sourceCenter)/sourceRadius));
+      const destX=destCenter+Math.sin(t*Math.PI/2)*destRadius;
+      const nextDestX=destCenter+Math.sin(nextT*Math.PI/2)*destRadius;
+      const side=Math.pow(Math.abs(t),1.45),drop=side*24*sy,verticalScale=1-side*.18;
+      target.globalAlpha=.68+(1-side)*.32;
+      target.drawImage(design,sourceX,sourceTop,1,sourceBottom-sourceTop,destX,sourceTop+drop,Math.max(1,nextDestX-destX+.35),Math.max(1,(sourceBottom-sourceTop)*verticalScale));
+    }
+    target.globalAlpha=1;
+    // A restrained edge shade reinforces that the last portion of the graphic
+    // has turned down the shell rather than extending beyond its silhouette.
+    const edgeShade=target.createLinearGradient(336*sx,0,432*sx,0);edgeShade.addColorStop(0,'rgba(3,12,20,.24)');edgeShade.addColorStop(.18,'rgba(3,12,20,0)');edgeShade.addColorStop(.82,'rgba(3,12,20,0)');edgeShade.addColorStop(1,'rgba(3,12,20,.24)');
+    target.fillStyle=edgeShade;target.fillRect(334*sx,184*sy,100*sx,126*sy);target.restore();
   }
 
   function drawJerseyPrint(target,options,sx,sy) {
@@ -923,8 +958,8 @@
     target.putImageData(image,0,0);drawHelmetGraphics(target,helmet,sx,sy);drawJerseyPrint(target,options,sx,sy);return surface;
   }
 
-  function drawFallenHelmetGraphics(target,item){
-    target.save();target.globalCompositeOperation='source-atop';target.beginPath();target.ellipse(256,106,36,42,0,0,Math.PI*2);target.clip();target.lineCap='round';target.lineJoin='round';
+  function paintFallenHelmetDesign(target,item){
+    target.lineCap='round';target.lineJoin='round';
     if(item.design==='ice'){
       target.strokeStyle=item.accent;target.lineWidth=4;[[229,83,252,103,237,127],[281,80,260,103,282,122],[255,68,255,96,270,111]].forEach(points=>{target.beginPath();target.moveTo(points[0],points[1]);target.lineTo(points[2],points[3]);target.lineTo(points[4],points[5]);target.stroke();});
     } else if(item.design==='flame'){
@@ -943,7 +978,23 @@
     } else {
       target.strokeStyle=item.accent;target.lineWidth=4;target.beginPath();target.moveTo(250,66);target.lineTo(250,137);target.moveTo(262,66);target.lineTo(262,137);target.stroke();
     }
-    target.restore();
+  }
+
+  function drawFallenHelmetGraphics(target,item){
+    const design=document.createElement('canvas');design.width=310;design.height=155;
+    const designTarget=design.getContext('2d');paintFallenHelmetDesign(designTarget,item);
+    const sourceLeft=216,sourceRight=296,sourceTop=60,sourceBottom=150,sourceCenter=256,sourceRadius=40,destCenter=256,destRadius=36;
+    target.save();target.globalCompositeOperation='source-atop';target.beginPath();target.ellipse(destCenter,106,destRadius,42,0,0,Math.PI*2);target.clip();
+    for(let sourceX=sourceLeft;sourceX<sourceRight;sourceX++){
+      const t=Math.max(-1,Math.min(1,(sourceX-sourceCenter)/sourceRadius));
+      const nextT=Math.max(-1,Math.min(1,(sourceX+1-sourceCenter)/sourceRadius));
+      const destX=destCenter+Math.sin(t*Math.PI/2)*destRadius;
+      const nextDestX=destCenter+Math.sin(nextT*Math.PI/2)*destRadius;
+      const side=Math.pow(Math.abs(t),1.45),drop=side*17,verticalScale=1-side*.18;
+      target.globalAlpha=.68+(1-side)*.32;
+      target.drawImage(design,sourceX,sourceTop,1,sourceBottom-sourceTop,destX,sourceTop+drop,Math.max(1,nextDestX-destX+.35),Math.max(1,(sourceBottom-sourceTop)*verticalScale));
+    }
+    target.globalAlpha=1;const edgeShade=target.createLinearGradient(220,0,292,0);edgeShade.addColorStop(0,'rgba(3,12,20,.24)');edgeShade.addColorStop(.2,'rgba(3,12,20,0)');edgeShade.addColorStop(.8,'rgba(3,12,20,0)');edgeShade.addColorStop(1,'rgba(3,12,20,.24)');target.fillStyle=edgeShade;target.fillRect(218,62,76,88);target.restore();
   }
 
   function drawFallenJerseyPrint(target,options){
@@ -1636,17 +1687,29 @@
     ctx.restore();
   }
 
-  function goalie(x,y,offset,angle=0,scale=1) {
+  function goalie(x,y,offset,angle=0,scale=1,pose='ready',poseBlend=0) {
     ctx.save();ctx.translate(x+offset,y);ctx.rotate(angle);ctx.scale(scale,scale);
-    ctx.fillStyle='rgba(5,22,32,.18)';ctx.beginPath();ctx.ellipse(0,12,28,9.6,0,0,Math.PI*2);ctx.fill();
+    const blend=pose==='ready'||!regularGoaliePoseReady[pose]?0:easeInOut(clamp(poseBlend));
+    ctx.fillStyle='rgba(5,22,32,.18)';ctx.beginPath();ctx.ellipse(0,12,28+blend*21,9.6+blend*3.5,0,0,Math.PI*2);ctx.fill();
     ctx.strokeStyle='#d43f3f';ctx.globalAlpha=.72;ctx.lineWidth=2.5;ctx.beginPath();ctx.ellipse(0,4,28.8,20,0,0,Math.PI*2);ctx.stroke();ctx.globalAlpha=1;
     if(spritesReady){
       const cellW=hockeySprites.width/2,cellH=hockeySprites.height/2,height=97.6,width=height*(cellW/cellH);
-      ctx.drawImage(hockeySprites,cellW,cellH,cellW,cellH,-width/2,-height/2,width,height);
+      ctx.globalAlpha=1-blend;ctx.drawImage(hockeySprites,cellW,cellH,cellW,cellH,-width/2,-height/2,width,height);ctx.globalAlpha=1;
     } else {
       ctx.fillStyle='#edf7f8';ctx.strokeStyle='#bd2e35';ctx.lineWidth=3;ctx.fillRect(-20,-12,40,24);ctx.strokeRect(-20,-12,40,24);
     }
+    if(blend>0){
+      const image=regularGoaliePoseImages[pose],poseSize=pose==='glove'?132:pose==='blocker'?137:142;
+      ctx.globalAlpha=blend;ctx.drawImage(image,-poseSize/2,-poseSize/2,poseSize,poseSize);ctx.globalAlpha=1;
+    }
     ctx.restore();
+  }
+
+  function goaliePoseForShot(targetX,goalieX,lowShot=false){
+    if(lowShot||Math.abs(targetX-goalieX)<18)return 'butterfly';
+    // In the overhead assets the trapper reaches to screen-right and the
+    // blocker-and-stick hand reaches to screen-left.
+    return targetX>goalieX?'glove':'blocker';
   }
 
   function drawLane(x1,y1,x2,y2,open,alpha) {
@@ -2124,7 +2187,7 @@
 
     let carrier={...puck},carrierAngle=0,carrierScale=1.08,carrierFallen=0,fallenAngle=0,movingPuck=null,previousPuck=null,puckOpacity=1;
     let actionRaw=0;
-    let goalieOffset=s.goalie*m.w*.09,goalieAngle=0,goalieScale=1,leftAngle=-.08,rightAngle=.08;
+    let goalieOffset=s.goalie*m.w*.09,goalieAngle=0,goalieScale=1,goaliePose='ready',goaliePoseBlend=0,leftAngle=-.08,rightAngle=.08;
     let movingOpponent=null,movingOpponentIndex=-1,impact=null,impactProgress=0,looseStick=null,saveFlash=null,saveProgress=0,goalFlash=null,goalProgress=0,celebrationProgress=0;
     if(state.action){
       const raw=Math.min(1,(gameTime-state.action.start)/state.action.duration),progress=easeInOut(raw);
@@ -2149,6 +2212,7 @@
           const p=segment(raw,.54,.93);movingPuck=pointLerp(receive,goal,p);previousPuck=pointLerp(receive,goal,Math.max(0,p-.1));
           const goalieTarget=choice==='left'?-m.w*.065:m.w*.065;
           goalieOffset=lerp(s.goalie*m.w*.09,goalieTarget,segment(raw,.48,.82));goalieAngle=choice==='left'?-0.16:0.16;goalieScale=1.06;
+          goaliePose=goaliePoseForShot(goal.x,m.cx+goalieOffset);goaliePoseBlend=segment(raw,.56,.82);
           if(raw>.84){goalFlash=goal;goalProgress=segment(raw,.84,1);}
           if(raw>.97)puckOpacity=1-(raw-.97)/.03;
         }
@@ -2165,6 +2229,7 @@
           const releaseSpot=pointLerp(puck,shotSpot,releaseProgress);
           const start=carrierPuckPosition(releaseSpot,approachAngle),target={x:m.cx-s.goalie*m.w*.075,y:m.h*.055};
           const shotProgress=segment(raw,releaseAt,.68);movingPuck=pointLerp(start,target,shotProgress);previousPuck=pointLerp(start,target,Math.max(0,shotProgress-.1));
+          goaliePose=goaliePoseForShot(target.x,m.cx+goalieOffset);goaliePoseBlend=segment(raw,.3,.62);
           if(raw>.66){goalFlash=target;goalProgress=segment(raw,.66,.94);}
           if(raw>.7)puckOpacity=Math.max(0,1-segment(raw,.7,.8));
         }
@@ -2191,6 +2256,7 @@
             carrier=finish;carrierAngle=skaterAngle({x:finish.x-fake.x,y:finish.y-fake.y},'orange');
             goalieOffset=-m.w*.08;goalieAngle=-.2;goalieScale=1.06;
             movingPuck=pointLerp(shotStart,goal,shotProgress);previousPuck=pointLerp(shotStart,goal,Math.max(0,shotProgress-.1));
+            goaliePose=goaliePoseForShot(goal.x,m.cx+goalieOffset);goaliePoseBlend=segment(raw,.8,.94);
             if(raw>.93){goalFlash=goal;goalProgress=segment(raw,.93,1);}
             if(raw>.98)puckOpacity=1-(raw-.98)/.02;
           }
@@ -2215,6 +2281,7 @@
             const shotProgress=segment(raw,.79,.97);
             carrier=cut;carrierAngle=approachAngle;goalieOffset=side*m.w*.065;goalieAngle=side*.16;goalieScale=1.05;
             movingPuck=pointLerp(shotStart,goal,shotProgress);previousPuck=pointLerp(shotStart,goal,Math.max(0,shotProgress-.1));
+            goaliePose=goaliePoseForShot(goal.x,m.cx+goalieOffset);goaliePoseBlend=segment(raw,.8,.93);
             if(raw>.91){goalFlash=goal;goalProgress=segment(raw,.91,1);}
             if(raw>.98)puckOpacity=1-(raw-.98)/.02;
           }
@@ -2251,6 +2318,7 @@
         const start=carrierPuckPosition(puck,0),shuffle=segment(raw,0,.55);
         goalieOffset=lerp(s.goalie*m.w*.09,0,shuffle);goalieScale=1+Math.sin(Math.min(1,raw/.7)*Math.PI)*.06;
         const save={x:m.cx+goalieOffset+8,y:goalY+16};
+        goaliePose='butterfly';goaliePoseBlend=segment(raw,.28,.66);
         const p=segment(raw,.16,.72);movingPuck=pointLerp(start,save,p);
         previousPuck=raw<.16?null:pointLerp(start,save,Math.max(0,p-.1));
         if(raw>.72){movingPuck=save;saveFlash=save;saveProgress=segment(raw,.72,1);}
@@ -2311,7 +2379,7 @@
         else {
           const start=carrierPuckPosition(approach,carrierAngle),save={x:m.cx+8,y:goalY+17},saveP=segment(raw,.74,.93);
           movingPuck=pointLerp(start,save,saveP);previousPuck=pointLerp(start,save,Math.max(0,saveP-.1));
-          goalieAngle=-s.goalie*.18;goalieScale=1.08;
+          goalieAngle=-s.goalie*.18;goalieScale=1.08;goaliePose='butterfly';goaliePoseBlend=segment(raw,.74,.91);
           if(raw>.9){movingPuck=save;saveFlash=save;saveProgress=segment(raw,.9,1);}
         }
       }
@@ -2331,7 +2399,11 @@
       if(rightVisible) drawLane(puck.x,puck.y,right.x,right.y,s.answer==='right',guideStrength);
       drawLane(puck.x,puck.y,m.cx,goalY,s.answer==='shoot',guideStrength*.78);
     }
-    goalie(m.cx,goalY,goalieOffset,goalieAngle,goalieScale);
+    // Subtle shuffling keeps the goalie alive between shots. It fades as a
+    // committed save pose takes over so the movement remains controlled.
+    const idleWeight=1-goaliePoseBlend,idleShift=Math.sin(phase*Math.PI*2)*m.w*.004*idleWeight;
+    goalieAngle+=Math.sin(phase*Math.PI*2+.8)*.025*idleWeight;
+    goalie(m.cx,goalY,goalieOffset+idleShift,goalieAngle,goalieScale,goaliePose,goaliePoseBlend);
     const receiver=state.action?.good&&(state.action.choice==='left'||state.action.choice==='right')?state.action.choice:null;
     const teammateMotion=side=>{
       if(receiver===side){
