@@ -199,6 +199,20 @@ kbd { display: grid; place-items: center; width: 27px; height: 27px; border: 1px
 .controls span { font-size: .8rem; font-weight: 700; }
 
 .stats-panel { display: grid; gap: 14px; }
+
+/* The level selector is a separate interface from live gameplay. Do not show
+   inactive drill details, HUD values, feedback space, or decision controls. */
+body.level-select .mission-panel,
+body.level-select .hud,
+body.level-select .feedback-zone,
+body.level-select .controls,
+body.level-select .bonus-controls { display: none; }
+body.level-select .game-layout { max-width: 1150px; grid-template-columns: minmax(470px,1.55fr) minmax(190px,.65fr); }
+
+/* Result screens provide their own next-step buttons. Gameplay controls are
+   intentionally reserved for live regular and bonus play. */
+body.result-screen .controls,
+body.result-screen .bonus-controls { display: none; }
 .stat-card { border: 1px solid #193b50; background: rgba(9, 31, 47, .78); padding: 17px; }
 .stat-card.featured { position: relative; overflow: hidden; }
 .stat-card.featured::after { content: ""; position: absolute; width: 70px; height: 70px; right: -30px; top: -28px; border: 12px solid rgba(99, 230, 237, .08); border-radius: 50%; }
@@ -366,6 +380,7 @@ dialog li strong { color: var(--white); }
   .points-button span:last-child { display: none; }
   .points-button { padding: 0 8px; }
   .game-layout { display: flex; flex-direction: column; gap: 12px; }
+  body.level-select .game-layout { display: flex; }
   .mission-panel { width: 100%; display: grid; grid-template-columns: minmax(0, 1fr); padding: 4px 5px 0; }
   .mission-panel .eyebrow { grid-column: 1; white-space: nowrap; font-size: clamp(.62rem, 2.8vw, .72rem); letter-spacing: clamp(.12em, .5vw, .22em); }
   .mission-panel h1 { grid-column: 1; font-size: 1.7rem; margin: -4px 0 0; }
