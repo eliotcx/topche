@@ -1690,7 +1690,7 @@
   function goalie(x,y,offset,angle=0,scale=1,pose='ready',poseBlend=0) {
     ctx.save();ctx.translate(x+offset,y);ctx.rotate(angle);ctx.scale(scale,scale);
     const blend=pose==='ready'||!regularGoaliePoseReady[pose]?0:easeInOut(clamp(poseBlend));
-    ctx.fillStyle='rgba(5,22,32,.18)';ctx.beginPath();ctx.ellipse(0,12,28+blend*21,9.6+blend*3.5,0,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='rgba(5,22,32,.18)';ctx.beginPath();ctx.ellipse(0,12,28+blend*8,9.6+blend*2,0,0,Math.PI*2);ctx.fill();
     ctx.strokeStyle='#d43f3f';ctx.globalAlpha=.72;ctx.lineWidth=2.5;ctx.beginPath();ctx.ellipse(0,4,28.8,20,0,0,Math.PI*2);ctx.stroke();ctx.globalAlpha=1;
     if(spritesReady){
       const cellW=hockeySprites.width/2,cellH=hockeySprites.height/2,height=97.6,width=height*(cellW/cellH);
@@ -1699,7 +1699,10 @@
       ctx.fillStyle='#edf7f8';ctx.strokeStyle='#bd2e35';ctx.lineWidth=3;ctx.fillRect(-20,-12,40,24);ctx.strokeRect(-20,-12,40,24);
     }
     if(blend>0){
-      const image=regularGoaliePoseImages[pose],poseSize=pose==='glove'?132:pose==='blocker'?137:142;
+      // All generated pose canvases use the same square framing. At 106px the
+      // helmet and torso match the 97.6px ready sprite; only the extended
+      // glove, blocker or butterfly pads change the silhouette.
+      const image=regularGoaliePoseImages[pose],poseSize=106;
       ctx.globalAlpha=blend;ctx.drawImage(image,-poseSize/2,-poseSize/2,poseSize,poseSize);ctx.globalAlpha=1;
     }
     ctx.restore();
