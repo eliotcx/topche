@@ -20,10 +20,11 @@
     startOverlay: document.getElementById('startOverlay'),
     score: document.getElementById('score'), streak: document.getElementById('streak'), timer: document.getElementById('timer'),
     roundText: document.getElementById('roundText'), roundProgress: document.getElementById('roundProgress'),
+    hudRoundText: document.getElementById('hudRoundText'), hudRoundProgress: document.getElementById('hudRoundProgress'),
     reads: document.getElementById('reads'), accuracy: document.getElementById('accuracy'), avgTime: document.getElementById('avgTime'),
     bestScore: document.getElementById('bestScore'), feedback: document.getElementById('feedback'),
     coachText: document.getElementById('coachText'), skillLabel: document.getElementById('skillLabel'),
-    levelEyebrow: document.getElementById('levelEyebrow'), missionTitle: document.getElementById('missionTitle'),
+    levelEyebrow: document.getElementById('levelEyebrow'), gameplayLevelLabel: document.getElementById('gameplayLevelLabel'), missionTitle: document.getElementById('missionTitle'),
     missionCopy: document.getElementById('missionCopy'), levelStatus: document.getElementById('levelStatus'),
     soundButton: document.getElementById('soundButton'), howButton: document.getElementById('howButton'),
     howDialog: document.getElementById('howDialog'), closeHow: document.getElementById('closeHow'),
@@ -38,7 +39,8 @@
     shareStatus: document.getElementById('shareStatus'), powerUpIndicator: document.getElementById('powerUpIndicator'),
     powerUpIcon: document.getElementById('powerUpIcon'), standardControls: document.getElementById('standardControls'),
     bonusControls: document.getElementById('bonusControls'), bonusBanner: document.getElementById('bonusBanner'),
-    bonusBannerTitle: document.getElementById('bonusBannerTitle'), bonusBannerCopy: document.getElementById('bonusBannerCopy')
+    bonusBannerTitle: document.getElementById('bonusBannerTitle'), bonusBannerCopy: document.getElementById('bonusBannerCopy'),
+    orientationPause: document.getElementById('orientationPause'), orientationResumeButton: document.getElementById('orientationResumeButton')
   };
   const choiceButtons = [...document.querySelectorAll('[data-choice]')];
 
@@ -367,13 +369,28 @@
   let audioCtx;
   let arenaMusicTimer=null,arenaMusicStep=0,arenaMusicTrackIndex=-1,arenaMusicTrackOrder=[],arenaMusicGeneration=0;
 
-  function setGameplayZoomLock(locked){document.body.classList.toggle('gameplay-zoom-locked',Boolean(locked));}
+  function updateCompactGameplayLayout(){
+    const viewportHeight=Math.min(window.innerHeight,window.visualViewport?.height||window.innerHeight);
+    const phoneSized=Math.min(window.innerWidth,window.innerHeight)<=700;
+    document.body.classList.toggle('compact-gameplay',phoneSized&&viewportHeight<=780);
+  }
+  function setGameplayZoomLock(locked){
+    document.body.classList.toggle('gameplay-zoom-locked',Boolean(locked));
+    const viewportMeta=document.getElementById('viewportMeta')||document.querySelector('meta[name="viewport"]');
+    if(viewportMeta)viewportMeta.content=locked
+      ?'width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover'
+      :'width=device-width, initial-scale=1, viewport-fit=cover';
+    if(locked)updateCompactGameplayLayout();else document.body.classList.remove('compact-gameplay','level-gameplay');
+  }
   function shouldBlockGameplayZoom(){return document.body.classList.contains('gameplay-zoom-locked')&&!document.querySelector('dialog[open]');}
   for(const eventName of ['gesturestart','gesturechange','gestureend']){
     document.addEventListener(eventName,event=>{if(shouldBlockGameplayZoom())event.preventDefault();},{passive:false});
   }
   document.addEventListener('touchmove',event=>{
     if(shouldBlockGameplayZoom()&&event.touches.length>1)event.preventDefault();
+  },{passive:false});
+  document.addEventListener('dblclick',event=>{
+    if(shouldBlockGameplayZoom())event.preventDefault();
   },{passive:false});
 
   const gearCatalog={
@@ -760,6 +777,16 @@
     else if(state.active&&!state.locked){state.startedAt+=pausedFor;if(state.mode==='bonus'&&state.bonusPhase==='waiting')state.bonusDropAt+=pausedFor;if(state.mode==='bonus'&&state.bonusReactionAt)state.bonusReactionAt+=pausedFor;}
     state.animStart+=pausedFor;state.lastTickAt=performance.now();state.paused=false;state.pausedAt=0;
     if(state.active)startArenaMusic(false);
+  }
+
+  function pauseForOrientation(){
+    if(!state.active||state.paused||!ui.orientationPause.hidden)return;
+    state.paused=true;state.pausedAt=performance.now();stopArenaMusic();ui.orientationPause.hidden=false;
+    requestAnimationFrame(resizeCanvas);
+  }
+
+  function resumeAfterOrientation(){
+    updateCompactGameplayLayout();resizeCanvas();ui.orientationPause.hidden=true;resumeAfterLocker();
   }
 
   function closeLocker(){
@@ -1863,7 +1890,8 @@
     }
     const pop=Math.sin(clamp(progress/.42)*Math.PI);
     ctx.globalAlpha=Math.max(0,1-progress*.78);ctx.fillStyle='#071b2b';ctx.strokeStyle='#ffcf54';ctx.lineWidth=3;ctx.textAlign='center';ctx.textBaseline='middle';ctx.font=`950 ${22+pop*8}px system-ui`;
-    ctx.strokeText(streak>=5?'ON FIRE!':'TOP CHE!',m.cx,m.h*.2);ctx.fillStyle='#ffffff';ctx.fillText(streak>=5?'ON FIRE!':'TOP CHE!',m.cx,m.h*.2);ctx.restore();
+    const streakText=`STREAK ×${streak}`;
+    ctx.strokeText(streakText,m.cx,m.h*.2);ctx.fillStyle='#ffffff';ctx.fillText(streakText,m.cx,m.h*.2);ctx.restore();
   }
 
   function drawBonusConfetti(m,progress) {
@@ -2741,7 +2769,7 @@
   function startIntermission(index,fromProgression=false){
     loadIntermissionAssets();clearBonusTimers();stopArenaMusic();setGameplayZoomLock(true);const bonus=intermissions[index];setBonusPanel(index);
     state={...state,mode:'bonus',bonusIndex:index,bonusFromProgression:fromProgression,active:false,locked:true,round:0,total:bonus.rounds,score:0,streak:0,correct:0,elapsedTotal:0,action:null,bonusAnswer:null,bonusChoice:null,bonusResult:null,bonusPhase:'intro',bonusPuck:null,bonusStick:null,bonusStickTarget:null,bonusFlick:null,bonusAimMiss:false,bonusWide:false,bonusMissPoint:null,bonusGoalTarget:null,bonusTapPoint:null,bonusReboundStage:null,bonusReboundTier:null,bonusReactionAt:0,bonusDropAt:0,bonusGoalieFrom:0,bonusGoalieTo:0,bonusGoalieMoveAt:performance.now(),paused:false,pausedAt:0};
-    canvas.setAttribute('aria-label',`${bonus.title} intermission reaction game`);ui.startOverlay.classList.remove('finish-mode');ui.startOverlay.classList.add('hidden');ui.standardControls.hidden=true;ui.bonusControls.hidden=true;ui.feedback.className='feedback';ui.powerUpIndicator.hidden=true;ui.lockerButton.disabled=true;updateUI();
+    canvas.setAttribute('aria-label',`${bonus.title} intermission reaction game`);ui.orientationPause.hidden=true;ui.startOverlay.classList.remove('finish-mode');ui.startOverlay.classList.add('hidden');ui.standardControls.hidden=true;ui.bonusControls.hidden=true;ui.feedback.className='feedback';ui.powerUpIndicator.hidden=true;ui.lockerButton.disabled=true;resizeCanvas();updateUI();
     ui.bonusBannerTitle.textContent=bonus.title;ui.bonusBannerCopy.textContent=bonus.type==='open-net'?'Start on the puck. Flick into the gap.':bonus.type==='deflection'?'Track it. Tip it. Score.':'Watch the save. Attack the rebound.';
     ui.bonusBanner.hidden=false;requestAnimationFrame(()=>ui.bonusBanner.classList.add('show'));playBonusIntroSound();
     scheduleBonus(()=>{ui.bonusBanner.classList.remove('show');scheduleBonus(()=>{ui.bonusBanner.hidden=true;beginIntermission();},340);},2200);
@@ -2820,9 +2848,9 @@
 
   function setLevelPanel(index) {
     const level=levels[index];
-    ui.levelEyebrow.textContent=`LEVEL ${index+1}`;ui.missionTitle.textContent=level.title;
+    ui.levelEyebrow.textContent=`LEVEL ${index+1}`;ui.gameplayLevelLabel.textContent=`LEVEL ${index+1}`;ui.missionTitle.textContent=level.title;
     ui.missionCopy.textContent=level.mission;ui.skillLabel.textContent=level.focus;
-    ui.roundText.textContent=`0 / ${level.rounds}`;ui.roundProgress.style.width='0%';
+    ui.roundText.textContent=`0 / ${level.rounds}`;ui.roundProgress.style.width='0%';ui.hudRoundText.textContent=`0 / ${level.rounds}`;ui.hudRoundProgress.style.width='0%';
   }
 
   function showLevelSelect() {
@@ -2851,11 +2879,11 @@
   }
 
   function startGame(levelIndex=0) {
-    clearBonusTimers();setGameplayZoomLock(true);const level=levels[levelIndex];setLevelPanel(levelIndex);setStandardControls();ui.bonusBanner.classList.remove('show');ui.bonusBanner.hidden=true;
+    clearBonusTimers();setGameplayZoomLock(true);document.body.classList.add('level-gameplay');const level=levels[levelIndex];setLevelPanel(levelIndex);setStandardControls();ui.bonusBanner.classList.remove('show');ui.bonusBanner.hidden=true;
     canvas.setAttribute('aria-label','Top-down hockey rink showing fully equipped skaters, passing lanes, defenders, and goalie');
     state={...state,mode:'level',bonusIndex:null,active:true,locked:false,round:0,total:level.rounds,levelIndex,score:0,streak:0,correct:0,elapsedTotal:0,reveal:null,action:null,deck:shuffledScenarios(level),paused:false,pausedAt:0};
-    ui.startOverlay.classList.remove('finish-mode');ui.startOverlay.classList.add('hidden');ui.feedback.className='feedback';ui.lockerButton.disabled=false;
-    updateUI();beginRound();startArenaMusic();
+    ui.orientationPause.hidden=true;ui.startOverlay.classList.remove('finish-mode');ui.startOverlay.classList.add('hidden');ui.feedback.className='feedback';ui.lockerButton.disabled=false;
+    resizeCanvas();updateUI();beginRound();startArenaMusic();
   }
 
   function decide(choice) {
@@ -2910,6 +2938,7 @@
   function updateUI(){
     ui.score.textContent=String(state.score).padStart(4,'0');ui.streak.textContent=`×${state.streak}`;
     ui.roundText.textContent=`${state.round} / ${state.total}`;ui.roundProgress.style.width=`${state.round/state.total*100}%`;
+    ui.hudRoundText.textContent=`${state.round} / ${state.total}`;ui.hudRoundProgress.style.width=`${state.round/state.total*100}%`;
     ui.reads.textContent=state.round;ui.accuracy.textContent=state.round?`${Math.round(state.correct/state.round*100)}%`:'—';
     ui.avgTime.textContent=state.round?`${(state.elapsedTotal/state.round).toFixed(1)}s`:'—';
   }
@@ -3051,7 +3080,14 @@
   ui.viewPlayerButton.addEventListener('click',showPlayerShowcase);ui.backToLockerButton.addEventListener('click',()=>{showLockerCatalog();scheduleGearPreviews();ui.viewPlayerButton.focus();});
   ui.sharePlayerButton.addEventListener('click',sharePlayerImage);ui.downloadPlayerButton.addEventListener('click',downloadPlayerImage);
   ui.lockerDialog.addEventListener('click',e=>{if(e.target===ui.lockerDialog)closeLocker();});ui.lockerDialog.addEventListener('close',resumeAfterLocker);
-  window.addEventListener('resize',()=>{resizeCanvas();if(ui.lockerDialog?.open)scheduleGearPreviews();});
+  ui.orientationResumeButton.addEventListener('click',resumeAfterOrientation);
+  let viewportOrientation=window.innerWidth>window.innerHeight?'landscape':'portrait';
+  window.addEventListener('resize',()=>{
+    const nextOrientation=window.innerWidth>window.innerHeight?'landscape':'portrait',rotated=nextOrientation!==viewportOrientation;viewportOrientation=nextOrientation;
+    if(state.active&&rotated)pauseForOrientation();
+    if(!state.active||state.paused)requestAnimationFrame(resizeCanvas);
+    if(ui.lockerDialog?.open)scheduleGearPreviews();
+  });
   window.addEventListener('online',()=>{initializeCloudProgress();flushCloudProgress();});
   window.addEventListener('topche:profile-ready',()=>{cloudProgressReady=false;initializeCloudProgress();});
   resizeCanvas();showLevelSelect();setTimeout(initializeCloudProgress,700);cancelAnimationFrame(raf);raf=requestAnimationFrame(drawGame);requestAnimationFrame(tick);

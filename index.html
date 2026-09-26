@@ -7,7 +7,7 @@
       location.replace(`https://${location.host}${location.pathname}${location.search}${location.hash}`);
     }
   </script>
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta id="viewportMeta" name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#071624">
   <meta name="description" content="A level-based hockey decision-training game with unlockable challenges for young players.">
   <link rel="icon" type="image/png" href="assets/top-ches-logo-v44.png">
@@ -44,7 +44,7 @@
   <link rel="preload" href="assets/fonts/AlfaSlabOne.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="preload" href="assets/fonts/RussoOne.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="preload" href="assets/fonts/Monoton.ttf" as="font" type="font/ttf" crossorigin>
-  <link rel="stylesheet" href="styles.css?v=20260925.2">
+  <link rel="stylesheet" href="styles.css?v=20260926.7">
   <link rel="stylesheet" href="leaderboard.css?v=20260925.5">
 </head>
 <body class="app-loading">
@@ -63,6 +63,7 @@
       <div class="brand" aria-label="Hockey IQ">
         <img class="brand-mark" src="assets/top-ches-logo-v44.png" alt="">
         <span class="brand-name">HOCKEY IQ</span>
+        <span class="gameplay-level-label" id="gameplayLevelLabel">LEVEL 1</span>
       </div>
       <div class="top-actions">
         <button class="icon-button global-button" id="globalLeaderboardButton" aria-label="Open Global Leaderboard" title="Global Leaderboard">◎</button>
@@ -97,7 +98,11 @@
       <section class="arena-card" aria-label="Hockey decision game">
         <div class="hud" aria-live="polite">
           <div><small>SCORE</small><strong id="score">0000</strong></div>
-          <div class="streak"><small>STREAK</small><strong id="streak">×0</strong></div>
+          <div class="streak hud-streak"><small>STREAK</small><strong id="streak">×0</strong></div>
+          <div class="hud-progress" aria-label="Level progress">
+            <div class="hud-progress-heading"><small>PROGRESS</small><strong id="hudRoundText">0 / 6</strong></div>
+            <div class="hud-progress-track" aria-hidden="true"><span id="hudRoundProgress"></span></div>
+          </div>
           <div><small>TIME</small><strong id="timer">10.0</strong></div>
         </div>
         <div class="canvas-wrap">
@@ -152,6 +157,16 @@
     </section>
   </main>
 
+  <div class="orientation-pause" id="orientationPause" role="dialog" aria-modal="true" aria-labelledby="orientationPauseTitle" hidden>
+    <div class="orientation-pause-card">
+      <img src="assets/top-ches-logo-v44.png" alt="">
+      <p>SCREEN ROTATED</p>
+      <h2 id="orientationPauseTitle">Ready in the new position?</h2>
+      <span>The timer is paused and the controls have been reset for this screen.</span>
+      <button class="primary-button" id="orientationResumeButton">Continue playing <b>→</b></button>
+    </div>
+  </div>
+
   <dialog id="howDialog">
     <button class="dialog-close" id="closeHow" aria-label="Close">×</button>
     <p class="overline">HOW TO PLAY</p>
@@ -170,7 +185,7 @@
     <details class="sound-credits"><summary>Hockey sound credits</summary>
       <p>Skating: <a href="https://soundbible.com/2198-Ice-Skating.html" target="_blank" rel="noopener">Ice Skating</a> by Daniel Simion. Shot: <a href="https://soundbible.com/1556-Hockey-Puck-Slap.html" target="_blank" rel="noopener">Hockey Puck Slap</a> by jameb32. Pass and reception: <a href="https://soundbible.com/1747-Hockey-Stick-Slap-2.html" target="_blank" rel="noopener">Hockey Stick Slap 2</a> by jameb32. These clips are <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener">CC BY 3.0</a>; they were trimmed, equalized, and adjusted for volume, and the reception clip was softened. Bodycheck: <a href="https://freesound.org/people/producerdan/sounds/161996/" target="_blank" rel="noopener">Hockey - Huge Body Check Hit Into Boards</a> by producerdan, <a href="https://creativecommons.org/publicdomain/zero/1.0/" target="_blank" rel="noopener">CC0</a>; trimmed, filtered, and faded.</p>
     </details>
-    <p class="how-version">TOP CHE’S HOCKEY <span>VERSION 89</span></p>
+    <p class="how-version">TOP CHE’S HOCKEY <span>VERSION 94</span></p>
   </dialog>
 
   <dialog id="usernameDialog" class="leaderboard-dialog username-dialog" aria-labelledby="usernameTitle">
@@ -287,6 +302,6 @@
 
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
   <script src="leaderboard.js?v=20260925.5"></script>
-  <script src="game.js?v=20260926.8"></script>
+  <script src="game.js?v=20260926.11"></script>
 </body>
 </html>

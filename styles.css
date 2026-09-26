@@ -44,16 +44,30 @@ button:focus-visible { outline: 3px solid var(--cyan); outline-offset: 3px; }
 
 /* During live play, rapid taps belong to the game rather than browser zoom.
    Single-finger page scrolling remains available outside the rink/controls. */
-body.gameplay-zoom-locked .app-shell { touch-action: manipulation; }
+body.gameplay-zoom-locked,
+body.gameplay-zoom-locked .app-shell,
+body.gameplay-zoom-locked .topbar,
+body.gameplay-zoom-locked .hud { touch-action: manipulation; }
 body.gameplay-zoom-locked .canvas-wrap,
 body.gameplay-zoom-locked .controls,
 body.gameplay-zoom-locked .bonus-controls { touch-action: none; }
+
+.orientation-pause { position: fixed; z-index: 10020; inset: 0; display: grid; place-items: center; padding: 22px; color: #f7fbfc; background: rgba(2,10,17,.88); backdrop-filter: blur(9px); }
+.orientation-pause[hidden] { display: none; }
+.orientation-pause-card { width: min(390px,100%); padding: 24px; text-align: center; border: 1px solid #32637a; border-radius: 12px; background: radial-gradient(circle at 50% 0,rgba(99,230,237,.14),transparent 40%),linear-gradient(150deg,#0d3045,#061725); box-shadow: 0 24px 70px rgba(0,0,0,.62); }
+.orientation-pause-card img { width: 72px; height: 58px; object-fit: contain; }
+.orientation-pause-card p { margin: 7px 0 5px; color: #70e6ed; font-size: .66rem; font-weight: 950; letter-spacing: .19em; }
+.orientation-pause-card h2 { margin: 0 0 8px; font-size: 1.55rem; line-height: 1.05; }
+.orientation-pause-card > span { display: block; margin-bottom: 17px; color: #a9c3cd; font-size: .83rem; line-height: 1.4; }
+.orientation-pause-card button { width: 100%; }
+.orientation-pause-card button b { margin-left: 15px; }
 
 .app-shell { min-height: 100vh; padding: 22px clamp(18px, 3vw, 48px) 32px; }
 .topbar { height: 60px; max-width: 1500px; margin: 0 auto 18px; display: flex; justify-content: space-between; align-items: center; }
 .brand { display: flex; gap: 1px; align-items: center; letter-spacing: .08em; }
 .brand-mark { width: 48px; height: 42px; object-fit: contain; filter: drop-shadow(0 5px 8px rgba(0,0,0,.35)); }
 .brand-name { display: block; font-size: .64rem; line-height: 1; color: var(--cyan); font-weight: 400; letter-spacing: .18em; }
+.gameplay-level-label { display: none; color: #f6fbfc; font-size: .75rem; line-height: 1; font-weight: 950; letter-spacing: .14em; white-space: nowrap; }
 .top-actions { display: flex; align-items: center; gap: 10px; }
 .icon-button, .text-button, .points-button { color: #b8ced8; background: transparent; border: 1px solid #234156; border-radius: 8px; min-height: 38px; cursor: pointer; }
 .icon-button { position: relative; width: 38px; font-size: 1.05rem; font-weight: 900; }
@@ -86,11 +100,16 @@ h1 { margin: 10px 0 10px; font-size: clamp(1.8rem, 3vw, 3rem); line-height: .98;
 .arena-card { border: 1px solid #1d4258; background: var(--navy); box-shadow: 0 28px 70px rgba(0, 0, 0, .42); }
 .hud { height: 70px; padding: 12px 22px; display: grid; grid-template-columns: 1fr 1fr 1fr; align-items: center; background: #081827; border-bottom: 1px solid #1d4258; }
 .hud > div { display: flex; flex-direction: column; }
-.hud > div:nth-child(2) { align-items: center; }
-.hud > div:nth-child(3) { align-items: end; }
+.hud-streak, .hud-progress { align-items: center; justify-self: center; }
+.hud > div:last-child { align-items: end; }
 .hud small { font-size: .63rem; letter-spacing: .16em; color: var(--muted); font-weight: 800; }
 .hud strong { font-variant-numeric: tabular-nums; font-size: 1.3rem; letter-spacing: .08em; }
 .hud .streak strong { color: var(--orange); }
+.hud > .hud-progress { display: none; width: min(112px,100%); gap: 5px; }
+.hud-progress-heading { width: 100%; display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.hud-progress-heading strong { color: #f5fbfc; font-size: .82rem; letter-spacing: .02em; white-space: nowrap; }
+.hud-progress-track { width: 100%; height: 5px; overflow: hidden; border-radius: 5px; background: #163246; }
+.hud-progress-track span { display: block; width: 0; height: 100%; border-radius: inherit; background: var(--cyan); box-shadow: 0 0 10px rgba(99,230,237,.78); transition: width .35s ease; }
 .canvas-wrap { position: relative; overflow: hidden; aspect-ratio: 9 / 8.6; background: var(--ice); }
 #rink { display: block; width: 100%; height: 100%; }
 .power-up-indicator { --power-progress: 360deg; position: absolute; z-index: 1; top: 8px; right: 8px; width: 30px; height: 30px; display: grid; place-items: center; padding: 3px; border-radius: 50%; background: conic-gradient(var(--cyan) var(--power-progress), rgba(7,27,43,.48) 0); box-shadow: 0 0 0 1px rgba(99,230,237,.45), 0 4px 12px rgba(0,0,0,.25); pointer-events: none; transition: opacity .75s linear; }
@@ -411,7 +430,62 @@ dialog li strong { color: var(--white); }
   .player-render-frame { width: min(100%, 410px); }
   .showcase-actions { grid-template-columns: 1fr; }
   .share-player-button, .download-player-button { width: 100%; }
+
+  body.gameplay-zoom-locked .stats-panel { display: none; }
+
+  /* Active regular levels use one compact navigation row and move progress
+     into the HUD, leaving the largest possible stable area for the rink. */
+  body.level-gameplay.gameplay-zoom-locked .topbar { width: 100%; max-width: none; height: 46px; margin: 0 0 3px; }
+  body.level-gameplay.gameplay-zoom-locked .brand { flex: 0 1 auto; gap: 8px; }
+  body.level-gameplay.gameplay-zoom-locked .brand-name,
+  body.level-gameplay.gameplay-zoom-locked .global-button { display: none; }
+  body.level-gameplay.gameplay-zoom-locked .gameplay-level-label { display: flex; align-items: center; min-height: 40px; padding-right: 14px; color: #64e6ed; font-size: 1.55rem; line-height: 40px; letter-spacing: .08em; }
+  body.level-gameplay.gameplay-zoom-locked .top-actions { margin-left: auto; }
+  body.level-gameplay.gameplay-zoom-locked .mission-panel { display: none; }
+  body.level-gameplay.gameplay-zoom-locked .game-layout { gap: 0; }
+  body.level-gameplay.gameplay-zoom-locked .hud-streak { display: none; }
+  body.level-gameplay.gameplay-zoom-locked .hud-progress { display: flex; }
 }
+
+/* Short phones get a stable, no-scroll playing surface. `svh` intentionally
+   reserves room for expanded mobile browser bars so controls never shift. */
+body.gameplay-zoom-locked.compact-gameplay { height: 100vh; overflow: hidden; overscroll-behavior: none; }
+body.gameplay-zoom-locked.compact-gameplay .app-shell { height: 100vh; min-height: 0; display: flex; flex-direction: column; padding: max(4px,env(safe-area-inset-top)) 8px max(4px,env(safe-area-inset-bottom)); }
+@supports (height: 100svh) {
+  body.gameplay-zoom-locked.compact-gameplay,
+  body.gameplay-zoom-locked.compact-gameplay .app-shell { height: 100svh; }
+}
+body.gameplay-zoom-locked.compact-gameplay .topbar { flex: 0 0 44px; height: 44px; margin-bottom: 3px; }
+body.gameplay-zoom-locked.compact-gameplay .brand-mark { width: 41px; height: 36px; }
+body.gameplay-zoom-locked.compact-gameplay .brand-name { display: none; }
+body.gameplay-zoom-locked.compact-gameplay .top-actions { gap: 6px; }
+body.gameplay-zoom-locked.compact-gameplay .icon-button { width: 36px; min-height: 40px; }
+body.gameplay-zoom-locked.compact-gameplay .points-button { min-height: 40px; }
+body.level-gameplay.gameplay-zoom-locked.compact-gameplay .topbar { width: 100%; max-width: none; margin: 0 0 3px; }
+body.level-gameplay.gameplay-zoom-locked.compact-gameplay .gameplay-level-label { height: 40px; min-height: 40px; padding-right: 14px; font-size: 1.55rem; line-height: 40px; }
+body.level-gameplay.gameplay-zoom-locked.compact-gameplay .top-actions { margin-left: auto; }
+body.gameplay-zoom-locked.compact-gameplay .game-layout { flex: 1 1 auto; min-height: 0; width: 100%; display: flex; flex-direction: column; gap: 4px; overflow: hidden; }
+body.level-gameplay.gameplay-zoom-locked.compact-gameplay .game-layout { gap: 0; }
+body.gameplay-zoom-locked.compact-gameplay .mission-panel { flex: 0 0 42px; min-height: 0; width: 100%; display: grid; grid-template-columns: 1fr auto; padding: 0 4px; align-items: center; }
+body.gameplay-zoom-locked.compact-gameplay .mission-copy,
+body.gameplay-zoom-locked.compact-gameplay .skill-card,
+body.gameplay-zoom-locked.compact-gameplay .coaching-card { display: none; }
+body.gameplay-zoom-locked.compact-gameplay .mission-panel .eyebrow { grid-column: 1; font-size: .58rem; line-height: 1; }
+body.gameplay-zoom-locked.compact-gameplay .mission-panel h1 { grid-column: 1; margin: -2px 0 0; font-size: 1.3rem; line-height: 1; }
+body.gameplay-zoom-locked.compact-gameplay .progress-block { grid-column: 2; grid-row: 1/3; align-self: center; width: 92px; margin: 0; }
+body.gameplay-zoom-locked.compact-gameplay .progress-label { margin-bottom: 5px; font-size: .66rem; }
+/* Regular-level gameplay never shows the former level/name/progress row.
+   Keep this after the generic compact-phone mission rule so it cannot be
+   re-enabled by cascade order on shorter iPhones. */
+body.level-gameplay.gameplay-zoom-locked.compact-gameplay .mission-panel { display: none; }
+body.gameplay-zoom-locked.compact-gameplay .arena-card { flex: 1 1 auto; min-height: 0; width: 100%; display: grid; grid-template-rows: 50px minmax(0,1fr) 0 auto; overflow: hidden; }
+body.gameplay-zoom-locked.compact-gameplay .hud { height: 50px; padding: 6px 12px; }
+body.level-gameplay.gameplay-zoom-locked.compact-gameplay .hud-progress { width: min(102px,100%); }
+body.gameplay-zoom-locked.compact-gameplay .canvas-wrap { min-height: 0; height: 100%; aspect-ratio: auto; }
+body.gameplay-zoom-locked.compact-gameplay .controls button { min-height: 46px; padding: 4px 3px; }
+body.gameplay-zoom-locked.compact-gameplay .controls button.strategy { min-height: 44px; }
+body.gameplay-zoom-locked.compact-gameplay .bonus-controls.ice-direct .ice-instruction { min-height: 58px; padding-block: 6px; }
+body.gameplay-zoom-locked.compact-gameplay .stats-panel { display: none; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
