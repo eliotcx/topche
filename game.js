@@ -805,6 +805,15 @@
 
   function hexRgb(hex){const clean=hex.replace('#','');const value=parseInt(clean.length===3?clean.split('').map(c=>c+c).join(''):clean,16);return[(value>>16)&255,(value>>8)&255,value&255];}
   function insideEllipse(x,y,cx,cy,rx,ry){return Math.pow((x-cx)/rx,2)+Math.pow((y-cy)/ry,2)<=1;}
+  function insideVisibleHelmetShell(x,y){return x<=384?insideEllipse(x,y,384,248,51,62):insideEllipse(x,y,384,248,40,62);}
+  function traceVisibleHelmetShell(target,sx=1,sy=1){
+    target.beginPath();target.moveTo(384*sx,189*sy);
+    target.bezierCurveTo(354*sx,189*sy,336*sx,211*sy,336*sx,247*sy);
+    target.bezierCurveTo(336*sx,282*sy,355*sx,307*sy,384*sx,307*sy);
+    target.bezierCurveTo(402*sx,307*sy,415*sx,297*sy,421*sx,280*sy);
+    target.bezierCurveTo(426*sx,262*sy,426*sx,239*sy,423*sx,221*sy);
+    target.bezierCurveTo(420*sx,203*sy,406*sx,190*sy,384*sx,189*sy);target.closePath();
+  }
   function segmentDistance(x,y,ax,ay,bx,by){const dx=bx-ax,dy=by-ay,t=clamp(((x-ax)*dx+(y-ay)*dy)/(dx*dx+dy*dy));return Math.hypot(x-(ax+t*dx),y-(ay+t*dy));}
   function tintPixel(data,index,hex,brightness) {
     const [tr,tg,tb]=hexRgb(hex),shade=.28+brightness*.95,shine=Math.max(0,brightness-.66)*115;
@@ -889,13 +898,13 @@
     const design=document.createElement('canvas');design.width=Math.ceil(456*sx);design.height=Math.ceil(320*sy);
     const designTarget=design.getContext('2d');paintHelmetDesign(designTarget,item,sx,sy);
     const sourceLeft=Math.floor(332*sx),sourceRight=Math.ceil(436*sx),sourceTop=Math.floor(181*sy),sourceBottom=Math.ceil(310*sy);
-    const sourceCenter=384*sx,sourceRadius=52*sx,destCenter=384*sx,destRadius=48*sx;
-    target.save();target.globalCompositeOperation='source-atop';target.beginPath();target.ellipse(destCenter,248*sy,destRadius,59*sy,0,0,Math.PI*2);target.clip();
+    const sourceCenter=384*sx,sourceRadius=52*sx,destCenter=384*sx,leftRadius=48*sx,rightRadius=38*sx;
+    target.save();target.globalCompositeOperation='source-atop';traceVisibleHelmetShell(target,sx,sy);target.clip();
     for(let sourceX=sourceLeft;sourceX<sourceRight;sourceX++){
       const t=Math.max(-1,Math.min(1,(sourceX-sourceCenter)/sourceRadius));
       const nextT=Math.max(-1,Math.min(1,(sourceX+1-sourceCenter)/sourceRadius));
-      const destX=destCenter+Math.sin(t*Math.PI/2)*destRadius;
-      const nextDestX=destCenter+Math.sin(nextT*Math.PI/2)*destRadius;
+      const destX=destCenter+Math.sin(t*Math.PI/2)*(t<0?leftRadius:rightRadius);
+      const nextDestX=destCenter+Math.sin(nextT*Math.PI/2)*(nextT<0?leftRadius:rightRadius);
       const side=Math.pow(Math.abs(t),1.45),drop=side*24*sy,verticalScale=1-side*.18;
       target.globalAlpha=.68+(1-side)*.32;
       target.drawImage(design,sourceX,sourceTop,1,sourceBottom-sourceTop,destX,sourceTop+drop,Math.max(1,nextDestX-destX+.35),Math.max(1,(sourceBottom-sourceTop)*verticalScale));
@@ -903,8 +912,8 @@
     target.globalAlpha=1;
     // A restrained edge shade reinforces that the last portion of the graphic
     // has turned down the shell rather than extending beyond its silhouette.
-    const edgeShade=target.createLinearGradient(336*sx,0,432*sx,0);edgeShade.addColorStop(0,'rgba(3,12,20,.24)');edgeShade.addColorStop(.18,'rgba(3,12,20,0)');edgeShade.addColorStop(.82,'rgba(3,12,20,0)');edgeShade.addColorStop(1,'rgba(3,12,20,.24)');
-    target.fillStyle=edgeShade;target.fillRect(334*sx,184*sy,100*sx,126*sy);target.restore();
+    const edgeShade=target.createLinearGradient(336*sx,0,423*sx,0);edgeShade.addColorStop(0,'rgba(3,12,20,.24)');edgeShade.addColorStop(.2,'rgba(3,12,20,0)');edgeShade.addColorStop(.8,'rgba(3,12,20,0)');edgeShade.addColorStop(1,'rgba(3,12,20,.24)');
+    target.fillStyle=edgeShade;target.fillRect(334*sx,184*sy,90*sx,126*sy);target.restore();
   }
 
   function drawJerseyPrint(target,options,sx,sy) {
@@ -933,7 +942,9 @@
       const i=(y*cellW+x)*4;if(data[i+3]<24)continue;
       const xr=x/sx,yr=y/sy,r=data[i],g=data[i+1],b=data[i+2],brightness=Math.max(r,g,b)/255;
       const skin=r>75&&r>g*1.08&&g>b*1.08;
-      const helmetMask=insideEllipse(xr,yr,384,248,51,62)&&!skin;
+      // The darker pixels to the right are the helmet's cast shadow, not part
+      // of the plastic shell, so neither the colour nor design extends there.
+      const helmetMask=insideVisibleHelmetShell(xr,yr)&&!skin;
       const leftGlove=insideEllipse(xr,yr,335,158,34,43),rightGlove=insideEllipse(xr,yr,450,247,38,46),gloveMask=(leftGlove||rightGlove)&&!skin;
       const skateMask=insideEllipse(xr,yr,353,472,33,57)||insideEllipse(xr,yr,411,534,37,65);
       const bluePixel=b>55&&b>r*1.28&&b>g*1.02;
