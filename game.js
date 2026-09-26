@@ -574,7 +574,7 @@
   let customPlayerSprite=null,customPlayerKey='',customFallenSprite=null,customFallenKey='';
   hockeySprites.onload = () => { spritesReady = true;refreshCustomPlayer();markBootAssetReady();if(ui.lockerDialog?.open){if(ui.playerShowcase.hidden)scheduleGearPreviews();else renderPlayerShowcase();} };
   hockeySprites.onerror = markBootAssetReady;
-  hockeySprites.src = 'assets/hockey-sprites.png';
+  hockeySprites.src = 'assets/hockey-sprites.png?v=102';
   const regularGoaliePoseFiles={
     butterfly:'regular-goalie-butterfly.png',
     glove:'regular-goalie-glove-save.png',
@@ -583,7 +583,7 @@
   const regularGoaliePoseImages={},regularGoaliePoseReady={};
   Object.entries(regularGoaliePoseFiles).forEach(([pose,file])=>{
     const image=new Image();regularGoaliePoseImages[pose]=image;regularGoaliePoseReady[pose]=false;
-    image.onload=()=>{regularGoaliePoseReady[pose]=true;};image.src=`assets/${file}`;
+    image.onload=()=>{regularGoaliePoseReady[pose]=true;};image.src=`assets/${file}?v=102`;
   });
   const cheeseLogo = new Image();
   cheeseLogo.onload = () => { markBootAssetReady();if(ui.playerShowcase&&!ui.playerShowcase.hidden)renderPlayerShowcase(); };
@@ -2531,7 +2531,10 @@
     };
     if(leftVisible){const motion=teammateMotion('left');animatedTeammate(left.x,left.y,'7',leftAngle,1,motion.kind,motion.raw);}
     if(rightVisible){const motion=teammateMotion('right');animatedTeammate(right.x,right.y,'9',rightAngle,1,motion.kind,motion.raw);}
-    defenders.forEach((d,i)=>{if(i!==movingOpponentIndex)player(d.x,d.y,'white',String(i+2),0,.95);});
+    // Keep the stationary defender visible until its animated replacement is
+    // ready. Shot-block animations intentionally wait for the puck release,
+    // so hiding the original defender earlier creates a brief empty frame.
+    defenders.forEach((d,i)=>{if(!movingOpponent||i!==movingOpponentIndex)player(d.x,d.y,'white',String(i+2),0,.95);});
     if(movingOpponent)player(movingOpponent.position.x,movingOpponent.position.y,'white',movingOpponent.label,movingOpponent.angle,.95);
     animatedPlayer(carrier.x,carrier.y,carrierAngle,carrierScale,state.action,actionRaw,phase,celebrationProgress,1-carrierFallen);
     fallenPlayer(carrier.x,carrier.y,fallenAngle,1,carrierFallen);
