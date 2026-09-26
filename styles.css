@@ -101,11 +101,12 @@ h1 { margin: 10px 0 10px; font-size: clamp(1.8rem, 3vw, 3rem); line-height: .98;
 .hud { height: 70px; padding: 12px 22px; display: grid; grid-template-columns: 1fr 1fr 1fr; align-items: center; background: #081827; border-bottom: 1px solid #1d4258; }
 .hud > div { display: flex; flex-direction: column; }
 .hud-streak, .hud-progress { align-items: center; justify-self: center; }
+.hud-streak { display: none !important; }
 .hud > div:last-child { align-items: end; }
 .hud small { font-size: .63rem; letter-spacing: .16em; color: var(--muted); font-weight: 800; }
 .hud strong { font-variant-numeric: tabular-nums; font-size: 1.3rem; letter-spacing: .08em; }
 .hud .streak strong { color: var(--orange); }
-.hud > .hud-progress { display: none; width: min(112px,100%); gap: 5px; }
+.hud > .hud-progress { display: flex; width: min(112px,100%); gap: 5px; }
 .hud-progress-heading { width: 100%; display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
 .hud-progress-heading strong { color: #f5fbfc; font-size: .82rem; letter-spacing: .02em; white-space: nowrap; }
 .hud-progress-track { width: 100%; height: 5px; overflow: hidden; border-radius: 5px; background: #163246; }
@@ -359,8 +360,8 @@ dialog li strong { color: var(--white); }
   .points-button span:last-child { display: none; }
   .points-button { padding: 0 8px; }
   .game-layout { display: flex; flex-direction: column; gap: 12px; }
-  .mission-panel { width: 100%; display: grid; grid-template-columns: 1fr auto; padding: 4px 5px 0; }
-  .mission-panel .eyebrow { grid-column: 1; }
+  .mission-panel { width: 100%; display: grid; grid-template-columns: minmax(0, 1fr); padding: 4px 5px 0; }
+  .mission-panel .eyebrow { grid-column: 1; white-space: nowrap; font-size: clamp(.62rem, 2.8vw, .72rem); letter-spacing: clamp(.12em, .5vw, .22em); }
   .mission-panel h1 { grid-column: 1; font-size: 1.7rem; margin: -4px 0 0; }
   .mission-copy, .skill-card, .coaching-card { display: none; }
   .progress-block { grid-column: 2; grid-row: 1 / 3; width: 100px; align-self: center; }
@@ -433,18 +434,16 @@ dialog li strong { color: var(--white); }
 
   body.gameplay-zoom-locked .stats-panel { display: none; }
 
-  /* Active regular levels use one compact navigation row and move progress
-     into the HUD, leaving the largest possible stable area for the rink. */
-  body.level-gameplay.gameplay-zoom-locked .topbar { width: 100%; max-width: none; height: 46px; margin: 0 0 3px; }
-  body.level-gameplay.gameplay-zoom-locked .brand { flex: 0 1 auto; gap: 8px; }
-  body.level-gameplay.gameplay-zoom-locked .brand-name,
-  body.level-gameplay.gameplay-zoom-locked .global-button { display: none; }
-  body.level-gameplay.gameplay-zoom-locked .gameplay-level-label { display: flex; align-items: center; min-height: 40px; padding-right: 14px; color: #64e6ed; font-size: 1.55rem; line-height: 40px; letter-spacing: .08em; }
-  body.level-gameplay.gameplay-zoom-locked .top-actions { margin-left: auto; }
-  body.level-gameplay.gameplay-zoom-locked .mission-panel { display: none; }
-  body.level-gameplay.gameplay-zoom-locked .game-layout { gap: 0; }
-  body.level-gameplay.gameplay-zoom-locked .hud-streak { display: none; }
-  body.level-gameplay.gameplay-zoom-locked .hud-progress { display: flex; }
+  /* Active levels and bonuses use one compact navigation row, leaving the
+     largest possible stable area for the rink. */
+  body.session-gameplay.gameplay-zoom-locked .topbar { width: 100%; max-width: none; height: 46px; margin: 0 0 3px; }
+  body.session-gameplay.gameplay-zoom-locked .brand { flex: 0 1 auto; gap: 8px; }
+  body.session-gameplay.gameplay-zoom-locked .brand-name,
+  body.session-gameplay.gameplay-zoom-locked .global-button { display: none; }
+  body.session-gameplay.gameplay-zoom-locked .gameplay-level-label { display: flex; align-items: center; min-height: 40px; padding-right: 14px; color: #64e6ed; font-size: 1.55rem; line-height: 40px; letter-spacing: .08em; }
+  body.session-gameplay.gameplay-zoom-locked .top-actions { margin-left: auto; }
+  body.session-gameplay.gameplay-zoom-locked .mission-panel { display: none; }
+  body.session-gameplay.gameplay-zoom-locked .game-layout { gap: 0; }
 }
 
 /* Short phones get a stable, no-scroll playing surface. `svh` intentionally
@@ -461,11 +460,11 @@ body.gameplay-zoom-locked.compact-gameplay .brand-name { display: none; }
 body.gameplay-zoom-locked.compact-gameplay .top-actions { gap: 6px; }
 body.gameplay-zoom-locked.compact-gameplay .icon-button { width: 36px; min-height: 40px; }
 body.gameplay-zoom-locked.compact-gameplay .points-button { min-height: 40px; }
-body.level-gameplay.gameplay-zoom-locked.compact-gameplay .topbar { width: 100%; max-width: none; margin: 0 0 3px; }
-body.level-gameplay.gameplay-zoom-locked.compact-gameplay .gameplay-level-label { height: 40px; min-height: 40px; padding-right: 14px; font-size: 1.55rem; line-height: 40px; }
-body.level-gameplay.gameplay-zoom-locked.compact-gameplay .top-actions { margin-left: auto; }
+body.session-gameplay.gameplay-zoom-locked.compact-gameplay .topbar { width: 100%; max-width: none; margin: 0 0 3px; }
+body.session-gameplay.gameplay-zoom-locked.compact-gameplay .gameplay-level-label { height: 40px; min-height: 40px; padding-right: 14px; font-size: 1.55rem; line-height: 40px; }
+body.session-gameplay.gameplay-zoom-locked.compact-gameplay .top-actions { margin-left: auto; }
 body.gameplay-zoom-locked.compact-gameplay .game-layout { flex: 1 1 auto; min-height: 0; width: 100%; display: flex; flex-direction: column; gap: 4px; overflow: hidden; }
-body.level-gameplay.gameplay-zoom-locked.compact-gameplay .game-layout { gap: 0; }
+body.session-gameplay.gameplay-zoom-locked.compact-gameplay .game-layout { gap: 0; }
 body.gameplay-zoom-locked.compact-gameplay .mission-panel { flex: 0 0 42px; min-height: 0; width: 100%; display: grid; grid-template-columns: 1fr auto; padding: 0 4px; align-items: center; }
 body.gameplay-zoom-locked.compact-gameplay .mission-copy,
 body.gameplay-zoom-locked.compact-gameplay .skill-card,
@@ -477,10 +476,10 @@ body.gameplay-zoom-locked.compact-gameplay .progress-label { margin-bottom: 5px;
 /* Regular-level gameplay never shows the former level/name/progress row.
    Keep this after the generic compact-phone mission rule so it cannot be
    re-enabled by cascade order on shorter iPhones. */
-body.level-gameplay.gameplay-zoom-locked.compact-gameplay .mission-panel { display: none; }
+body.session-gameplay.gameplay-zoom-locked.compact-gameplay .mission-panel { display: none; }
 body.gameplay-zoom-locked.compact-gameplay .arena-card { flex: 1 1 auto; min-height: 0; width: 100%; display: grid; grid-template-rows: 50px minmax(0,1fr) 0 auto; overflow: hidden; }
 body.gameplay-zoom-locked.compact-gameplay .hud { height: 50px; padding: 6px 12px; }
-body.level-gameplay.gameplay-zoom-locked.compact-gameplay .hud-progress { width: min(102px,100%); }
+body.session-gameplay.gameplay-zoom-locked.compact-gameplay .hud-progress { width: min(102px,100%); }
 body.gameplay-zoom-locked.compact-gameplay .canvas-wrap { min-height: 0; height: 100%; aspect-ratio: auto; }
 body.gameplay-zoom-locked.compact-gameplay .controls button { min-height: 46px; padding: 4px 3px; }
 body.gameplay-zoom-locked.compact-gameplay .controls button.strategy { min-height: 44px; }

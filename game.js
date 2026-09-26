@@ -19,7 +19,6 @@
   const ui = {
     startOverlay: document.getElementById('startOverlay'),
     score: document.getElementById('score'), streak: document.getElementById('streak'), timer: document.getElementById('timer'),
-    roundText: document.getElementById('roundText'), roundProgress: document.getElementById('roundProgress'),
     hudRoundText: document.getElementById('hudRoundText'), hudRoundProgress: document.getElementById('hudRoundProgress'),
     reads: document.getElementById('reads'), accuracy: document.getElementById('accuracy'), avgTime: document.getElementById('avgTime'),
     bestScore: document.getElementById('bestScore'), feedback: document.getElementById('feedback'),
@@ -380,7 +379,7 @@
     if(viewportMeta)viewportMeta.content=locked
       ?'width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover'
       :'width=device-width, initial-scale=1, viewport-fit=cover';
-    if(locked)updateCompactGameplayLayout();else document.body.classList.remove('compact-gameplay','level-gameplay');
+    if(locked)updateCompactGameplayLayout();else document.body.classList.remove('compact-gameplay','session-gameplay','level-gameplay','bonus-gameplay');
   }
   function shouldBlockGameplayZoom(){return document.body.classList.contains('gameplay-zoom-locked')&&!document.querySelector('dialog[open]');}
   for(const eventName of ['gesturestart','gesturechange','gestureend']){
@@ -2760,14 +2759,14 @@
 
   function setBonusPanel(index){
     const bonus=intermissions[index];
-    ui.levelEyebrow.textContent=`INTERMISSION · AFTER LEVEL ${bonus.afterLevel}`;ui.missionTitle.textContent=bonus.title;
+    ui.levelEyebrow.textContent=`INTERMISSION · AFTER LEVEL ${bonus.afterLevel}`;ui.gameplayLevelLabel.textContent=`BONUS ${bonus.afterLevel}`;ui.missionTitle.textContent=bonus.title;
     ui.missionCopy.textContent=`${bonus.difficulty} bonus game. It awards Cheese Points and never blocks progress.`;
     ui.skillLabel.textContent=bonus.type==='open-net'?'Find the open space':bonus.type==='deflection'?'Control the blade':'React to the rebound';
-    ui.coachText.textContent=bonus.cue;ui.roundText.textContent=`0 / ${bonus.rounds}`;ui.roundProgress.style.width='0%';
+    ui.coachText.textContent=bonus.cue;ui.hudRoundText.textContent=`0 / ${bonus.rounds}`;ui.hudRoundProgress.style.width='0%';
   }
 
   function startIntermission(index,fromProgression=false){
-    loadIntermissionAssets();clearBonusTimers();stopArenaMusic();setGameplayZoomLock(true);const bonus=intermissions[index];setBonusPanel(index);
+    loadIntermissionAssets();clearBonusTimers();stopArenaMusic();setGameplayZoomLock(true);document.body.classList.add('session-gameplay','bonus-gameplay');const bonus=intermissions[index];setBonusPanel(index);
     state={...state,mode:'bonus',bonusIndex:index,bonusFromProgression:fromProgression,active:false,locked:true,round:0,total:bonus.rounds,score:0,streak:0,correct:0,elapsedTotal:0,action:null,bonusAnswer:null,bonusChoice:null,bonusResult:null,bonusPhase:'intro',bonusPuck:null,bonusStick:null,bonusStickTarget:null,bonusFlick:null,bonusAimMiss:false,bonusWide:false,bonusMissPoint:null,bonusGoalTarget:null,bonusTapPoint:null,bonusReboundStage:null,bonusReboundTier:null,bonusReactionAt:0,bonusDropAt:0,bonusGoalieFrom:0,bonusGoalieTo:0,bonusGoalieMoveAt:performance.now(),paused:false,pausedAt:0};
     canvas.setAttribute('aria-label',`${bonus.title} intermission reaction game`);ui.orientationPause.hidden=true;ui.startOverlay.classList.remove('finish-mode');ui.startOverlay.classList.add('hidden');ui.standardControls.hidden=true;ui.bonusControls.hidden=true;ui.feedback.className='feedback';ui.powerUpIndicator.hidden=true;ui.lockerButton.disabled=true;resizeCanvas();updateUI();
     ui.bonusBannerTitle.textContent=bonus.title;ui.bonusBannerCopy.textContent=bonus.type==='open-net'?'Start on the puck. Flick into the gap.':bonus.type==='deflection'?'Track it. Tip it. Score.':'Watch the save. Attack the rebound.';
@@ -2850,7 +2849,7 @@
     const level=levels[index];
     ui.levelEyebrow.textContent=`LEVEL ${index+1}`;ui.gameplayLevelLabel.textContent=`LEVEL ${index+1}`;ui.missionTitle.textContent=level.title;
     ui.missionCopy.textContent=level.mission;ui.skillLabel.textContent=level.focus;
-    ui.roundText.textContent=`0 / ${level.rounds}`;ui.roundProgress.style.width='0%';ui.hudRoundText.textContent=`0 / ${level.rounds}`;ui.hudRoundProgress.style.width='0%';
+    ui.hudRoundText.textContent=`0 / ${level.rounds}`;ui.hudRoundProgress.style.width='0%';
   }
 
   function showLevelSelect() {
@@ -2879,7 +2878,7 @@
   }
 
   function startGame(levelIndex=0) {
-    clearBonusTimers();setGameplayZoomLock(true);document.body.classList.add('level-gameplay');const level=levels[levelIndex];setLevelPanel(levelIndex);setStandardControls();ui.bonusBanner.classList.remove('show');ui.bonusBanner.hidden=true;
+    clearBonusTimers();setGameplayZoomLock(true);document.body.classList.add('session-gameplay','level-gameplay');const level=levels[levelIndex];setLevelPanel(levelIndex);setStandardControls();ui.bonusBanner.classList.remove('show');ui.bonusBanner.hidden=true;
     canvas.setAttribute('aria-label','Top-down hockey rink showing fully equipped skaters, passing lanes, defenders, and goalie');
     state={...state,mode:'level',bonusIndex:null,active:true,locked:false,round:0,total:level.rounds,levelIndex,score:0,streak:0,correct:0,elapsedTotal:0,reveal:null,action:null,deck:shuffledScenarios(level),paused:false,pausedAt:0};
     ui.orientationPause.hidden=true;ui.startOverlay.classList.remove('finish-mode');ui.startOverlay.classList.add('hidden');ui.feedback.className='feedback';ui.lockerButton.disabled=false;
@@ -2937,7 +2936,6 @@
   function label(choice){return choice==='left'?'pass left':choice==='right'?'pass right':choice==='rush'?'rush':choice==='regroup'?'regroup':'shoot';}
   function updateUI(){
     ui.score.textContent=String(state.score).padStart(4,'0');ui.streak.textContent=`×${state.streak}`;
-    ui.roundText.textContent=`${state.round} / ${state.total}`;ui.roundProgress.style.width=`${state.round/state.total*100}%`;
     ui.hudRoundText.textContent=`${state.round} / ${state.total}`;ui.hudRoundProgress.style.width=`${state.round/state.total*100}%`;
     ui.reads.textContent=state.round;ui.accuracy.textContent=state.round?`${Math.round(state.correct/state.round*100)}%`:'—';
     ui.avgTime.textContent=state.round?`${(state.elapsedTotal/state.round).toFixed(1)}s`:'—';

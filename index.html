@@ -44,7 +44,7 @@
   <link rel="preload" href="assets/fonts/AlfaSlabOne.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="preload" href="assets/fonts/RussoOne.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="preload" href="assets/fonts/Monoton.ttf" as="font" type="font/ttf" crossorigin>
-  <link rel="stylesheet" href="styles.css?v=20260926.7">
+  <link rel="stylesheet" href="styles.css?v=20260926.9">
   <link rel="stylesheet" href="leaderboard.css?v=20260925.5">
 </head>
 <body class="app-loading">
@@ -84,10 +84,6 @@
           <div><small>SKILL FOCUS</small><strong id="skillLabel">Scanning</strong></div>
         </div>
 
-        <div class="progress-block">
-          <div class="progress-label"><span>Level progress</span><strong id="roundText">0 / 6</strong></div>
-          <div class="progress-track"><span id="roundProgress"></span></div>
-        </div>
 
         <div class="coaching-card" id="coachCard">
           <small>COACH'S CUE</small>
@@ -99,7 +95,7 @@
         <div class="hud" aria-live="polite">
           <div><small>SCORE</small><strong id="score">0000</strong></div>
           <div class="streak hud-streak"><small>STREAK</small><strong id="streak">×0</strong></div>
-          <div class="hud-progress" aria-label="Level progress">
+          <div class="hud-progress" aria-label="Game progress">
             <div class="hud-progress-heading"><small>PROGRESS</small><strong id="hudRoundText">0 / 6</strong></div>
             <div class="hud-progress-track" aria-hidden="true"><span id="hudRoundProgress"></span></div>
           </div>
@@ -185,7 +181,7 @@
     <details class="sound-credits"><summary>Hockey sound credits</summary>
       <p>Skating: <a href="https://soundbible.com/2198-Ice-Skating.html" target="_blank" rel="noopener">Ice Skating</a> by Daniel Simion. Shot: <a href="https://soundbible.com/1556-Hockey-Puck-Slap.html" target="_blank" rel="noopener">Hockey Puck Slap</a> by jameb32. Pass and reception: <a href="https://soundbible.com/1747-Hockey-Stick-Slap-2.html" target="_blank" rel="noopener">Hockey Stick Slap 2</a> by jameb32. These clips are <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener">CC BY 3.0</a>; they were trimmed, equalized, and adjusted for volume, and the reception clip was softened. Bodycheck: <a href="https://freesound.org/people/producerdan/sounds/161996/" target="_blank" rel="noopener">Hockey - Huge Body Check Hit Into Boards</a> by producerdan, <a href="https://creativecommons.org/publicdomain/zero/1.0/" target="_blank" rel="noopener">CC0</a>; trimmed, filtered, and faded.</p>
     </details>
-    <p class="how-version">TOP CHE’S HOCKEY <span>VERSION 94</span></p>
+    <p class="how-version">TOP CHE’S HOCKEY <span>VERSION 96</span></p>
   </dialog>
 
   <dialog id="usernameDialog" class="leaderboard-dialog username-dialog" aria-labelledby="usernameTitle">
@@ -302,6 +298,6 @@
 
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
   <script src="leaderboard.js?v=20260925.5"></script>
-  <script src="game.js?v=20260926.11"></script>
+  <script src="game.js?v=20260926.13"></script>
 </body>
 </html>
