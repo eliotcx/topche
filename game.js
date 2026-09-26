@@ -1699,10 +1699,10 @@
       ctx.fillStyle='#edf7f8';ctx.strokeStyle='#bd2e35';ctx.lineWidth=3;ctx.fillRect(-20,-12,40,24);ctx.strokeRect(-20,-12,40,24);
     }
     if(blend>0){
-      // All generated pose canvases use the same square framing. At 106px the
-      // helmet and torso match the 97.6px ready sprite; only the extended
-      // glove, blocker or butterfly pads change the silhouette.
-      const image=regularGoaliePoseImages[pose],poseSize=106;
+      // Each generated pose has slightly different transparent framing. These
+      // calibrated sizes keep the helmet and torso consistent with the ready
+      // goalie while preserving the natural reach of each save movement.
+      const image=regularGoaliePoseImages[pose],poseSize=pose==='glove'?95:pose==='butterfly'?101:106;
       ctx.globalAlpha=blend;ctx.drawImage(image,-poseSize/2,-poseSize/2,poseSize,poseSize);ctx.globalAlpha=1;
     }
     ctx.restore();
