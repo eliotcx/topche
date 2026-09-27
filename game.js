@@ -1056,7 +1056,7 @@
       const whiteUniformPixel=brightness>.5&&Math.max(r,g,b)-Math.min(r,g,b)<42;
       // Socks begin below the jersey hem. Keeping this as a distinct lower-leg
       // mask prevents patterned socks from recolouring the overlapping torso.
-      const sockMask=yr>=408&&yr<545&&(insideEllipse(xr,yr,350,438,42,65)||insideEllipse(xr,yr,408,486,43,76))&&!skin&&(bluePixel||whiteUniformPixel);
+      const sockMask=yr>=408&&yr<545&&(insideEllipse(xr,yr,350,438,42,65)||insideEllipse(xr,yr,418,478,66,90))&&!skin&&(bluePixel||whiteUniformPixel);
       const tapeMask=xr>180&&xr<288&&yr>23&&yr<76;
       const shaftMask=segmentDistance(xr,yr,245,53,352,181)<12;
       const jerseyMask=bluePixel&&xr>230&&xr<525&&yr>162&&yr<420;
@@ -1066,10 +1066,11 @@
       else if(gloveMask)tintPixel(data,i,brightness>.54?gloves.accent:gloves.color,brightness);
       else if(skateMask)tintPixel(data,i,brightness>.58?skates.accent:skates.color,brightness);
       else if(shaftMask)tintPixel(data,i,shaftPatternColor(shaft,xr,yr),brightness);
-      // Jersey layers have priority wherever the top-down artwork overlaps a leg.
+      // Below the shorts, the selected sock design must replace every part of
+      // the base blue sock before overlapping jersey colours are considered.
+      else if(sockMask)tintPixel(data,i,sockPatternColor(socks,xr,yr),brightness);
       else if(stripeMask)tintPixel(data,i,yr>394?(jersey.detail||jersey.accent):jersey.accent,brightness);
       else if(jerseyMask)tintPixel(data,i,jersey.color,brightness);
-      else if(sockMask)tintPixel(data,i,sockPatternColor(socks,xr,yr),brightness);
     }
     target.putImageData(image,0,0);drawHelmetGraphics(target,helmet,sx,sy);drawJerseyPrint(target,options,sx,sy);return surface;
   }
@@ -1146,9 +1147,9 @@
       if(helmetMask)tintPixel(data,i,helmet.color,brightness);
       else if(gloveMask)tintPixel(data,i,brightness>.54?gloves.accent:gloves.color,brightness);
       else if(skateMask)tintPixel(data,i,brightness>.58?skates.accent:skates.color,brightness);
+      else if(sockMask)tintPixel(data,i,sockPatternColor(socks,x,y),brightness);
       else if(uniformStripe)tintPixel(data,i,y%28>14?(jersey.detail||jersey.accent):jersey.accent,brightness);
       else if(jerseyMask)tintPixel(data,i,jersey.color,brightness);
-      else if(sockMask)tintPixel(data,i,sockPatternColor(socks,x,y),brightness);
     }
     target.putImageData(image,0,0);drawFallenHelmetGraphics(target,helmet);drawFallenJerseyPrint(target,loadout);return surface;
   }
