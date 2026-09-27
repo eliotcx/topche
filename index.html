@@ -44,7 +44,7 @@
   <link rel="preload" href="assets/fonts/AlfaSlabOne.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="preload" href="assets/fonts/RussoOne.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="preload" href="assets/fonts/Monoton.ttf" as="font" type="font/ttf" crossorigin>
-  <link rel="stylesheet" href="styles.css?v=20260926.11">
+  <link rel="stylesheet" href="styles.css?v=20260926.14">
   <link rel="stylesheet" href="leaderboard.css?v=20260925.5">
 </head>
 <body class="app-loading">
@@ -66,7 +66,7 @@
         <span class="gameplay-level-label" id="gameplayLevelLabel">LEVEL 1</span>
       </div>
       <div class="top-actions">
-        <button class="icon-button global-button" id="globalLeaderboardButton" aria-label="Open Global Leaderboard" title="Global Leaderboard">◎</button>
+        <button class="icon-button global-button" id="globalLeaderboardButton" aria-label="Open Global Leaderboard" title="Global Leaderboard"><svg viewBox="0 0 32 28" aria-hidden="true"><path d="M2 26V12h9v14M11 26V3h10v23M21 26V15h9v11M2 26h28"/></svg></button>
         <button class="points-button" id="lockerButton" aria-label="Open player locker"><span aria-hidden="true">🧀</span><strong id="cheesePoints">0</strong><span>Locker</span></button>
         <button class="icon-button music-button" id="soundButton" aria-label="Mute music and sound" title="Music and sound">♪</button>
         <button class="icon-button help-button" id="howButton" aria-label="How to play" title="How to play">?</button>
@@ -96,8 +96,8 @@
           <div><small>SCORE</small><strong id="score">0000</strong></div>
           <div class="streak hud-streak"><small>STREAK</small><strong id="streak">×0</strong></div>
           <div class="hud-progress" aria-label="Game progress">
-            <div class="hud-progress-heading"><small>PROGRESS</small><strong id="hudRoundText">0 / 6</strong></div>
-            <div class="hud-progress-track" aria-hidden="true"><span id="hudRoundProgress"></span></div>
+            <small>PROGRESS</small>
+            <div class="hud-progress-status"><strong id="hudRoundText">0 / 6</strong><div class="hud-progress-track" id="hudRoundProgress" aria-hidden="true"></div></div>
           </div>
           <div><small>TIME</small><strong id="timer">10.0</strong></div>
         </div>
@@ -180,7 +180,7 @@
     <details class="sound-credits"><summary>Hockey sound credits</summary>
       <p>Skating: <a href="https://soundbible.com/2198-Ice-Skating.html" target="_blank" rel="noopener">Ice Skating</a> by Daniel Simion. Shot: <a href="https://soundbible.com/1556-Hockey-Puck-Slap.html" target="_blank" rel="noopener">Hockey Puck Slap</a> by jameb32. Pass and reception: <a href="https://soundbible.com/1747-Hockey-Stick-Slap-2.html" target="_blank" rel="noopener">Hockey Stick Slap 2</a> by jameb32. These clips are <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener">CC BY 3.0</a>; they were trimmed, equalized, and adjusted for volume, and the reception clip was softened. Bodycheck: <a href="https://freesound.org/people/producerdan/sounds/161996/" target="_blank" rel="noopener">Hockey - Huge Body Check Hit Into Boards</a> by producerdan, <a href="https://creativecommons.org/publicdomain/zero/1.0/" target="_blank" rel="noopener">CC0</a>; trimmed, filtered, and faded.</p>
     </details>
-    <p class="how-version">TOP CHE’S HOCKEY <span>VERSION 102</span></p>
+    <p class="how-version">TOP CHE’S HOCKEY <span>VERSION 105</span></p>
   </dialog>
 
   <dialog id="usernameDialog" class="leaderboard-dialog username-dialog" aria-labelledby="usernameTitle">
@@ -297,6 +297,6 @@
 
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
   <script src="leaderboard.js?v=20260925.5"></script>
-  <script src="game.js?v=20260926.17"></script>
+  <script src="game.js?v=20260926.18"></script>
 </body>
 </html>
