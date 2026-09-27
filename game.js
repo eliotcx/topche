@@ -18,6 +18,8 @@
   const bonusTestMode = /(?:^|[?&])bonus-test=1(?:&|$)/.test(window.location?.search||'');
   const ui = {
     startOverlay: document.getElementById('startOverlay'),
+    levelSelectScreen: document.getElementById('levelSelectScreen'), levelSelectContent: document.getElementById('levelSelectContent'),
+    levelSelectKicker: document.getElementById('levelSelectKicker'), levelSelectTitle: document.getElementById('levelSelectTitle'), levelSelectCopy: document.getElementById('levelSelectCopy'),
     score: document.getElementById('score'), streak: document.getElementById('streak'), timer: document.getElementById('timer'),
     hudRoundText: document.getElementById('hudRoundText'), hudRoundProgress: document.getElementById('hudRoundProgress'),
     reads: document.getElementById('reads'), accuracy: document.getElementById('accuracy'), avgTime: document.getElementById('avgTime'),
@@ -2817,7 +2819,7 @@
   }
 
   function startIntermission(index,fromProgression=false){
-    loadIntermissionAssets();clearBonusTimers();clearOrientationSafety();stopArenaMusic();setGameplayZoomLock(true);document.body.classList.remove('level-select','result-screen');document.body.classList.add('session-gameplay','bonus-gameplay');const bonus=intermissions[index];setBonusPanel(index);
+    loadIntermissionAssets();clearBonusTimers();clearOrientationSafety();stopArenaMusic();setGameplayZoomLock(true);document.body.classList.remove('level-select','result-screen');document.body.classList.add('session-gameplay','bonus-gameplay');ui.levelSelectScreen.hidden=true;const bonus=intermissions[index];setBonusPanel(index);
     state={...state,mode:'bonus',bonusIndex:index,bonusFromProgression:fromProgression,active:false,locked:true,round:0,total:bonus.rounds,score:0,streak:0,correct:0,elapsedTotal:0,roundResults:[],action:null,bonusAnswer:null,bonusChoice:null,bonusResult:null,bonusPhase:'intro',bonusPuck:null,bonusStick:null,bonusStickTarget:null,bonusFlick:null,bonusAimMiss:false,bonusWide:false,bonusMissPoint:null,bonusGoalTarget:null,bonusTapPoint:null,bonusReboundStage:null,bonusReboundTier:null,bonusReactionAt:0,bonusDropAt:0,bonusGoalieFrom:0,bonusGoalieTo:0,bonusGoalieMoveAt:performance.now(),paused:false,pausedAt:0};
     canvas.setAttribute('aria-label',`${bonus.title} intermission reaction game`);ui.orientationPause.hidden=true;ui.startOverlay.classList.remove('finish-mode');ui.startOverlay.classList.add('hidden');ui.standardControls.hidden=true;ui.bonusControls.hidden=true;ui.feedback.className='feedback';ui.powerUpIndicator.hidden=true;ui.lockerButton.disabled=true;resizeCanvas();updateUI();
     ui.bonusBannerTitle.textContent=bonus.title;ui.bonusBannerCopy.textContent=bonus.type==='open-net'?'Start on the puck. Flick into the gap.':bonus.type==='deflection'?'Track it. Tip it. Score.':'Watch the save. Attack the rebound.';
@@ -2908,13 +2910,17 @@
     const unlocked=unlockedCount(),completed=completedLevelCount(),bonusUnlocked=bonusTestMode?intermissions.length:intermissions.filter(bonus=>completed>=bonus.afterLevel).length;
     ui.lockerButton.disabled=false;
     ui.levelStatus.textContent=`${unlocked} of ${levels.length} levels · ${bonusUnlocked} of ${intermissions.length} bonuses`;
-    const levelGrid=`<div class="level-grid" aria-label="Hockey challenges">${levels.map((level,index)=>{const locked=index>=unlocked,complete=index<unlocked-1,targetLabel=index===levels.length-1?'TARGET':'TO ADVANCE';return `<button class="level-card" data-level="${index}" ${locked?'disabled':''}><span class="level-number">LEVEL ${index+1} · ${level.unlock}/${level.rounds} ${targetLabel}</span><strong>${level.title}</strong><small>${level.short}</small><span class="level-state">${locked?'🔒':complete?'✓':'▶'}</span></button>`;}).join('')}</div>`;
-    const bonusGrid=`<p class="bonus-heading">INTERMISSION BONUSES</p><div class="bonus-grid" aria-label="Intermission bonus games">${intermissions.map((bonus,index)=>{const locked=!bonusTestMode&&completed<bonus.afterLevel;return `<button class="bonus-card" data-bonus="${index}" ${locked?'disabled':''}><span>AFTER LEVEL ${bonus.afterLevel} · ${bonus.difficulty.toUpperCase()}</span><strong>${bonus.title}</strong><small>${locked?'Complete Level '+bonus.afterLevel:bonus.short}</small></button>`;}).join('')}</div>`;
+    const levelGrid=`<p class="level-select-heading">REGULAR LEVELS</p><div class="level-grid" aria-label="Hockey challenges">${levels.map((level,index)=>{const locked=index>=unlocked,complete=index<unlocked-1,targetLabel=index===levels.length-1?'TARGET':'TO ADVANCE';return `<button class="level-card" data-level="${index}" ${locked?'disabled':''}><span class="level-number">LEVEL ${index+1} · ${level.unlock}/${level.rounds} ${targetLabel}</span><strong>${level.title}</strong><small>${level.short}</small><span class="level-state">${locked?'🔒':complete?'✓':'▶'}</span></button>`;}).join('')}</div>`;
+    const bonusGrid=`<p class="level-select-heading bonus-heading">INTERMISSION BONUSES</p><div class="bonus-grid" aria-label="Intermission bonus games">${intermissions.map((bonus,index)=>{const locked=!bonusTestMode&&completed<bonus.afterLevel;return `<button class="bonus-card" data-bonus="${index}" ${locked?'disabled':''}><span>AFTER LEVEL ${bonus.afterLevel} · ${bonus.difficulty.toUpperCase()}</span><strong>${bonus.title}</strong><small>${locked?'Complete Level '+bonus.afterLevel:bonus.short}</small></button>`;}).join('')}</div>`;
     const testBadge=bonusTestMode?`<div class="bonus-test-badge">BONUS TEST MODE · ALL ${intermissions.length} UNLOCKED</div>`:'';
-    ui.startOverlay.classList.remove('finish-mode');ui.startOverlay.innerHTML=`<img class="cheese-hero-logo" src="assets/top-ches-logo-v44.png" alt=""><p class="overline">${bonusTestMode?'INTERMISSION TEST BENCH':'LEVEL UP YOUR HOCKEY BRAIN'}</p><h2>Choose your<br><em>${bonusTestMode?'bonus game.':'challenge.'}</em></h2><p>${bonusTestMode?'Jump directly into any intermission bonus. Your regular level unlocks stay unchanged.':'Beat the accuracy target to unlock the next level.'}</p>${testBadge}${bonusTestMode?bonusGrid+levelGrid:levelGrid+bonusGrid}`;
-    ui.startOverlay.classList.remove('hidden');
-    ui.startOverlay.querySelectorAll('[data-level]').forEach(button=>button.addEventListener('click',()=>startGame(Number(button.dataset.level))));
-    ui.startOverlay.querySelectorAll('[data-bonus]').forEach(button=>button.addEventListener('click',()=>startIntermission(Number(button.dataset.bonus),false)));
+    ui.levelSelectKicker.textContent=bonusTestMode?'INTERMISSION TEST BENCH':'LEVEL UP YOUR HOCKEY BRAIN';
+    ui.levelSelectTitle.innerHTML=`Choose your <em>${bonusTestMode?'bonus game.':'challenge.'}</em>`;
+    ui.levelSelectCopy.textContent=bonusTestMode?'Jump directly into any intermission bonus. Your regular level unlocks stay unchanged.':'Beat the accuracy target to unlock the next level.';
+    ui.levelSelectContent.innerHTML=`${testBadge}${bonusTestMode?bonusGrid+levelGrid:levelGrid+bonusGrid}`;
+    ui.levelSelectScreen.hidden=false;ui.startOverlay.classList.remove('finish-mode');ui.startOverlay.classList.add('hidden');
+    ui.levelSelectContent.querySelectorAll('[data-level]').forEach(button=>button.addEventListener('click',()=>startGame(Number(button.dataset.level))));
+    ui.levelSelectContent.querySelectorAll('[data-bonus]').forEach(button=>button.addEventListener('click',()=>startIntermission(Number(button.dataset.bonus),false)));
+    requestAnimationFrame(()=>window.scrollTo(0,0));
     setLevelPanel(Math.max(0,unlocked-1));
   }
 
@@ -2929,7 +2935,7 @@
   }
 
   function startGame(levelIndex=0) {
-    clearBonusTimers();clearOrientationSafety();setGameplayZoomLock(true);document.body.classList.remove('level-select','result-screen');document.body.classList.add('session-gameplay','level-gameplay');const level=levels[levelIndex];setLevelPanel(levelIndex);setStandardControls();ui.bonusBanner.classList.remove('show');ui.bonusBanner.hidden=true;
+    clearBonusTimers();clearOrientationSafety();setGameplayZoomLock(true);document.body.classList.remove('level-select','result-screen');document.body.classList.add('session-gameplay','level-gameplay');ui.levelSelectScreen.hidden=true;const level=levels[levelIndex];setLevelPanel(levelIndex);setStandardControls();ui.bonusBanner.classList.remove('show');ui.bonusBanner.hidden=true;
     canvas.setAttribute('aria-label','Top-down hockey rink showing fully equipped skaters, passing lanes, defenders, and goalie');
     state={...state,mode:'level',bonusIndex:null,active:true,locked:false,round:0,total:level.rounds,levelIndex,score:0,streak:0,correct:0,elapsedTotal:0,roundResults:[],reveal:null,action:null,deck:shuffledScenarios(level),paused:false,pausedAt:0};
     ui.orientationPause.hidden=true;ui.startOverlay.classList.remove('finish-mode');ui.startOverlay.classList.add('hidden');ui.feedback.className='feedback';ui.lockerButton.disabled=false;

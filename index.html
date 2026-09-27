@@ -44,7 +44,7 @@
   <link rel="preload" href="assets/fonts/AlfaSlabOne.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="preload" href="assets/fonts/RussoOne.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="preload" href="assets/fonts/Monoton.ttf" as="font" type="font/ttf" crossorigin>
-  <link rel="stylesheet" href="styles.css?v=20260926.14">
+  <link rel="stylesheet" href="styles.css?v=20260926.16">
   <link rel="stylesheet" href="leaderboard.css?v=20260925.5">
 </head>
 <body class="app-loading">
@@ -72,6 +72,18 @@
         <button class="icon-button help-button" id="howButton" aria-label="How to play" title="How to play">?</button>
       </div>
     </header>
+
+    <section class="level-select-screen" id="levelSelectScreen" aria-labelledby="levelSelectTitle">
+      <header class="level-select-hero">
+        <img class="level-select-logo" src="assets/top-ches-logo-v44.png" alt="">
+        <div>
+          <p class="overline" id="levelSelectKicker">LEVEL UP YOUR HOCKEY BRAIN</p>
+          <h1 id="levelSelectTitle">Choose your <em>challenge.</em></h1>
+          <p id="levelSelectCopy">Beat the accuracy target to unlock the next level.</p>
+        </div>
+      </header>
+      <div class="level-select-content" id="levelSelectContent"></div>
+    </section>
 
     <section class="game-layout">
       <aside class="mission-panel" aria-label="Current drill">
@@ -113,13 +125,7 @@
             <strong id="bonusBannerTitle">OPEN NET RUSH!</strong>
             <small id="bonusBannerCopy">Find the opening. Fire fast.</small>
           </div>
-          <div class="start-overlay" id="startOverlay">
-            <img class="cheese-hero-logo" src="assets/top-ches-logo-v44.png" alt="">
-            <p class="overline">LEVEL UP YOUR HOCKEY BRAIN</p>
-            <h2>Choose your<br><em>challenge.</em></h2>
-            <p>Master each level to unlock the next test.</p>
-            <div class="level-grid" id="levelGrid" aria-label="Hockey challenges"></div>
-          </div>
+          <div class="start-overlay hidden" id="startOverlay"></div>
         </div>
         <div class="feedback-zone"><div class="feedback" id="feedback" aria-live="assertive"></div></div>
         <div class="controls" id="standardControls" aria-label="Decision controls">
@@ -180,7 +186,7 @@
     <details class="sound-credits"><summary>Hockey sound credits</summary>
       <p>Skating: <a href="https://soundbible.com/2198-Ice-Skating.html" target="_blank" rel="noopener">Ice Skating</a> by Daniel Simion. Shot: <a href="https://soundbible.com/1556-Hockey-Puck-Slap.html" target="_blank" rel="noopener">Hockey Puck Slap</a> by jameb32. Pass and reception: <a href="https://soundbible.com/1747-Hockey-Stick-Slap-2.html" target="_blank" rel="noopener">Hockey Stick Slap 2</a> by jameb32. These clips are <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener">CC BY 3.0</a>; they were trimmed, equalized, and adjusted for volume, and the reception clip was softened. Bodycheck: <a href="https://freesound.org/people/producerdan/sounds/161996/" target="_blank" rel="noopener">Hockey - Huge Body Check Hit Into Boards</a> by producerdan, <a href="https://creativecommons.org/publicdomain/zero/1.0/" target="_blank" rel="noopener">CC0</a>; trimmed, filtered, and faded.</p>
     </details>
-    <p class="how-version">TOP CHE’S HOCKEY <span>VERSION 106</span></p>
+    <p class="how-version">TOP CHE’S HOCKEY <span>VERSION 108</span></p>
   </dialog>
 
   <dialog id="usernameDialog" class="leaderboard-dialog username-dialog" aria-labelledby="usernameTitle">
@@ -297,7 +303,7 @@
 
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
   <script src="leaderboard.js?v=20260925.5"></script>
-  <script src="game.js?v=20260926.18"></script>
+  <script src="game.js?v=20260926.19"></script>
   <!-- Cloudflare Web Analytics -->
   <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"8cef10ac3f104d3f8763d158920dd7f2"}'></script>
   <!-- End Cloudflare Web Analytics -->
